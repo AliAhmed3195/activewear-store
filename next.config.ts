@@ -1,9 +1,18 @@
 import type { NextConfig } from "next";
 import path from "path";
 
-const cdnHostname = process.env.NEXT_PUBLIC_CDN_BASE_URL
-  ? new URL(process.env.NEXT_PUBLIC_CDN_BASE_URL).hostname
-  : "images.unsplash.com";
+function resolveCdnHostname(): string {
+  const raw = process.env.NEXT_PUBLIC_CDN_BASE_URL?.trim();
+  if (!raw) return "images.unsplash.com";
+  try {
+    const withProtocol = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+    return new URL(withProtocol).hostname;
+  } catch {
+    return "images.unsplash.com";
+  }
+}
+
+const cdnHostname = resolveCdnHostname();
 
 const nextConfig: NextConfig = {
   devIndicators: false,

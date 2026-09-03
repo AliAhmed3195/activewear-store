@@ -9,7 +9,15 @@ export function storeTagline(): string {
 }
 
 export function storeUrl(): string {
-  return process.env.NEXT_PUBLIC_STORE_URL ?? "http://localhost:3000";
+  const raw = process.env.NEXT_PUBLIC_STORE_URL?.trim();
+  if (!raw) return "http://localhost:3000";
+  try {
+    // Accept bare hostnames from Vercel env mistakes
+    const withProtocol = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+    return new URL(withProtocol).origin;
+  } catch {
+    return "http://localhost:3000";
+  }
 }
 
 export function defaultCurrency(): StoreCurrency {
