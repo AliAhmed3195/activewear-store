@@ -51,3 +51,4 @@ next-env.d.ts
 # old Elvene product images (seed uses CDN/Unsplash)
 /public/products
 
+.vercel
