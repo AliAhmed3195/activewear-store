@@ -1,7 +1,7 @@
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
 import { Prisma, ProductStatus } from "@prisma/client";
-import { prisma, withDbRetry } from "@/lib/db";
+import { prisma, withDbFallback } from "@/lib/db";
 import { mapProduct } from "@/lib/product-mapper";
 import type { PaginatedProducts, Product, Review, ShopFilters, StoreCurrency } from "@/types";
 
@@ -15,48 +15,55 @@ const productInclude = {
 };
 
 const CATALOG_REVALIDATE = 120;
+const EMPTY_SIZE_COUNTS: Record<string, number> = {
+  XS: 0,
+  S: 0,
+  M: 0,
+  L: 0,
+  XL: 0,
+  XXL: 0,
+};
 
 export const getCategories = unstable_cache(
-  async () => withDbRetry(() => prisma.category.findMany({ orderBy: { position: "asc" } })),
+  async () =>
+    withDbFallback(() => prisma.category.findMany({ orderBy: { position: "asc" } }), []),
   ["categories"],
   { tags: ["catalog", "categories"], revalidate: CATALOG_REVALIDATE }
 );
 
 export const getSizeProductCounts = unstable_cache(
-  async (): Promise<Record<string, number>> => {
-    const rows = await withDbRetry(() =>
-      prisma.$queryRaw<Array<{ size: string; count: bigint }>>`
+  async (): Promise<Record<string, number>> =>
+    withDbFallback(async () => {
+      const rows = await prisma.$queryRaw<Array<{ size: string; count: bigint }>>`
         SELECT size, COUNT(DISTINCT p.id)::bigint AS count
         FROM "ProductVariant" v
         JOIN "Product" p ON p.id = v."productId"
         CROSS JOIN UNNEST(v.sizes) AS size
         WHERE p.status = 'ACTIVE'::"ProductStatus"
         GROUP BY size
-      `
-    );
-    const counts: Record<string, number> = { XS: 0, S: 0, M: 0, L: 0, XL: 0, XXL: 0 };
-    for (const row of rows) {
-      counts[row.size] = Number(row.count);
-    }
-    return counts;
-  },
+      `;
+      const counts: Record<string, number> = { ...EMPTY_SIZE_COUNTS };
+      for (const row of rows) {
+        counts[row.size] = Number(row.count);
+      }
+      return counts;
+    }, { ...EMPTY_SIZE_COUNTS }),
   ["size-product-counts"],
   { tags: ["catalog", "products"], revalidate: CATALOG_REVALIDATE }
 );
 
 export async function getFeaturedProducts(limit = 8): Promise<Product[]> {
   return unstable_cache(
-    async (): Promise<Product[]> => {
-      const products = await withDbRetry(() =>
-        prisma.product.findMany({
+    async (): Promise<Product[]> =>
+      withDbFallback(async () => {
+        const products = await prisma.product.findMany({
           where: { status: ProductStatus.ACTIVE, featured: true },
           include: productInclude,
           orderBy: { createdAt: "desc" },
           take: limit,
-        })
-      );
-      return products.map(mapProduct);
-    },
+        });
+        return products.map(mapProduct);
+      }, []),
     ["featured-products", String(limit)],
     { tags: ["catalog", "products"], revalidate: CATALOG_REVALIDATE }
   )();
@@ -64,17 +71,16 @@ export async function getFeaturedProducts(limit = 8): Promise<Product[]> {
 
 export async function getNewArrivals(limit = 8): Promise<Product[]> {
   return unstable_cache(
-    async (): Promise<Product[]> => {
-      const products = await withDbRetry(() =>
-        prisma.product.findMany({
+    async (): Promise<Product[]> =>
+      withDbFallback(async () => {
+        const products = await prisma.product.findMany({
           where: { status: ProductStatus.ACTIVE },
           include: productInclude,
           orderBy: { createdAt: "desc" },
           take: limit,
-        })
-      );
-      return products.map(mapProduct);
-    },
+        });
+        return products.map(mapProduct);
+      }, []),
     ["new-arrivals", String(limit)],
     { tags: ["catalog", "products"], revalidate: CATALOG_REVALIDATE }
   )();
@@ -82,17 +88,16 @@ export async function getNewArrivals(limit = 8): Promise<Product[]> {
 
 export async function getBestSellers(limit = 8): Promise<Product[]> {
   return unstable_cache(
-    async (): Promise<Product[]> => {
-      const products = await withDbRetry(() =>
-        prisma.product.findMany({
+    async (): Promise<Product[]> =>
+      withDbFallback(async () => {
+        const products = await prisma.product.findMany({
           where: { status: ProductStatus.ACTIVE },
           include: productInclude,
           orderBy: [{ reviewCount: "desc" }, { rating: "desc" }],
           take: limit,
-        })
-      );
-      return products.map(mapProduct);
-    },
+        });
+        return products.map(mapProduct);
+      }, []),
     ["best-sellers", String(limit)],
     { tags: ["catalog", "products"], revalidate: CATALOG_REVALIDATE }
   )();
@@ -108,57 +113,64 @@ export interface CategoryPreview {
 }
 
 export const getCategoryPreviews = unstable_cache(
-  async (): Promise<CategoryPreview[]> => {
-    const categories = await prisma.category.findMany({
-      orderBy: { position: "asc" },
-      include: {
-        _count: { select: { products: { where: { status: ProductStatus.ACTIVE } } } },
-        products: {
-          where: { status: ProductStatus.ACTIVE },
-          take: 1,
-          orderBy: { featured: "desc" },
-          include: {
-            variants: {
-              take: 1,
-              orderBy: { position: "asc" },
-              include: { images: { orderBy: { position: "asc" }, take: 1 } },
+  async (): Promise<CategoryPreview[]> =>
+    withDbFallback(async () => {
+      const categories = await prisma.category.findMany({
+        orderBy: { position: "asc" },
+        include: {
+          _count: { select: { products: { where: { status: ProductStatus.ACTIVE } } } },
+          products: {
+            where: { status: ProductStatus.ACTIVE },
+            take: 1,
+            orderBy: { featured: "desc" },
+            include: {
+              variants: {
+                take: 1,
+                orderBy: { position: "asc" },
+                include: { images: { orderBy: { position: "asc" }, take: 1 } },
+              },
+              images: { orderBy: { position: "asc" }, take: 1 },
             },
-            images: { orderBy: { position: "asc" }, take: 1 },
           },
         },
-      },
-    });
+      });
 
-    return categories.map((cat) => {
-      const p = cat.products[0];
-      const previewImage =
-        p?.variants[0]?.images[0]?.url ?? p?.images[0]?.url ?? null;
-      return {
-        id: cat.id,
-        slug: cat.slug,
-        name: cat.name,
-        description: cat.description,
-        productCount: cat._count.products,
-        previewImage,
-      };
-    });
-  },
+      return categories.map((cat) => {
+        const p = cat.products[0];
+        const previewImage =
+          p?.variants[0]?.images[0]?.url ?? p?.images[0]?.url ?? null;
+        return {
+          id: cat.id,
+          slug: cat.slug,
+          name: cat.name,
+          description: cat.description,
+          productCount: cat._count.products,
+          previewImage,
+        };
+      });
+    }, []),
   ["category-previews"],
   { tags: ["catalog", "categories"], revalidate: CATALOG_REVALIDATE }
 );
 
 export const getActiveProductCount = unstable_cache(
-  async (): Promise<number> => prisma.product.count({ where: { status: ProductStatus.ACTIVE } }),
+  async (): Promise<number> =>
+    withDbFallback(
+      () => prisma.product.count({ where: { status: ProductStatus.ACTIVE } }),
+      0
+    ),
   ["active-product-count"],
   { tags: ["catalog", "products"], revalidate: CATALOG_REVALIDATE }
 );
 
 async function fetchProductBySlug(slug: string): Promise<Product | null> {
-  const product = await prisma.product.findUnique({
-    where: { slug },
-    include: productInclude,
-  });
-  return product ? mapProduct(product) : null;
+  return withDbFallback(async () => {
+    const product = await prisma.product.findUnique({
+      where: { slug },
+      include: productInclude,
+    });
+    return product ? mapProduct(product) : null;
+  }, null);
 }
 
 export const getProductBySlug = cache(async (slug: string): Promise<Product | null> => {
@@ -170,11 +182,13 @@ export const getProductBySlug = cache(async (slug: string): Promise<Product | nu
 });
 
 export async function getProductById(id: string): Promise<Product | null> {
-  const product = await prisma.product.findUnique({
-    where: { id },
-    include: productInclude,
-  });
-  return product ? mapProduct(product) : null;
+  return withDbFallback(async () => {
+    const product = await prisma.product.findUnique({
+      where: { id },
+      include: productInclude,
+    });
+    return product ? mapProduct(product) : null;
+  }, null);
 }
 
 export async function getRelatedProducts(
@@ -182,17 +196,19 @@ export async function getRelatedProducts(
   categoryId: string | null,
   limit = 4
 ): Promise<Product[]> {
-  const products = await prisma.product.findMany({
-    where: {
-      status: ProductStatus.ACTIVE,
-      id: { not: productId },
-      ...(categoryId ? { categoryId } : {}),
-    },
-    include: productInclude,
-    take: limit,
-    orderBy: { rating: "desc" },
-  });
-  return products.map(mapProduct);
+  return withDbFallback(async () => {
+    const products = await prisma.product.findMany({
+      where: {
+        status: ProductStatus.ACTIVE,
+        id: { not: productId },
+        ...(categoryId ? { categoryId } : {}),
+      },
+      include: productInclude,
+      take: limit,
+      orderBy: { rating: "desc" },
+    });
+    return products.map(mapProduct);
+  }, []);
 }
 
 function priceField(currency: StoreCurrency): "priceCentsPkr" | "priceCentsUsd" {
@@ -219,57 +235,57 @@ export async function getProducts(filters: ShopFilters = {}): Promise<PaginatedP
   });
 
   return unstable_cache(
-    async (): Promise<PaginatedProducts> => {
-      const where: Prisma.ProductWhereInput = {
-        status: ProductStatus.ACTIVE,
-      };
-
-      if (filters.q) {
-        where.OR = [
-          { name: { contains: filters.q, mode: "insensitive" } },
-          { tagline: { contains: filters.q, mode: "insensitive" } },
-          { description: { contains: filters.q, mode: "insensitive" } },
-        ];
-      }
-
-      if (filters.category) {
-        where.category = { slug: filters.category };
-      }
-
-      if (filters.gender) {
-        where.gender = filters.gender as Prisma.EnumGenderFilter;
-      }
-
-      if (filters.size) {
-        where.variants = { some: { sizes: { has: filters.size } } };
-      }
-
-      if (filters.color) {
-        where.variants = {
-          some: {
-            ...(filters.size ? { sizes: { has: filters.size } } : {}),
-            colorSlug: filters.color,
-          },
+    async (): Promise<PaginatedProducts> =>
+      withDbFallback(async () => {
+        const where: Prisma.ProductWhereInput = {
+          status: ProductStatus.ACTIVE,
         };
-      }
 
-      let orderBy: Prisma.ProductOrderByWithRelationInput = { createdAt: "desc" };
-      switch (filters.sort) {
-        case "price-asc":
-          orderBy = { [priceKey]: "asc" };
-          break;
-        case "price-desc":
-          orderBy = { [priceKey]: "desc" };
-          break;
-        case "rating":
-          orderBy = { rating: "desc" };
-          break;
-        default:
-          orderBy = { createdAt: "desc" };
-      }
+        if (filters.q) {
+          where.OR = [
+            { name: { contains: filters.q, mode: "insensitive" } },
+            { tagline: { contains: filters.q, mode: "insensitive" } },
+            { description: { contains: filters.q, mode: "insensitive" } },
+          ];
+        }
 
-      const [total, products] = await withDbRetry(() =>
-        Promise.all([
+        if (filters.category) {
+          where.category = { slug: filters.category };
+        }
+
+        if (filters.gender) {
+          where.gender = filters.gender as Prisma.EnumGenderFilter;
+        }
+
+        if (filters.size) {
+          where.variants = { some: { sizes: { has: filters.size } } };
+        }
+
+        if (filters.color) {
+          where.variants = {
+            some: {
+              ...(filters.size ? { sizes: { has: filters.size } } : {}),
+              colorSlug: filters.color,
+            },
+          };
+        }
+
+        let orderBy: Prisma.ProductOrderByWithRelationInput = { createdAt: "desc" };
+        switch (filters.sort) {
+          case "price-asc":
+            orderBy = { [priceKey]: "asc" };
+            break;
+          case "price-desc":
+            orderBy = { [priceKey]: "desc" };
+            break;
+          case "rating":
+            orderBy = { rating: "desc" };
+            break;
+          default:
+            orderBy = { createdAt: "desc" };
+        }
+
+        const [total, products] = await Promise.all([
           prisma.product.count({ where }),
           prisma.product.findMany({
             where,
@@ -278,16 +294,20 @@ export async function getProducts(filters: ShopFilters = {}): Promise<PaginatedP
             skip,
             take: limit,
           }),
-        ])
-      );
+        ]);
 
-      return {
-        products: products.map(mapProduct),
-        total,
+        return {
+          products: products.map(mapProduct),
+          total,
+          page,
+          totalPages: Math.max(1, Math.ceil(total / limit)),
+        };
+      }, {
+        products: [],
+        total: 0,
         page,
-        totalPages: Math.max(1, Math.ceil(total / limit)),
-      };
-    },
+        totalPages: 1,
+      }),
     ["products", cacheKey],
     { tags: ["catalog", "products"], revalidate: CATALOG_REVALIDATE }
   )();
@@ -303,20 +323,22 @@ export async function getProductsByIds(ids: string[]): Promise<Product[]> {
 }
 
 export async function getApprovedReviews(limit = 12): Promise<Review[]> {
-  const rows = await prisma.review.findMany({
-    where: { approved: true },
-    orderBy: { createdAt: "desc" },
-    take: limit,
-  });
-  return rows.map((r) => ({
-    id: r.id,
-    productId: r.productId,
-    authorName: r.authorName,
-    rating: r.rating,
-    title: r.title,
-    body: r.body,
-    createdAt: r.createdAt,
-  }));
+  return withDbFallback(async () => {
+    const rows = await prisma.review.findMany({
+      where: { approved: true },
+      orderBy: { createdAt: "desc" },
+      take: limit,
+    });
+    return rows.map((r) => ({
+      id: r.id,
+      productId: r.productId,
+      authorName: r.authorName,
+      rating: r.rating,
+      title: r.title,
+      body: r.body,
+      createdAt: r.createdAt,
+    }));
+  }, []);
 }
 
 export async function getProductReviews(productId: string): Promise<Review[]> {
