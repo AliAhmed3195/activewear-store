@@ -6,7 +6,7 @@ interface ReviewsSectionProps {
   title?: string;
 }
 
-export default function ReviewsSection({ reviews, title = "Let Customers Speak" }: ReviewsSectionProps) {
+export default function ReviewsSection({ reviews, title = "Athlete feedback" }: ReviewsSectionProps) {
   if (reviews.length === 0) return null;
 
   return (

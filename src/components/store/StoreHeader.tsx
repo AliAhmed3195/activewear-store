@@ -19,7 +19,7 @@ const NAV_LINKS = [
   { href: "/shop", label: "Shop All" },
   { href: "/shop?sort=newest", label: "New In" },
   { href: "/shop?sort=rating", label: "Best Sellers" },
-  { href: "/about", label: "Atelier" },
+  { href: "/about", label: "About" },
 ];
 
 interface StoreHeaderProps {
@@ -93,9 +93,9 @@ export default function StoreHeader({ categories = [] }: StoreHeaderProps) {
             <div key={loop} className="announcement-group">
               <span>Free Shipping on Qualifying Orders</span>
               <span className="dot">·</span>
-              <span>Discreet Signature Packaging</span>
+              <span>Performance Fabrics</span>
               <span className="dot">·</span>
-              <span>Ships Worldwide</span>
+              <span>Ships Across Pakistan</span>
               <span className="dot">·</span>
               <span>Secure Checkout</span>
               <span className="dot">·</span>
@@ -113,7 +113,7 @@ export default function StoreHeader({ categories = [] }: StoreHeaderProps) {
       <header className={cn("store-header", scrolled && "store-header-scrolled")}>
         <div className="store-header-inner">
           <div className="header-left">
-            <Link href="/" className="store-brand" aria-label="Elvene Noir home">
+            <Link href="/" className="store-brand" aria-label="Peak Activewear home">
               <BrandLogo className="store-brand-logo" />
             </Link>
           </div>
@@ -199,7 +199,7 @@ export default function StoreHeader({ categories = [] }: StoreHeaderProps) {
         <div className="search-overlay" onClick={() => setSearchOpen(false)}>
           <div className="search-box" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-2">
-              <span className="badge-micro">Search the Maison</span>
+              <span className="badge-micro">Search the store</span>
               <button
                 type="button"
                 className="icon-btn"
@@ -215,7 +215,7 @@ export default function StoreHeader({ categories = [] }: StoreHeaderProps) {
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search for silhouettes, lace, silk…"
+                placeholder="Search tees, joggers, sets…"
                 className="search-input-lg"
               />
             </form>
@@ -260,14 +260,14 @@ export default function StoreHeader({ categories = [] }: StoreHeaderProps) {
                 </Link>
               ))}
               <Link href="/about" className="mobile-nav-link">
-                Atelier
+                About
               </Link>
               <Link href="/track" className="mobile-nav-link mobile-nav-link-sub">
                 Order Tracking
               </Link>
             </nav>
             <div className="mobile-nav-footer">
-              <p>Discreet Worldwide Shipping</p>
+              <p>Nationwide Shipping · COD Available</p>
             </div>
           </div>
         </>

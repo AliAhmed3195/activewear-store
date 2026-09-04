@@ -1,15 +1,15 @@
-/** Native img avoids next/image hydration alt mismatches with stale client bundles. */
+import { storeName } from "@/lib/utils";
+
+/** Text wordmark — keeps brand clear without legacy logo assets. */
 export default function BrandLogo({ className }: { className?: string }) {
+  const name = storeName();
+  const [main, ...rest] = name.split(" ");
+  const sub = rest.join(" ") || "Activewear";
+
   return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src="/logo-v2.png"
-      alt="Elvene Noir"
-      width={180}
-      height={22}
-      className={className}
-      decoding="async"
-      suppressHydrationWarning
-    />
+    <span className={`brand-wordmark ${className ?? ""}`.trim()}>
+      <span className="brand-wordmark-main">{main}</span>
+      <span className="brand-wordmark-sub">{sub}</span>
+    </span>
   );
 }

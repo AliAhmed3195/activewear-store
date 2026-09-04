@@ -1,22 +1,22 @@
 import type { Metadata } from "next";
-import { Barlow_Condensed, Inter } from "next/font/google";
+import { DM_Sans, Oswald } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/lib/cart-context";
 import Providers from "@/components/Providers";
 import LazyCartDrawer from "@/components/store/LazyCartDrawer";
 import { storeName, storeTagline, storeUrl } from "@/lib/utils";
 
-const displayFont = Barlow_Condensed({
+const displayFont = Oswald({
   variable: "--font-display-face",
   subsets: ["latin"],
   weight: ["500", "600", "700"],
   display: "swap",
 });
 
-const bodyFont = Inter({
+const bodyFont = DM_Sans({
   variable: "--font-body-face",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -24,15 +24,15 @@ const name = storeName();
 
 export const metadata: Metadata = {
   title: {
-    default: `${name} — Premium Activewear`,
+    default: `${name} — Performance Activewear`,
     template: `%s · ${name}`,
   },
-  description: `${storeTagline()} Premium gym wear and athleisure. PKR & international shipping, COD and card checkout.`,
+  description: `${storeTagline()} Performance gym wear and athleisure for Pakistan and worldwide. COD, JazzCash, EasyPaisa & card checkout.`,
   metadataBase: new URL(storeUrl()),
   openGraph: {
     type: "website",
     siteName: name,
-    title: `${name} — Premium Activewear`,
+    title: `${name} — Performance Activewear`,
     description: storeTagline(),
   },
   robots: { index: true, follow: true },
@@ -45,10 +45,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${displayFont.variable} ${bodyFont.variable}`}>
-      <body className={`${bodyFont.className} antialiased page-enter`}>
+      <body className={`${bodyFont.className} antialiased page-enter peak-theme`}>
         <CartProvider>
           <Providers>
-            <div className="film-grain" aria-hidden="true" />
             {children}
             <LazyCartDrawer />
           </Providers>

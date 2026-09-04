@@ -24,10 +24,10 @@ export default function StoreFooter() {
     <>
       <section className="newsletter">
         <div className="newsletter-inner">
-          <span className="section-eyebrow">Stay in the loop</span>
-          <h2 className="section-title mt-3">New drops & training picks</h2>
+          <span className="section-eyebrow">Training updates</span>
+          <h2 className="section-title mt-3">New drops & restocks</h2>
           <p className="section-desc">
-            Get notified about new arrivals, restocks, and exclusive offers.
+            Be first to know about new arrivals, restocks, and limited drops.
           </p>
           {subscribed ? (
             <p className="font-display text-lg text-copper mt-6">
@@ -102,7 +102,7 @@ export default function StoreFooter() {
           </div>
 
           <div className="footer-col">
-            <h4>Client Care</h4>
+            <h4>Support</h4>
             <Link href="/about">About Us</Link>
             <Link href="/track">Order Tracking</Link>
             <Link href="/shipping">Shipping &amp; Returns</Link>
@@ -115,7 +115,7 @@ export default function StoreFooter() {
             <Link href="/about">About {name}</Link>
             <Link href="/privacy">Privacy Policy</Link>
             <Link href="/terms">Terms of Service</Link>
-            <Link href="/shipping">Discreet Packaging</Link>
+            <Link href="/shipping">Shipping Info</Link>
           </div>
         </div>
 
