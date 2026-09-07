@@ -1608,11 +1608,41 @@ h3,
 }
 
 .admin-login-page {
+  --bg: #0b0f14;
+  --bg-elevated: #121821;
+  --surface: #161d27;
+  --pearl: #f5f7f8;
+  --pearl-muted: rgba(245, 247, 248, 0.62);
+  --copper: #2dd4bf;
+  --copper-light: #5eead4;
+  --divider: rgba(245, 247, 248, 0.1);
   min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1.5rem;
+  background:
+    radial-gradient(ellipse 50% 40% at 20% 10%, rgba(45, 212, 191, 0.08), transparent 55%),
+    var(--bg);
+  color: var(--pearl);
+}
+
+.admin-login-card {
+  width: 100%;
+  max-width: 26rem;
+  background: var(--surface);
+  border: 1px solid var(--divider);
+  padding: 2rem;
+  box-shadow: 0 24px 60px -28px rgba(0, 0, 0, 0.65);
+}
+
+.admin-login-kicker {
+  margin: 0;
+  font-family: var(--font-display-face), "Arial Narrow", sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--copper);
 }
 
 /* ═══════════════════════════════════════════════
@@ -4493,18 +4523,6 @@ h3,
 
 .peak-theme .text-copper {
   color: var(--rose-gold);
-}
-
-.admin-login-page {
-  --bg: #070809;
-  --bg-elevated: #0e1012;
-  --surface: #14171a;
-  --pearl: #f5f7f8;
-  --pearl-muted: rgba(245, 247, 248, 0.62);
-  --copper: #2dd4bf;
-  --divider: rgba(245, 247, 248, 0.08);
-  background: var(--bg);
-  color: var(--pearl);
 }
 
 .collections-dropdown-title {

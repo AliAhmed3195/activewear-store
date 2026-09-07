@@ -3,10 +3,12 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { storeName } from "@/lib/utils";
 
 export default function AdminLoginForm() {
   const router = useRouter();
-  const [email, setEmail] = useState("admin@elvenenoir.com");
+  const name = storeName();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -24,7 +26,7 @@ export default function AdminLoginForm() {
       });
 
       if (result?.error) {
-        setError("Invalid email or password. Check SEED_ADMIN_* in .env.local");
+        setError("Invalid email or password.");
         setLoading(false);
         return;
       }
@@ -32,19 +34,18 @@ export default function AdminLoginForm() {
       router.push("/admin/dashboard");
       router.refresh();
     } catch {
-      setError("Login failed — is the server running?");
+      setError("Login failed. Please try again.");
       setLoading(false);
     }
   };
 
   return (
     <div className="admin-login-page">
-      <div className="luxury-card p-8 w-full max-w-md">
-        <span className="badge-micro">Elvene Noir Admin</span>
-        <h1 className="font-display text-2xl text-pearl mt-2">Sign In</h1>
-        <p className="font-ui text-xs text-pearl-muted mt-2">
-          Use <code>SEED_ADMIN_EMAIL</code> / <code>SEED_ADMIN_PASSWORD</code> from{" "}
-          <code>.env.local</code>.
+      <div className="admin-login-card">
+        <p className="admin-login-kicker">{name} Admin</p>
+        <h1 className="font-display text-2xl text-pearl mt-2">Sign in</h1>
+        <p className="font-ui text-sm text-pearl-muted mt-2">
+          Manage products, orders, inventory, and customers.
         </p>
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <label className="block">
@@ -56,6 +57,7 @@ export default function AdminLoginForm() {
               className="admin-input"
               required
               autoComplete="email"
+              placeholder="admin@peakactivewear.com"
             />
           </label>
           <label className="block">
