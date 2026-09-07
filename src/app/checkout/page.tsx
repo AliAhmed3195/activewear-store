@@ -6,7 +6,6 @@ import Link from "next/link";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import StoreHeader from "@/components/store/StoreHeader";
-import StoreFooter from "@/components/store/StoreFooter";
 import { useCart } from "@/lib/cart-context";
 import { formatPrice, getShippingCents, currencyForCountry, isPakistan } from "@/lib/utils";
 import { COUNTRIES } from "@/lib/countries";
@@ -57,10 +56,15 @@ export default function CheckoutPage() {
   );
   const liveShipping = getShippingCents(liveSubtotal, currency);
   const liveTotal = liveSubtotal + liveShipping;
+  const pk = isPakistan(form.country);
 
   useEffect(() => {
     setCurrency(currencyForCountry(form.country));
   }, [form.country, setCurrency]);
+
+  useEffect(() => {
+    if (!pk && paymentMethod !== "CARD") setPaymentMethod("CARD");
+  }, [pk, paymentMethod]);
 
   useEffect(() => {
     if (totals.totalCents === 0 && liveTotal > 0) {
@@ -74,15 +78,14 @@ export default function CheckoutPage() {
 
   if (items.length === 0 && !clientSecret && !orderNumber) {
     return (
-      <div className="store-page store-page-ambient">
+      <div className="store-page">
         <StoreHeader />
-        <main className="store-main checkout-empty">
-          <h1 className="font-display text-3xl text-pearl">Your bag is empty</h1>
-          <Link href="/shop" className="btn-copper mt-6 inline-flex">
+        <main className="checkout-shell checkout-empty">
+          <h1 className="font-display text-2xl text-pearl">Your cart is empty</h1>
+          <Link href="/shop" className="btn-copper mt-5 inline-flex">
             Continue Shopping
           </Link>
         </main>
-        <StoreFooter />
       </div>
     );
   }
@@ -144,95 +147,145 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="store-page store-page-ambient">
+    <div className="store-page checkout-page">
       <StoreHeader />
-      <main className="store-main checkout-main">
-        <section className="page-hero" style={{ marginBottom: "2rem" }}>
-          <span className="section-eyebrow">Secure Checkout</span>
-          <h1 className="section-title mt-2">Checkout</h1>
-          <div className="section-divider" />
-        </section>
+      <main className="checkout-shell">
+        <div className="checkout-heading">
+          <div>
+            <p className="checkout-kicker">Secure checkout</p>
+            <h1>Checkout</h1>
+          </div>
+          <Link href="/shop" className="checkout-back">
+            ← Keep shopping
+          </Link>
+        </div>
 
-        <div className="checkout-grid">
-          <div className="checkout-form-panel luxury-card p-6 md:p-8">
+        <div className="checkout-layout">
+          <div className="checkout-form-panel">
             {step === "details" ? (
-              <form onSubmit={handleSubmit} className="space-y-3">
-                <h2 className="font-display text-xl text-pearl mb-4">Shipping Details</h2>
-                <CheckoutField label="Full Name" value={form.name} onChange={(v) => setForm({ ...form, name: v })} required />
-                <CheckoutField label="Email" type="email" value={form.email} onChange={(v) => setForm({ ...form, email: v })} required />
-                <CheckoutField label="Phone (with country code)" type="tel" value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} required />
-                <CheckoutField label="Address" value={form.addressLine1} onChange={(v) => setForm({ ...form, addressLine1: v })} required />
-                <CheckoutField label="Apartment / landmark" value={form.addressLine2} onChange={(v) => setForm({ ...form, addressLine2: v })} />
-                <div className="grid grid-cols-2 gap-3">
-                  <CheckoutField label="City" value={form.city} onChange={(v) => setForm({ ...form, city: v })} required />
-                  <CheckoutField label="State / Region" value={form.state} onChange={(v) => setForm({ ...form, state: v })} />
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <CheckoutField label="Postal Code" value={form.postalCode} onChange={(v) => setForm({ ...form, postalCode: v })} required />
-                  <label className="form-field">
-                    <span className="form-field-label">Country</span>
-                    <select
-                      className="form-field-input"
-                      value={form.country}
-                      onChange={(e) => setForm({ ...form, country: e.target.value })}
+              <form onSubmit={handleSubmit} className="checkout-form">
+                <section className="checkout-block">
+                  <h2>Contact</h2>
+                  <div className="checkout-grid-3">
+                    <CheckoutField
+                      label="Full name"
+                      value={form.name}
+                      onChange={(v) => setForm({ ...form, name: v })}
                       required
-                    >
-                      <option value="">Select country</option>
-                      {COUNTRIES.map((c) => (
-                        <option key={c.code} value={c.code}>
-                          {c.name}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                </div>
-
-                <div className="pt-4">
-                  <h3 className="font-ui text-[10px] tracking-[0.12em] capitalize text-pearl-muted mb-3">
-                    Payment Method
-                  </h3>
-                  <div className="grid gap-2">
-                    <PayOption
-                      active={paymentMethod === "COD"}
-                      title="Cash on Delivery"
-                      desc="Pakistan only — pay when your order arrives"
-                      onClick={() => setPaymentMethod("COD")}
-                      disabled={!isPakistan(form.country)}
                     />
-                    <PayOption
-                      active={paymentMethod === "CARD"}
-                      title="Card (Stripe)"
-                      desc="Visa, Mastercard — Pakistan & international"
-                      onClick={() => setPaymentMethod("CARD")}
+                    <CheckoutField
+                      label="Email"
+                      type="email"
+                      value={form.email}
+                      onChange={(v) => setForm({ ...form, email: v })}
+                      required
                     />
-                    <PayOption
-                      active={paymentMethod === "JAZZCASH"}
-                      title="JazzCash"
-                      desc="Pakistan wallet — coming soon"
-                      onClick={() => setPaymentMethod("JAZZCASH")}
-                      disabled={!isPakistan(form.country)}
-                    />
-                    <PayOption
-                      active={paymentMethod === "EASYPAISA"}
-                      title="EasyPaisa"
-                      desc="Pakistan wallet — coming soon"
-                      onClick={() => setPaymentMethod("EASYPAISA")}
-                      disabled={!isPakistan(form.country)}
+                    <CheckoutField
+                      label="Phone"
+                      type="tel"
+                      value={form.phone}
+                      onChange={(v) => setForm({ ...form, phone: v })}
+                      required
+                      placeholder="+92…"
                     />
                   </div>
-                </div>
+                </section>
 
-                {error && <p className="font-ui text-xs text-red-400">{error}</p>}
-                <button type="submit" className="btn-copper w-full mt-4" disabled={loading}>
+                <section className="checkout-block">
+                  <h2>Shipping</h2>
+                  <div className="checkout-grid-1">
+                    <CheckoutField
+                      label="Address"
+                      value={form.addressLine1}
+                      onChange={(v) => setForm({ ...form, addressLine1: v })}
+                      required
+                    />
+                  </div>
+                  <div className="checkout-grid-2">
+                    <CheckoutField
+                      label="Apartment / landmark"
+                      value={form.addressLine2}
+                      onChange={(v) => setForm({ ...form, addressLine2: v })}
+                    />
+                    <CheckoutField
+                      label="City"
+                      value={form.city}
+                      onChange={(v) => setForm({ ...form, city: v })}
+                      required
+                    />
+                  </div>
+                  <div className="checkout-grid-3">
+                    <CheckoutField
+                      label="State"
+                      value={form.state}
+                      onChange={(v) => setForm({ ...form, state: v })}
+                    />
+                    <CheckoutField
+                      label="Postal code"
+                      value={form.postalCode}
+                      onChange={(v) => setForm({ ...form, postalCode: v })}
+                      required
+                    />
+                    <label className="checkout-field">
+                      <span>Country</span>
+                      <select
+                        value={form.country}
+                        onChange={(e) => setForm({ ...form, country: e.target.value })}
+                        required
+                      >
+                        {COUNTRIES.map((c) => (
+                          <option key={c.code} value={c.code}>
+                            {c.name}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+                </section>
+
+                <section className="checkout-block">
+                  <h2>Payment</h2>
+                  <div className="pay-chips">
+                    <PayChip
+                      active={paymentMethod === "COD"}
+                      title="COD"
+                      onClick={() => setPaymentMethod("COD")}
+                      disabled={!pk}
+                    />
+                    <PayChip
+                      active={paymentMethod === "CARD"}
+                      title="Card"
+                      onClick={() => setPaymentMethod("CARD")}
+                    />
+                    <PayChip
+                      active={paymentMethod === "JAZZCASH"}
+                      title="JazzCash"
+                      onClick={() => setPaymentMethod("JAZZCASH")}
+                      disabled={!pk}
+                    />
+                    <PayChip
+                      active={paymentMethod === "EASYPAISA"}
+                      title="EasyPaisa"
+                      onClick={() => setPaymentMethod("EASYPAISA")}
+                      disabled={!pk}
+                    />
+                  </div>
+                  <p className="pay-hint">
+                    {paymentMethod === "COD" && "Pay in cash when your order arrives (Pakistan)."}
+                    {paymentMethod === "CARD" && "Visa / Mastercard via Stripe — Pakistan & international."}
+                    {paymentMethod === "JAZZCASH" && "Pakistan wallet — coming soon."}
+                    {paymentMethod === "EASYPAISA" && "Pakistan wallet — coming soon."}
+                  </p>
+                </section>
+
+                {error && <p className="checkout-error">{error}</p>}
+                <button type="submit" className="btn-copper checkout-submit" disabled={loading}>
                   {loading
                     ? "Processing…"
                     : paymentMethod === "COD"
-                      ? `Place COD Order · ${formatPrice(liveTotal)}`
-                      : "Continue to Card Payment"}
+                      ? `Place COD order · ${formatPrice(liveTotal)}`
+                      : "Continue to card payment"}
                 </button>
-                <p className="font-ui text-[10px] text-pearl-muted text-center tracking-wide">
-                  Secure checkout · Nationwide shipping · COD available in Pakistan
-                </p>
               </form>
             ) : clientSecret ? (
               <Elements
@@ -261,55 +314,74 @@ export default function CheckoutPage() {
             ) : null}
           </div>
 
-          <aside className="checkout-summary luxury-card p-6 md:p-8">
-            <h2 className="font-display text-xl text-pearl">Order Summary</h2>
-            <ul className="mt-4 space-y-3">
-              {items.map((item) => (
-                <li key={`${item.variantId}-${item.size}`} className="flex justify-between gap-4 font-ui text-sm">
-                  <span className="text-pearl-muted">
-                    {item.productName} · {item.colorName} · {item.size} × {item.quantity}
+          <aside className="checkout-aside">
+            <div className="checkout-summary-card">
+              <h2>Order summary</h2>
+              <ul className="checkout-items">
+                {items.map((item) => (
+                  <li key={`${item.variantId}-${item.size}`}>
+                    <div>
+                      <p className="checkout-item-name">{item.productName}</p>
+                      <p className="checkout-item-meta">
+                        {item.colorName} · {item.size} × {item.quantity}
+                      </p>
+                    </div>
+                    <span>{formatPrice(item.priceCents * item.quantity, currency)}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="checkout-totals">
+                <div>
+                  <span>Subtotal</span>
+                  <span>{formatPrice(totals.subtotalCents || liveSubtotal)}</span>
+                </div>
+                <div>
+                  <span>Shipping</span>
+                  <span>
+                    {(totals.shippingCents || liveShipping) === 0
+                      ? "Free"
+                      : formatPrice(totals.shippingCents || liveShipping)}
                   </span>
-                  <span className="text-pearl">
-                    {formatPrice(item.priceCents * item.quantity, currency)}
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <div className="copper-line w-full my-4" />
-            <div className="flex justify-between font-ui text-sm text-pearl-muted">
-              <span>Subtotal</span>
-              <span>{formatPrice(totals.subtotalCents || liveSubtotal)}</span>
+                </div>
+                <div className="checkout-total-row">
+                  <span>Total</span>
+                  <span>{formatPrice(totals.totalCents || liveTotal)}</span>
+                </div>
+              </div>
             </div>
-            <div className="flex justify-between font-ui text-sm text-pearl-muted mt-2">
-              <span>Shipping</span>
-              <span>
-                {(totals.shippingCents || liveShipping) === 0
-                  ? "Free"
-                  : formatPrice(totals.shippingCents || liveShipping)}
-              </span>
+
+            <div className="checkout-side-card">
+              <h3>Why shop with us</h3>
+              <ul>
+                <li>COD available across Pakistan</li>
+                <li>Secure card checkout worldwide</li>
+                <li>Track every order in your inbox</li>
+                <li>Easy returns on eligible items</li>
+              </ul>
             </div>
-            <div className="flex justify-between font-display text-xl text-copper mt-4">
-              <span>Total</span>
-              <span>{formatPrice(totals.totalCents || liveTotal)}</span>
+
+            <div className="checkout-side-card">
+              <h3>Need help?</h3>
+              <p>
+                Questions on sizing or delivery?{" "}
+                <Link href="/contact">Contact support</Link>
+              </p>
             </div>
           </aside>
         </div>
       </main>
-      <StoreFooter />
     </div>
   );
 }
 
-function PayOption({
+function PayChip({
   active,
   title,
-  desc,
   onClick,
   disabled,
 }: {
   active: boolean;
   title: string;
-  desc: string;
   onClick: () => void;
   disabled?: boolean;
 }) {
@@ -318,10 +390,9 @@ function PayOption({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`pay-option ${active ? "is-active" : ""} ${disabled ? "opacity-40 cursor-not-allowed" : ""}`}
+      className={`pay-chip ${active ? "is-active" : ""} ${disabled ? "is-disabled" : ""}`}
     >
-      <span className="pay-option-title">{title}</span>
-      <span className="pay-option-desc">{desc}</span>
+      {title}
     </button>
   );
 }
@@ -371,16 +442,18 @@ function PaymentForm({
   };
 
   return (
-    <form onSubmit={handlePay}>
-      <h2 className="font-display text-xl text-pearl mb-4">Card Payment</h2>
-      {orderNumber && (
-        <p className="font-ui text-xs text-pearl-muted mb-4">
-          Order <span className="text-pearl">{orderNumber}</span>
-        </p>
-      )}
-      <PaymentElement />
-      {error && <p className="font-ui text-xs text-red-400 mt-3">{error}</p>}
-      <button type="submit" className="btn-copper w-full mt-6" disabled={!stripe || submitting}>
+    <form onSubmit={handlePay} className="checkout-form">
+      <section className="checkout-block">
+        <h2>Card payment</h2>
+        {orderNumber && (
+          <p className="pay-hint mb-3">
+            Order <strong>{orderNumber}</strong>
+          </p>
+        )}
+        <PaymentElement />
+      </section>
+      {error && <p className="checkout-error">{error}</p>}
+      <button type="submit" className="btn-copper checkout-submit" disabled={!stripe || submitting}>
         {submitting ? "Processing…" : `Pay ${formatPrice(totals.totalCents)}`}
       </button>
     </form>
@@ -393,22 +466,24 @@ function CheckoutField({
   onChange,
   type = "text",
   required,
+  placeholder,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   type?: string;
   required?: boolean;
+  placeholder?: string;
 }) {
   return (
-    <label className="form-field">
-      <span className="form-field-label">{label}</span>
+    <label className="checkout-field">
+      <span>{label}</span>
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         required={required}
-        className="form-field-input"
+        placeholder={placeholder}
       />
     </label>
   );
