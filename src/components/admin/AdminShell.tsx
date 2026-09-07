@@ -2,10 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
-import { cn } from "@/lib/utils";
-
-import { storeName } from "@/lib/utils";
+import { signOut, useSession } from "next-auth/react";
+import { cn, storeName } from "@/lib/utils";
 
 const NAV = [
   { href: "/admin/dashboard", label: "Dashboard" },
@@ -20,13 +18,17 @@ const NAV = [
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const userName = session?.user?.name ?? "Admin";
+  const userEmail = session?.user?.email ?? "";
+  const role = (session?.user as { role?: string } | undefined)?.role ?? "ADMIN";
 
   return (
     <div className="admin-shell">
       <aside className="admin-sidebar">
-        <Link href="/admin/dashboard" className="block mb-8">
+        <Link href="/admin/dashboard" className="admin-brand block mb-8">
           <span className="font-display text-pearl text-lg">{storeName()}</span>
-          <span className="badge-micro block mt-1">Admin</span>
+          <span className="admin-brand-sub">Operations</span>
         </Link>
         <nav className="flex flex-col gap-1 flex-1">
           {NAV.map((item) => (
@@ -55,21 +57,42 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
           </button>
         </div>
       </aside>
-      <div className="admin-content w-full">
-        <nav className="flex gap-2 mb-6 overflow-x-auto lg:hidden">
-          {NAV.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "admin-nav-link whitespace-nowrap",
-                pathname.startsWith(item.href) && "active"
-              )}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+
+      <div className="admin-content w-full min-w-0">
+        <header className="admin-topbar">
+          <div className="admin-topbar-user">
+            <div className="admin-avatar" aria-hidden="true">
+              {userName.slice(0, 1).toUpperCase()}
+            </div>
+            <div className="min-w-0">
+              <p className="admin-topbar-name truncate">{userName}</p>
+              <p className="admin-topbar-meta truncate">
+                {role}
+                {userEmail ? ` · ${userEmail}` : ""}
+                {" · "}
+                {new Date().toLocaleDateString("en", {
+                  weekday: "short",
+                  month: "short",
+                  day: "numeric",
+                })}
+              </p>
+            </div>
+          </div>
+          <nav className="admin-mobile-nav lg:hidden">
+            {NAV.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "admin-nav-link whitespace-nowrap",
+                  pathname.startsWith(item.href) && "active"
+                )}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+        </header>
         {children}
       </div>
     </div>
