@@ -133,19 +133,24 @@ export default function StoreHeader({ categories = [] }: StoreHeaderProps) {
                 <IconChevronDown size={12} />
               </button>
               {collectionsOpen && categories.length > 0 && (
-                <div className="luxury-card collections-dropdown">
-                  <span className="badge-micro">Explore Collections</span>
-                  <div className="mt-3">
+                <div className="collections-dropdown" role="menu">
+                  <p className="collections-dropdown-title">Shop collections</p>
+                  <div>
                     {categories.map((cat) => (
                       <Link
                         key={cat.slug}
                         href={`/shop?category=${cat.slug}`}
                         className="collections-dropdown-link"
+                        role="menuitem"
                       >
                         <span>{cat.name}</span>
                         <span>{cat.productCount}</span>
                       </Link>
                     ))}
+                    <Link href="/shop" className="collections-dropdown-link collections-dropdown-all">
+                      <span>View all products</span>
+                      <span>→</span>
+                    </Link>
                   </div>
                 </div>
               )}

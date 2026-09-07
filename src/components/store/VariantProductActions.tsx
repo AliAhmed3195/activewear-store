@@ -9,7 +9,7 @@ import {
   getVariantPrice,
   badgeLabel,
 } from "@/lib/utils";
-import { IconBag, IconArrowRight, IconMinus, IconPlus } from "@/components/ui/icons";
+import { IconBag, IconMinus, IconPlus } from "@/components/ui/icons";
 
 interface VariantProductActionsProps {
   product: Product;
@@ -46,39 +46,54 @@ export default function VariantProductActions({
   const handleAdd = () => {
     if (outOfStock || qty > sizeLeft) return;
     addItem(product, variant, size, qty);
-  };
-
-  const handleBuyNow = () => {
-    if (outOfStock || qty > sizeLeft) return;
-    addItem(product, variant, size, qty);
     openCart();
   };
 
   return (
-    <div className="space-y-5">
-      <div>
-        <span className="font-ui text-xs tracking-[0.2em] capitalize text-pearl-muted">Color</span>
-        <div className="flex flex-wrap gap-2 mt-2">
-          {product.variants.map((v) => (
-            <button
-              key={v.id}
-              type="button"
-              onClick={() => onSelectVariant(v)}
-              className={`size-chip ${variant.id === v.id ? "active" : ""}`}
-              title={v.colorName}
-            >
-              <span
-                className="w-3 h-3 rounded-full inline-block mr-1.5 border border-white/20"
-                style={{ backgroundColor: v.colorHex ?? "#666" }}
-              />
-              {v.colorName}
-            </button>
-          ))}
-        </div>
+    <div className="pdp-actions space-y-5 mt-5">
+      <div className="pdp-price-row">
+        <p className="pdp-price">{formatPrice(price, currency)}</p>
+        {compareAt && (
+          <p className="pdp-compare">{formatPrice(compareAt, currency)}</p>
+        )}
+        {badge && <span className="pdp-badge">{badge}</span>}
       </div>
 
+      {!outOfStock && sizeLeft <= 5 && (
+        <p className="pdp-low-stock">Please hurry — only {sizeLeft} left in {size}</p>
+      )}
+
+      {product.variants.length > 1 && (
+        <div>
+          <div className="pdp-label-row">
+            <span className="pdp-label">Color</span>
+            <span className="pdp-label-value">{variant.colorName}</span>
+          </div>
+          <div className="flex flex-wrap gap-2 mt-2">
+            {product.variants.map((v) => (
+              <button
+                key={v.id}
+                type="button"
+                onClick={() => onSelectVariant(v)}
+                className={`size-chip ${variant.id === v.id ? "active" : ""}`}
+                title={v.colorName}
+              >
+                <span
+                  className="w-3 h-3 rounded-full inline-block mr-1.5 border border-black/10"
+                  style={{ backgroundColor: v.colorHex ?? "#666" }}
+                />
+                {v.colorName}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div>
-        <span className="font-ui text-xs tracking-[0.2em] capitalize text-pearl-muted">Size</span>
+        <div className="pdp-label-row">
+          <span className="pdp-label">Size</span>
+          <span className="pdp-label-value">True to size</span>
+        </div>
         <div className="flex flex-wrap gap-2 mt-2">
           {variant.sizes.map((s) => {
             const left = variant.sizeStock?.[s] ?? 0;
@@ -102,13 +117,9 @@ export default function VariantProductActions({
         </div>
       </div>
 
-      {!outOfStock && sizeLeft <= 5 && (
-        <p className="font-ui text-[11px] text-copper tracking-wide">Low stock in {size}</p>
-      )}
-
       <div className="flex items-center gap-4">
-        <span className="font-ui text-xs tracking-[0.2em] capitalize text-pearl-muted">Qty</span>
-        <div className="flex items-center gap-3 border border-[var(--divider)] px-3 py-2">
+        <span className="pdp-label">Qty</span>
+        <div className="pdp-qty">
           <button
             type="button"
             onClick={() => setQty(Math.max(1, qty - 1))}
@@ -117,7 +128,7 @@ export default function VariantProductActions({
           >
             <IconMinus size={14} />
           </button>
-          <span className="font-ui text-sm w-6 text-center">{qty}</span>
+          <span>{qty}</span>
           <button
             type="button"
             onClick={() => setQty(Math.min(maxQty, qty + 1))}
@@ -129,42 +140,21 @@ export default function VariantProductActions({
         </div>
       </div>
 
-      <div className="flex items-baseline gap-3">
-        <p className="font-display text-2xl text-copper">{formatPrice(price, currency)}</p>
-        {compareAt && (
-          <p className="font-ui text-sm text-pearl-muted line-through">
-            {formatPrice(compareAt, currency)}
-          </p>
-        )}
-      </div>
-
-      <div className="product-actions-btns grid grid-cols-2 gap-2 sm:gap-3">
-        <button
-          type="button"
-          className="btn-outline w-full min-w-0"
-          onClick={handleAdd}
-          disabled={outOfStock}
-        >
-          <IconBag size={16} />
-          Add to Bag
-        </button>
-        <button
-          type="button"
-          className="btn-copper w-full min-w-0"
-          onClick={handleBuyNow}
-          disabled={outOfStock}
-        >
-          Buy Now
-          <IconArrowRight size={14} />
-        </button>
-      </div>
+      <button
+        type="button"
+        className="btn-copper w-full pdp-add-btn"
+        onClick={handleAdd}
+        disabled={outOfStock}
+      >
+        <IconBag size={16} />
+        {outOfStock ? "Sold Out" : "Add to Cart"}
+      </button>
 
       {product.material && (
         <p className="font-ui text-xs text-pearl-muted">
-          <span className="text-pearl">Material:</span> {product.material}
+          <span className="text-pearl font-medium">Material:</span> {product.material}
         </p>
       )}
-      {badge && <span className="badge-micro inline-block">{badge}</span>}
     </div>
   );
 }
@@ -173,24 +163,26 @@ export function ProductMeta({ product }: { product: Product }) {
   return (
     <>
       {product.category && (
-        <p className="font-ui text-[10px] tracking-[0.2em] capitalize text-pearl-muted mt-2">
+        <p className="font-ui text-[11px] tracking-[0.16em] uppercase text-pearl-muted mt-2">
           {product.category.name}
         </p>
       )}
-      <h2 className="font-display text-3xl md:text-4xl text-pearl mt-2 leading-tight">
+      <h1 className="font-display text-3xl md:text-[2.35rem] text-pearl mt-2 leading-[1.1]">
         {product.name}
-      </h2>
-      <p className="font-display text-base text-pearl-muted mt-2">{product.tagline}</p>
+      </h1>
+      {product.tagline && (
+        <p className="font-ui text-base text-pearl-muted mt-2">{product.tagline}</p>
+      )}
       <div className="flex items-center gap-2 mt-3">
-        <div className="flex text-copper text-sm">
+        <div className="flex text-[#111827] text-sm">
           {Array.from({ length: 5 }).map((_, i) => (
-            <span key={i} className={i < Math.floor(product.rating) ? "opacity-100" : "opacity-30"}>
+            <span key={i} className={i < Math.floor(product.rating) ? "opacity-100" : "opacity-25"}>
               ★
             </span>
           ))}
         </div>
         <span className="font-ui text-xs text-pearl-muted">
-          {product.rating.toFixed(1)} ({product.reviewCount})
+          {product.rating.toFixed(1)} ({product.reviewCount} reviews)
         </span>
       </div>
       <p className="font-ui text-sm text-pearl-muted mt-4 leading-relaxed">{product.description}</p>

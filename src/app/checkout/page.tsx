@@ -231,7 +231,7 @@ export default function CheckoutPage() {
                       : "Continue to Card Payment"}
                 </button>
                 <p className="font-ui text-[10px] text-pearl-muted text-center tracking-wide">
-                  International shipping · Discreet packaging
+                  Secure checkout · Nationwide shipping · COD available in Pakistan
                 </p>
               </form>
             ) : clientSecret ? (
@@ -240,11 +240,13 @@ export default function CheckoutPage() {
                 options={{
                   clientSecret,
                   appearance: {
-                    theme: "night",
+                    theme: "stripe",
                     variables: {
-                      colorPrimary: "#a6652a",
-                      colorBackground: "#0a0807",
-                      colorText: "#f8f4ef",
+                      colorPrimary: "#111827",
+                      colorBackground: "#ffffff",
+                      colorText: "#101418",
+                      colorDanger: "#dc2626",
+                      borderRadius: "4px",
                     },
                   },
                 }}

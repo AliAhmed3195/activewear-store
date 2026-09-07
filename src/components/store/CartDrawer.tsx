@@ -45,7 +45,7 @@ export default function CartDrawer() {
         aria-hidden={!isOpen}
       />
       <aside
-        className={`cart-drawer fixed top-0 right-0 z-[70] h-dvh w-full max-w-md bg-surface-luxury border-l border-[var(--divider)] shadow-[-32px_0_64px_rgba(0,0,0,0.5)] flex flex-col transition-transform duration-300 ease-out ${
+        className={`cart-drawer fixed top-0 right-0 z-[70] h-dvh w-full max-w-md bg-white border-l border-[var(--divider)] shadow-[-24px_0_48px_rgba(16,20,24,0.18)] flex flex-col transition-transform duration-300 ease-out ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
         aria-label="Shopping bag"
@@ -53,9 +53,9 @@ export default function CartDrawer() {
       >
         <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-[var(--divider)]">
           <div>
-            <h2 className="font-display text-lg text-pearl">Your Bag</h2>
-            <p className="badge-micro mt-1 opacity-70">
-              {totalItems} {totalItems === 1 ? "Item" : "Items"}
+            <h2 className="font-display text-lg text-pearl">Your Cart</h2>
+            <p className="font-ui text-xs text-pearl-muted mt-1 tracking-wide uppercase">
+              {totalItems} {totalItems === 1 ? "item" : "items"}
             </p>
           </div>
           <button type="button" onClick={closeCart} className="icon-btn" aria-label="Close bag">
