@@ -24,10 +24,10 @@ export default function StoreFooter() {
     <>
       <section className="newsletter">
         <div className="newsletter-inner">
-          <span className="section-eyebrow">Training updates</span>
+          <span className="peak-section-kicker">Training updates</span>
           <h2 className="section-title mt-3">New drops & restocks</h2>
           <p className="section-desc">
-            Be first to know about new arrivals, restocks, and limited drops.
+            Be first when fresh Peak pieces land — arrivals, restocks, and limited drops.
           </p>
           {subscribed ? (
             <p className="font-display text-lg text-copper mt-6">

@@ -77,12 +77,15 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
     <div className="store-page store-page-ambient">
       <StoreHeader />
       <main className="store-main">
-        <section className="page-hero">
-          <p className="section-eyebrow">{name}</p>
-          <h1 className="section-title mt-2">{heading}</h1>
-          <div className="section-divider" />
-          {activeCategory?.description && (
-            <p className="section-desc max-w-xl mx-auto">{activeCategory.description}</p>
+        <section className="shop-hero">
+          <p className="peak-section-kicker">{name} · Collection</p>
+          <h1 className="peak-section-title section-title text-pearl">{heading}</h1>
+          {activeCategory?.description ? (
+            <p className="peak-section-sub font-ui">{activeCategory.description}</p>
+          ) : (
+            <p className="peak-section-sub font-ui">
+              Performance activewear for gym, run, and everyday — filter by fit and find your gear.
+            </p>
           )}
         </section>
 

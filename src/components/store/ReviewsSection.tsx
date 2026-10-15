@@ -10,14 +10,22 @@ export default function ReviewsSection({ reviews, title = "Athlete feedback" }: 
   if (reviews.length === 0) return null;
 
   return (
-    <section className="section-pad border-t border-[var(--divider)]">
+    <section className="section-pad peak-reviews">
       <div className="container-luxury">
-        <h2 className="section-title text-pearl">{title}</h2>
-        <p className="section-eyebrow mt-2">Real feedback from athletes and everyday movers</p>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-8">
+        <div className="peak-section-head peak-section-head-center">
+          <div>
+            <p className="peak-section-kicker">Social proof</p>
+            <h2 className="peak-section-title section-title text-pearl">{title}</h2>
+            <p className="peak-section-sub font-ui">
+              Real notes from athletes and everyday movers.
+            </p>
+          </div>
+        </div>
+
+        <div className="peak-review-grid">
           {reviews.map((r) => (
-            <article key={r.id} className="luxury-card p-5">
-              <div className="flex text-copper text-sm mb-3">
+            <article key={r.id} className="peak-review">
+              <div className="peak-review-stars" aria-label={`${r.rating} out of 5`}>
                 {Array.from({ length: 5 }).map((_, i) => (
                   <IconStar
                     key={i}
@@ -26,8 +34,16 @@ export default function ReviewsSection({ reviews, title = "Athlete feedback" }: 
                   />
                 ))}
               </div>
-              <p className="font-ui text-sm text-pearl-muted leading-relaxed">{r.body}</p>
-              <p className="font-ui text-xs text-pearl mt-4 tracking-wide">{r.authorName}</p>
+              <p className="peak-review-quote">“{r.body}”</p>
+              <footer className="peak-review-author">
+                <span className="peak-review-avatar" aria-hidden="true">
+                  {r.authorName.slice(0, 1).toUpperCase()}
+                </span>
+                <div>
+                  <strong>{r.authorName}</strong>
+                  <span>Verified buyer</span>
+                </div>
+              </footer>
             </article>
           ))}
         </div>

@@ -23,6 +23,14 @@ export default function ProductMediaStage({ product, variant }: ProductMediaStag
 
   const selectIndex = useCallback((i: number) => setActiveIndex(i), []);
 
+  const goPrev = useCallback(() => {
+    setActiveIndex((i) => Math.max(0, i - 1));
+  }, []);
+
+  const goNext = useCallback(() => {
+    setActiveIndex((i) => Math.min(lastIndex, i + 1));
+  }, [lastIndex]);
+
   const onTouchStart = useCallback((e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
   }, []);
@@ -33,61 +41,86 @@ export default function ProductMediaStage({ product, variant }: ProductMediaStag
       const delta = e.changedTouches[0].clientX - touchStartX.current;
       touchStartX.current = null;
       if (Math.abs(delta) < 40) return;
-      if (delta < 0 && activeIndex < lastIndex) selectIndex(activeIndex + 1);
-      if (delta > 0 && activeIndex > 0) selectIndex(activeIndex - 1);
+      if (delta < 0) goNext();
+      if (delta > 0) goPrev();
     },
-    [activeIndex, lastIndex, selectIndex]
+    [goNext, goPrev]
   );
 
   if (gallery.length === 0) {
     return (
-      <div className="product-stage aspect-[4/5] bg-surface border border-[var(--divider)] flex items-center justify-center">
-        <span className="text-pearl-muted text-sm">No image</span>
+      <div className="pdp-gallery-empty">
+        <span>No image</span>
       </div>
     );
   }
 
   return (
-    <div className="product-stage-wrap">
-      <div
-        className="product-stage aspect-[4/5] relative bg-surface border border-[var(--divider)] overflow-hidden"
-        onTouchStart={onTouchStart}
-        onTouchEnd={onTouchEnd}
-      >
-        <SafeImage
-          src={gallery[activeIndex]}
-          alt={product.name}
-          fallbackLabel={product.name}
-          fill
-          sizes="(max-width: 768px) 100vw, 50vw"
-          className="product-image-contain"
-          priority
-        />
-      </div>
+    <div className="pdp-gallery">
       {gallery.length > 1 && (
-        <div className="flex gap-2 mt-3 overflow-x-auto">
+        <div className="pdp-thumbs" aria-label="Product thumbnails">
           {gallery.map((url, i) => (
             <button
-              key={url}
+              key={`${url}-${i}`}
               type="button"
               onClick={() => selectIndex(i)}
-              className={cn(
-                "relative w-16 h-20 border flex-shrink-0 overflow-hidden",
-                i === activeIndex ? "border-copper" : "border-[var(--divider)]"
-              )}
+              className={cn("pdp-thumb", i === activeIndex && "is-active")}
+              aria-label={`View image ${i + 1}`}
             >
               <SafeImage
                 src={url}
                 alt=""
                 fallbackLabel={`View ${i + 1}`}
                 fill
-                sizes="64px"
+                sizes="80px"
                 className="product-image-contain"
               />
             </button>
           ))}
         </div>
       )}
+
+      <div
+        className="pdp-stage"
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
+        <SafeImage
+          src={gallery[activeIndex]}
+          alt={`${product.name} — image ${activeIndex + 1}`}
+          fallbackLabel={product.name}
+          fill
+          sizes="(max-width: 768px) 100vw, 55vw"
+          className="product-image-contain pdp-stage-img"
+          priority
+        />
+
+        {gallery.length > 1 && (
+          <>
+            <button
+              type="button"
+              className="pdp-nav pdp-nav-prev"
+              onClick={goPrev}
+              disabled={activeIndex === 0}
+              aria-label="Previous image"
+            >
+              ‹
+            </button>
+            <button
+              type="button"
+              className="pdp-nav pdp-nav-next"
+              onClick={goNext}
+              disabled={activeIndex === lastIndex}
+              aria-label="Next image"
+            >
+              ›
+            </button>
+            <span className="pdp-counter">
+              {activeIndex + 1} / {gallery.length}
+            </span>
+          </>
+        )}
+      </div>
     </div>
   );
 }

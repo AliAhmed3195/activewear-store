@@ -9,7 +9,7 @@ import {
   getVariantPrice,
   badgeLabel,
 } from "@/lib/utils";
-import { IconBag, IconMinus, IconPlus } from "@/components/ui/icons";
+import { IconBag, IconMinus, IconPlus, IconHeart } from "@/components/ui/icons";
 
 interface VariantProductActionsProps {
   product: Product;
@@ -22,7 +22,8 @@ export default function VariantProductActions({
   variant,
   onVariantChange,
 }: VariantProductActionsProps) {
-  const { addItem, openCart, currency } = useCart();
+  const { addItem, openCart, currency, toggleWishlist, isWishlisted } = useCart();
+  const wishlisted = isWishlisted(product.id);
   const availableSizes = variant.sizes.filter((s) => (variant.sizeStock?.[s] ?? 0) > 0);
   const fallbackSize = availableSizes.find((s) => s === "M") ?? availableSizes[0] ?? variant.sizes[0];
   const [size, setSize] = useState(fallbackSize);
@@ -34,14 +35,13 @@ export default function VariantProductActions({
     setQty(1);
   }, [variant.id, variant.sizes, variant.sizeStock]);
 
-  const onSelectVariant = (v: ProductVariant) => onVariantChange(v);
-
   const sizeLeft = variant.sizeStock?.[size] ?? 0;
   const outOfStock = sizeLeft === 0;
   const maxQty = Math.max(1, Math.min(10, sizeLeft || 1));
   const price = getVariantPrice(variant, currency);
   const compareAt = getVariantCompareAt(variant, currency);
   const badge = badgeLabel(product.badge);
+  const stockPct = Math.max(8, Math.min(100, (sizeLeft / 12) * 100));
 
   const handleAdd = () => {
     if (outOfStock || qty > sizeLeft) return;
@@ -50,51 +50,55 @@ export default function VariantProductActions({
   };
 
   return (
-    <div className="pdp-actions space-y-5 mt-5">
+    <div className="pdp-actions">
       <div className="pdp-price-row">
         <p className="pdp-price">{formatPrice(price, currency)}</p>
-        {compareAt && (
-          <p className="pdp-compare">{formatPrice(compareAt, currency)}</p>
-        )}
+        {compareAt && <p className="pdp-compare">{formatPrice(compareAt, currency)}</p>}
         {badge && <span className="pdp-badge">{badge}</span>}
       </div>
 
-      {!outOfStock && sizeLeft <= 5 && (
-        <p className="pdp-low-stock">Please hurry — only {sizeLeft} left in {size}</p>
+      {!outOfStock && sizeLeft <= 8 && (
+        <div className="pdp-stock">
+          <p className="pdp-low-stock">
+            {sizeLeft <= 5
+              ? `Hurry — only ${sizeLeft} left in ${size}`
+              : `${sizeLeft} left in ${size}`}
+          </p>
+          <div className="pdp-stock-bar" aria-hidden="true">
+            <span style={{ width: `${stockPct}%` }} />
+          </div>
+        </div>
       )}
 
       {product.variants.length > 1 && (
-        <div>
+        <div className="pdp-block">
           <div className="pdp-label-row">
             <span className="pdp-label">Color</span>
             <span className="pdp-label-value">{variant.colorName}</span>
           </div>
-          <div className="flex flex-wrap gap-2 mt-2">
+          <div className="pdp-swatches">
             {product.variants.map((v) => (
               <button
                 key={v.id}
                 type="button"
-                onClick={() => onSelectVariant(v)}
-                className={`size-chip ${variant.id === v.id ? "active" : ""}`}
+                onClick={() => onVariantChange(v)}
+                className={`pdp-swatch ${variant.id === v.id ? "is-active" : ""}`}
                 title={v.colorName}
+                aria-label={v.colorName}
               >
-                <span
-                  className="w-3 h-3 rounded-full inline-block mr-1.5 border border-black/10"
-                  style={{ backgroundColor: v.colorHex ?? "#666" }}
-                />
-                {v.colorName}
+                <span style={{ backgroundColor: v.colorHex ?? "#666" }} />
               </button>
             ))}
           </div>
         </div>
       )}
 
-      <div>
+      <div className="pdp-block">
         <div className="pdp-label-row">
           <span className="pdp-label">Size</span>
           <span className="pdp-label-value">True to size</span>
         </div>
-        <div className="flex flex-wrap gap-2 mt-2">
+        <div className="pdp-sizes">
           {variant.sizes.map((s) => {
             const left = variant.sizeStock?.[s] ?? 0;
             const soldOut = left <= 0;
@@ -110,14 +114,14 @@ export default function VariantProductActions({
                 }}
                 disabled={soldOut}
               >
-                <span>{s}</span>
+                {s}
               </button>
             );
           })}
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="pdp-qty-row">
         <span className="pdp-label">Qty</span>
         <div className="pdp-qty">
           <button
@@ -140,52 +144,46 @@ export default function VariantProductActions({
         </div>
       </div>
 
-      <button
-        type="button"
-        className="btn-copper w-full pdp-add-btn"
-        onClick={handleAdd}
-        disabled={outOfStock}
-      >
-        <IconBag size={16} />
-        {outOfStock ? "Sold Out" : "Add to Cart"}
-      </button>
-
-      {product.material && (
-        <p className="font-ui text-xs text-pearl-muted">
-          <span className="text-pearl font-medium">Material:</span> {product.material}
-        </p>
-      )}
+      <div className="pdp-cta-row">
+        <button
+          type="button"
+          className="btn-copper pdp-add-btn"
+          onClick={handleAdd}
+          disabled={outOfStock}
+        >
+          <IconBag size={16} />
+          {outOfStock ? "Sold Out" : "Add to Cart"}
+        </button>
+        <button
+          type="button"
+          className={`pdp-wish-cta ${wishlisted ? "is-on" : ""}`}
+          onClick={() => toggleWishlist(product.id)}
+          aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+        >
+          <IconHeart size={18} filled={wishlisted} />
+        </button>
+      </div>
     </div>
   );
 }
 
 export function ProductMeta({ product }: { product: Product }) {
   return (
-    <>
-      {product.category && (
-        <p className="font-ui text-[11px] tracking-[0.16em] uppercase text-pearl-muted mt-2">
-          {product.category.name}
-        </p>
-      )}
-      <h1 className="font-display text-3xl md:text-[2.35rem] text-pearl mt-2 leading-[1.1]">
-        {product.name}
-      </h1>
-      {product.tagline && (
-        <p className="font-ui text-base text-pearl-muted mt-2">{product.tagline}</p>
-      )}
-      <div className="flex items-center gap-2 mt-3">
-        <div className="flex text-[#111827] text-sm">
+    <div className="pdp-meta">
+      <h1 className="pdp-title">{product.name}</h1>
+      {product.tagline && <p className="pdp-tagline">{product.tagline}</p>}
+      <div className="pdp-rating">
+        <div className="pdp-stars" aria-hidden="true">
           {Array.from({ length: 5 }).map((_, i) => (
-            <span key={i} className={i < Math.floor(product.rating) ? "opacity-100" : "opacity-25"}>
+            <span key={i} className={i < Math.floor(product.rating) ? "on" : ""}>
               ★
             </span>
           ))}
         </div>
-        <span className="font-ui text-xs text-pearl-muted">
-          {product.rating.toFixed(1)} ({product.reviewCount} reviews)
+        <span>
+          {product.rating.toFixed(1)} · {product.reviewCount} reviews
         </span>
       </div>
-      <p className="font-ui text-sm text-pearl-muted mt-4 leading-relaxed">{product.description}</p>
-    </>
+    </div>
   );
 }

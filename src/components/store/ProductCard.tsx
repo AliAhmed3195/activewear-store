@@ -94,9 +94,6 @@ export default function ProductCard({ product, priority }: ProductCardProps) {
         <h3 className="product-card-name text-pearl mt-1.5 group-hover:text-blush transition-colors">
           {product.name}
         </h3>
-        {product.tagline && (
-          <p className="font-accent text-sm text-pearl-muted mt-1 line-clamp-1">{product.tagline}</p>
-        )}
         <div className="flex items-center gap-1.5 mt-2">
           <div className="flex text-copper">
             {Array.from({ length: 5 }).map((_, i) => (
@@ -110,12 +107,12 @@ export default function ProductCard({ product, priority }: ProductCardProps) {
           <span className="font-ui text-[10px] text-pearl-muted">({product.reviewCount})</span>
         </div>
         {product.variants.length > 1 && (
-          <div className="flex gap-1.5 mt-2">
+          <div className="flex gap-1.5 mt-2.5">
             {product.variants.map((v) => (
               <span
                 key={v.id}
                 className={cn(
-                  "w-4 h-4 rounded-full border border-white/20",
+                  "w-3.5 h-3.5 rounded-full border border-black/15 ring-1 ring-transparent",
                   v.colorHex && "border-transparent"
                 )}
                 style={{ backgroundColor: v.colorHex ?? "#666" }}
@@ -124,8 +121,10 @@ export default function ProductCard({ product, priority }: ProductCardProps) {
             ))}
           </div>
         )}
-        <div className="flex items-center gap-2 mt-2.5">
-          <p className="font-display text-copper">{formatPrice(price, currency)}</p>
+        <div className="flex items-baseline gap-2 mt-2.5">
+          <p className="font-display text-lg text-pearl tracking-wide">
+            {formatPrice(price, currency)}
+          </p>
           {onSale && (
             <p className="font-ui text-xs text-pearl-muted line-through">
               {formatPrice(compareAt!, currency)}

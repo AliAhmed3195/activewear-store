@@ -7,6 +7,7 @@ import ProductCard from "@/components/store/ProductCard";
 import ProductDetailView from "@/components/store/ProductDetailView";
 import { getProductBySlug, getRelatedProducts } from "@/lib/queries";
 import { getHeroUrl } from "@/lib/product-mapper";
+import { storeName } from "@/lib/utils";
 
 export const revalidate = 300;
 
@@ -18,9 +19,10 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   const { slug } = await params;
   const product = await getProductBySlug(slug);
   if (!product) return { title: "Product Not Found" };
+  const name = storeName();
 
   return {
-    title: `${product.name} — Elvene Noir`,
+    title: `${product.name} · ${name}`,
     description: product.description,
     openGraph: {
       title: product.name,
@@ -38,28 +40,39 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const related = await getRelatedProducts(product.id, product.categoryId, 4);
 
   return (
-    <div className="store-page">
+    <div className="store-page pdp-page">
       <StoreHeader />
-      <main className="store-main">
-        <nav className="breadcrumb font-ui text-xs text-pearl-muted tracking-widest capitalize">
-          <Link href="/" className="hover:text-blush transition-colors">
-            Home
-          </Link>
-          <span className="mx-2 opacity-40">/</span>
-          <Link href="/shop" className="hover:text-blush transition-colors">
-            Shop
-          </Link>
-          <span className="mx-2 opacity-40">/</span>
-          <span className="text-pearl">{product.name}</span>
+      <main className="pdp-main">
+        <nav className="pdp-breadcrumb" aria-label="Breadcrumb">
+          <Link href="/">Home</Link>
+          <span>/</span>
+          <Link href="/shop">Shop</Link>
+          {product.category && (
+            <>
+              <span>/</span>
+              <Link href={`/shop?category=${product.category.slug}`}>
+                {product.category.name}
+              </Link>
+            </>
+          )}
+          <span>/</span>
+          <span className="current">{product.name}</span>
         </nav>
 
         <ProductDetailView product={product} />
 
         {related.length > 0 && (
-          <section className="related-section">
-            <span className="section-eyebrow">You May Also Love</span>
-            <h2 className="font-display text-2xl md:text-3xl text-pearl mt-2">Related Pieces</h2>
-            <div className="product-row mt-8">
+          <section className="pdp-related">
+            <div className="peak-section-head">
+              <div>
+                <p className="peak-section-kicker">Complete the set</p>
+                <h2 className="peak-section-title section-title text-pearl">You may also like</h2>
+              </div>
+              <Link href="/shop" className="nav-link text-sm">
+                Shop all
+              </Link>
+            </div>
+            <div className="product-grid">
               {related.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}

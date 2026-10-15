@@ -12,13 +12,13 @@ import {
 import { storeName, storeTagline } from "@/lib/utils";
 import { IconLock, IconGlobe, IconGem, IconHeadset } from "@/components/ui/icons";
 
-export const revalidate = 120;
+export const revalidate = 60;
 
 const TRUST = [
-  { icon: IconLock, title: "Secure Checkout", desc: "COD, JazzCash, EasyPaisa & cards" },
-  { icon: IconGlobe, title: "Ship Nationwide", desc: "Pakistan first · worldwide ready" },
-  { icon: IconGem, title: "Performance Fit", desc: "Breathable fabrics built to move" },
-  { icon: IconHeadset, title: "Order Support", desc: "Track, update, and get help fast" },
+  { icon: IconLock, n: "01", title: "Secure pay", desc: "COD, JazzCash, EasyPaisa & cards" },
+  { icon: IconGlobe, n: "02", title: "Fast ship", desc: "Nationwide Pakistan · worldwide ready" },
+  { icon: IconGem, n: "03", title: "Pro fit", desc: "Breathable fabrics built to move" },
+  { icon: IconHeadset, n: "04", title: "Real help", desc: "Track, update, get support fast" },
 ];
 
 const STORY = [
@@ -28,7 +28,7 @@ const STORY = [
   },
   {
     title: "Cut for movement",
-    body: "Athletic silhouettes engineered for gym, run, and street — no stiff costume feel.",
+    body: "Athletic silhouettes for gym, run, and street — no stiff costume feel.",
   },
   {
     title: "Built to last",
@@ -38,14 +38,26 @@ const STORY = [
 
 const CAT_IMAGES: Record<string, string> = {
   "mens-tops":
-    "url(https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=900&q=80)",
+    "url(https://images.unsplash.com/photo-1583454110551-21d2eb27fc31?auto=format&fit=crop&w=1400&q=80)",
   "mens-bottoms":
-    "url(https://images.unsplash.com/photo-1556906781-9a412961c28c?auto=format&fit=crop&w=900&q=80)",
+    "url(https://images.unsplash.com/photo-1556906781-9a412961c28c?auto=format&fit=crop&w=1200&q=80)",
   "womens-tops":
-    "url(https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=900&q=80)",
+    "url(https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1200&q=80)",
   "sets-coords":
-    "url(https://images.unsplash.com/photo-1599058945522-28d584b6f14f?auto=format&fit=crop&w=900&q=80)",
+    "url(https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1200&q=80)",
 };
+
+const TICKER = [
+  "Performance fabrics",
+  "True-to-size fit",
+  "COD across Pakistan",
+  "New drops weekly",
+  "Gym · Run · Street",
+];
+
+function productLabel(count: number) {
+  return `${count} ${count === 1 ? "product" : "products"}`;
+}
 
 export default async function HomePage() {
   const name = storeName();
@@ -66,20 +78,24 @@ export default async function HomePage() {
     console.error("[homepage] failed to load catalog", error);
   }
 
+  const featured = categories[0];
+  const rest = categories.slice(1);
+
   return (
     <>
       <StoreHeader />
       <main>
         <section className="peak-hero">
           <div className="peak-hero-media" aria-hidden="true" />
+          <div className="peak-hero-grain" aria-hidden="true" />
           <div className="peak-hero-inner">
             <h1 className="peak-brand-mark">
               {name}
               <span>Performance Activewear</span>
             </h1>
             <p className="peak-hero-copy font-ui">
-              {storeTagline()} Premium gym wear engineered for real training — breathable fabrics,
-              sharp fit, and everyday confidence from studio to street.
+              {storeTagline()} Engineered for real training — breathable fabrics, sharp fit, studio
+              to street.
             </p>
             <div className="peak-hero-actions">
               <Link href="/shop" className="btn-copper">
@@ -90,61 +106,123 @@ export default async function HomePage() {
               </Link>
             </div>
             <p className="peak-hero-meta font-ui">
-              {productCount}+ styles · PKR & USD · COD across Pakistan
+              {productCount}+ styles · PKR & USD · Cash on delivery
             </p>
+          </div>
+          <div className="peak-hero-scroll" aria-hidden="true">
+            <span>Scroll</span>
+            <i />
           </div>
         </section>
 
-        <section className="section-pad">
+        <div className="peak-ticker" aria-hidden="true">
+          <div className="peak-ticker-track">
+            {[...TICKER, ...TICKER].map((item, i) => (
+              <span key={`${item}-${i}`}>
+                {item}
+                <em>·</em>
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Categories — editorial bento (not 4 equal cards) */}
+        <section className="section-pad peak-sec-cats">
           <div className="container-luxury">
             <div className="peak-section-head">
               <div>
                 <p className="peak-section-kicker">Shop by category</p>
                 <h2 className="peak-section-title section-title text-pearl">Find your gear</h2>
+                <p className="peak-section-sub font-ui">
+                  Tops, bottoms, and co-ords cut for training — pick your lane.
+                </p>
               </div>
-              <Link href="/shop" className="nav-link text-sm">
-                View all
+              <Link href="/shop" className="peak-text-link">
+                View all <span aria-hidden="true">→</span>
               </Link>
             </div>
-            <div className="peak-cat-grid">
-              {categories.map((cat) => (
-                <Link
-                  key={cat.id}
-                  href={`/shop?category=${cat.slug}`}
-                  className="peak-cat-card"
-                  style={{
-                    ["--cat-image" as string]: CAT_IMAGES[cat.slug] ?? CAT_IMAGES["mens-tops"],
-                  }}
-                >
-                  <div className="peak-cat-card-body">
-                    <h3>{cat.name}</h3>
-                    <p className="font-ui">{cat.productCount} products</p>
-                  </div>
-                </Link>
-              ))}
-            </div>
+
+            {categories.length > 0 && (
+              <div className="peak-bento">
+                {featured && (
+                  <Link
+                    href={`/shop?category=${featured.slug}`}
+                    className="peak-bento-main"
+                    style={{
+                      ["--cat-image" as string]:
+                        CAT_IMAGES[featured.slug] ?? CAT_IMAGES["mens-tops"],
+                    }}
+                  >
+                    <div className="peak-bento-shade" />
+                    <div className="peak-bento-copy">
+                      <span className="peak-bento-tag">Featured</span>
+                      <h3>{featured.name}</h3>
+                      <p>{productLabel(featured.productCount)}</p>
+                      <span className="peak-bento-go">Shop now →</span>
+                    </div>
+                  </Link>
+                )}
+                <div className="peak-bento-side">
+                  {rest.map((cat, i) => (
+                    <Link
+                      key={cat.id}
+                      href={`/shop?category=${cat.slug}`}
+                      className="peak-bento-tile"
+                      style={{
+                        ["--cat-image" as string]:
+                          CAT_IMAGES[cat.slug] ?? CAT_IMAGES["mens-tops"],
+                      }}
+                    >
+                      <div className="peak-bento-shade" />
+                      <div className="peak-bento-copy">
+                        <span className="peak-bento-tag">0{i + 2}</span>
+                        <h3>{cat.name}</h3>
+                        <p>
+                          {productLabel(cat.productCount)}
+                          <em>Shop →</em>
+                        </p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </section>
 
-        <section className="peak-trust">
-          {TRUST.map((t) => (
-            <div key={t.title} className="peak-trust-item">
-              <t.icon size={20} className="text-copper mx-auto" />
-              <h3 className="text-pearl">{t.title}</h3>
-              <p className="font-ui">{t.desc}</p>
-            </div>
-          ))}
+        {/* Trust — dark promise band (not basic icon row) */}
+        <section className="peak-promise" aria-label="Why shop with us">
+          <div className="peak-promise-inner">
+            {TRUST.map((t) => (
+              <div key={t.title} className="peak-promise-item">
+                <span className="peak-promise-n">{t.n}</span>
+                <div className="peak-promise-body">
+                  <span className="peak-promise-icon">
+                    <t.icon size={18} />
+                  </span>
+                  <div>
+                    <h3>{t.title}</h3>
+                    <p>{t.desc}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </section>
 
-        <section className="section-pad">
+        {/* New arrivals */}
+        <section className="section-pad peak-sec-arrivals">
           <div className="container-luxury">
             <div className="peak-section-head">
               <div>
                 <p className="peak-section-kicker">Just dropped</p>
                 <h2 className="peak-section-title section-title text-pearl">New arrivals</h2>
+                <p className="peak-section-sub font-ui">
+                  Fresh cuts for your next session — limited sizes move fast.
+                </p>
               </div>
-              <Link href="/shop?sort=newest" className="nav-link text-sm">
-                Shop new
+              <Link href="/shop?sort=newest" className="peak-text-link">
+                Shop new <span aria-hidden="true">→</span>
               </Link>
             </div>
             <div className="product-grid">
@@ -155,17 +233,43 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section className="section-pad border-t border-[var(--divider)]">
+        {/* Lookband */}
+        <section className="peak-lookband" aria-label="Training look">
+          <div className="peak-lookband-media" role="img" aria-label="Athlete in Peak activewear" />
+          <div className="peak-lookband-copy">
+            <p className="peak-section-kicker peak-kicker-on-dark">Train harder</p>
+            <h2>Move with intent</h2>
+            <p className="font-ui">
+              From warm-up to cool-down — Peak pieces hold their shape, breathe when you push, and
+              look sharp enough for the street.
+            </p>
+            <div className="peak-lookband-actions">
+              <Link href="/shop" className="btn-copper">
+                Explore collection
+              </Link>
+              <Link href="/about" className="peak-ghost-link">
+                Our story
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Story */}
+        <section className="section-pad peak-sec-story">
           <div className="container-luxury peak-story">
-            <div className="peak-story-visual" role="img" aria-label="Athlete training in performance wear" />
+            <div
+              className="peak-story-visual"
+              role="img"
+              aria-label="Athlete training in performance wear"
+            >
+              <span className="peak-story-badge">Engineered for reps</span>
+            </div>
             <div>
               <p className="peak-section-kicker">Why Peak</p>
-              <h2 className="peak-section-title section-title text-pearl">
-                Gear that keeps up
-              </h2>
-              <p className="font-ui text-pearl-muted mt-4 max-w-md leading-relaxed">
-                We design activewear for people who train with intent — clean lines, serious comfort,
-                and performance details you feel the moment you move.
+              <h2 className="peak-section-title section-title text-pearl">Gear that keeps up</h2>
+              <p className="peak-section-sub font-ui" style={{ maxWidth: "28rem" }}>
+                Activewear for people who train with intent — clean lines, serious comfort, and
+                details you feel the moment you move.
               </p>
               <div className="peak-story-points">
                 {STORY.map((item, i) => (
@@ -178,6 +282,9 @@ export default async function HomePage() {
                   </div>
                 ))}
               </div>
+              <Link href="/shop" className="btn-copper peak-story-cta">
+                Shop Peak
+              </Link>
             </div>
           </div>
         </section>
