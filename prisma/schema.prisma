@@ -204,3 +204,10 @@ model AdminUser {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 }
+
+/// Singleton row (`id` = "default") for storefront branding overrides.
+model StoreBranding {
+  id        String   @id @default("default")
+  logoUrl   String?
+  updatedAt DateTime @updatedAt
+}

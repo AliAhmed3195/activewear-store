@@ -1,8 +1,27 @@
 import { storeName } from "@/lib/utils";
 
-/** Text wordmark — keeps brand clear without legacy logo assets. */
-export default function BrandLogo({ className }: { className?: string }) {
+type BrandLogoProps = {
+  className?: string;
+  logoUrl?: string | null;
+};
+
+/** Image logo when set; otherwise text wordmark. */
+export default function BrandLogo({ className, logoUrl }: BrandLogoProps) {
   const name = storeName();
+
+  if (logoUrl) {
+    return (
+      <img
+        src={logoUrl}
+        alt={name}
+        className={`brand-logo-img ${className ?? ""}`.trim()}
+        width={200}
+        height={48}
+        decoding="async"
+      />
+    );
+  }
+
   const [main, ...rest] = name.split(" ");
   const sub = rest.join(" ") || "Activewear";
 

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import StoreHeader from "@/components/store/StoreHeaderServer";
-import StoreFooter from "@/components/store/StoreFooter";
+import StoreFooter from "@/components/store/StoreFooterServer";
+import PageHero from "@/components/store/PageHero";
 
 export const metadata: Metadata = {
   title: "Shipping & Returns",
@@ -13,11 +14,11 @@ export default function ShippingPage() {
     <div className="store-page">
       <StoreHeader />
       <main className="store-main">
-        <section className="page-hero">
-          <p className="section-eyebrow">Client Care</p>
-          <h1 className="section-title mt-2">Shipping &amp; Returns</h1>
-          <div className="section-divider" />
-        </section>
+        <PageHero
+          eyebrow="Client Care"
+          title="Shipping & Returns"
+          breadcrumbs={[{ label: "Home", href: "/" }, { label: "Shipping" }]}
+        />
         <article className="legal-prose luxury-card max-w-3xl mx-auto p-6 md:p-10 mb-16">
           <h2>Shipping (Worldwide)</h2>
           <p>

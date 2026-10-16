@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import StoreHeader from "@/components/store/StoreHeaderServer";
-import StoreFooter from "@/components/store/StoreFooter";
+import StoreFooter from "@/components/store/StoreFooterServer";
 import ProductCard from "@/components/store/ProductCard";
 import ProductDetailView from "@/components/store/ProductDetailView";
 import { getProductBySlug, getRelatedProducts } from "@/lib/queries";

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import AdminShell from "@/components/admin/AdminShell";
+import { adminFetchJson } from "@/lib/admin-fetch";
 import { slugify } from "@/lib/utils";
 
 interface CategoryRow {
@@ -24,9 +25,9 @@ export default function AdminCategoriesPage() {
   const [error, setError] = useState<string | null>(null);
 
   const load = () => {
-    fetch("/api/admin/categories")
-      .then((r) => r.json())
-      .then(setCategories);
+    adminFetchJson<CategoryRow[]>("/api/admin/categories")
+      .then(setCategories)
+      .catch((err) => setError(err instanceof Error ? err.message : "Failed to load categories"));
   };
 
   useEffect(() => {

@@ -1,9 +1,11 @@
+import AdminBrandSettings from "@/components/admin/AdminBrandSettings";
 import AdminShell from "@/components/admin/AdminShell";
+import AdminThemeSettings from "@/components/admin/AdminThemeSettings";
+import AdminSettingsShortcuts from "@/components/admin/AdminSettingsShortcuts";
 import { auth } from "@/lib/auth";
+import { getStoreBrandingUncached } from "@/lib/store-branding";
 import { formatPrice } from "@/lib/utils";
 import { redirect } from "next/navigation";
-import Link from "next/link";
-
 export const dynamic = "force-dynamic";
 
 export default async function AdminSettingsPage() {
@@ -18,6 +20,8 @@ export default async function AdminSettingsPage() {
   const supportEmail = process.env.NEXT_PUBLIC_SUPPORT_EMAIL || process.env.RESEND_FROM || "—";
   const resendConfigured = Boolean(process.env.RESEND_API_KEY);
   const stripeConfigured = Boolean(process.env.STRIPE_SECRET_KEY);
+
+  const { logoUrl } = await getStoreBrandingUncached();
 
   const rows = [
     { label: "Currency", value: currency },
@@ -38,75 +42,57 @@ export default async function AdminSettingsPage() {
 
   return (
     <AdminShell>
-      <h1 className="font-display text-2xl text-pearl">Settings</h1>
-      <p className="font-ui text-sm text-pearl-muted mt-1">
-        Store configuration from environment — edit values in <code>.env.local</code> then restart
-        the server
-      </p>
-
-      <div className="luxury-card mt-8 overflow-x-auto">
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>Setting</th>
-              <th>Value</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((r) => (
-              <tr key={r.label}>
-                <td className="font-ui text-pearl-muted">{r.label}</td>
-                <td className="font-display text-pearl">{r.value}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
-        <div className="luxury-card p-5">
-          <h2 className="font-display text-lg text-pearl">Catalog</h2>
-          <p className="font-ui text-sm text-pearl-muted mt-2">
-            Manage products, stock, and collections from the sidebar.
+      <header className="admin-page-header">
+        <div>
+          <p className="admin-page-kicker font-ui">Configuration</p>
+          <h1 className="admin-page-title font-display">Settings</h1>
+          <p className="admin-page-lead font-ui">
+            Store values come from environment variables. Edit{" "}
+            <code className="admin-code">.env.local</code> and restart the dev server.
           </p>
-          <div className="flex flex-wrap gap-2 mt-4">
-            <Link href="/admin/products" className="btn-outline text-[10px] py-2 px-3">
-              Products
-            </Link>
-            <Link href="/admin/inventory" className="btn-outline text-[10px] py-2 px-3">
-              Inventory
-            </Link>
-            <Link href="/admin/categories" className="btn-outline text-[10px] py-2 px-3">
-              Categories
-            </Link>
-          </div>
         </div>
-        <div className="luxury-card p-5">
-          <h2 className="font-display text-lg text-pearl">Orders &amp; buyers</h2>
-          <p className="font-ui text-sm text-pearl-muted mt-2">
-            Update fulfillment status, track COD, and review customer history.
-          </p>
-          <div className="flex flex-wrap gap-2 mt-4">
-            <Link href="/admin/orders" className="btn-outline text-[10px] py-2 px-3">
-              Orders
-            </Link>
-            <Link href="/admin/customers" className="btn-outline text-[10px] py-2 px-3">
-              Customers
-            </Link>
-            <Link href="/track" className="btn-outline text-[10px] py-2 px-3">
-              Order tracking
-            </Link>
-          </div>
-        </div>
-      </div>
+      </header>
 
-      <div className="luxury-card p-5 mt-6">
-        <h2 className="font-display text-lg text-pearl">Admin login</h2>
-        <p className="font-ui text-sm text-pearl-muted mt-2">
-          Credentials are set via <code>SEED_ADMIN_EMAIL</code> / <code>SEED_ADMIN_PASSWORD</code> in
-          env (seeded on <code>prisma db seed</code>). Default seed:{" "}
-          <code>admin@elvenenoir.com</code>
-        </p>
+      <div className="admin-settings-layout">
+        <section className="admin-settings-card luxury-card admin-settings-env">
+          <p className="admin-settings-card-kicker font-ui">Environment</p>
+          <h2 className="admin-settings-card-title font-display">Store profile</h2>
+          <div className="admin-settings-table-wrap">
+            <table className="admin-table admin-table--settings">
+              <thead>
+                <tr>
+                  <th>Setting</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((r) => (
+                  <tr key={r.label}>
+                    <td className="font-ui">{r.label}</td>
+                    <td className="font-display">{r.value}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <AdminBrandSettings initialLogoUrl={logoUrl} />
+
+        <AdminThemeSettings />
+
+        <AdminSettingsShortcuts />
+
+        <section className="admin-settings-card luxury-card admin-settings-login">
+          <p className="admin-settings-card-kicker font-ui">Access</p>
+          <h2 className="admin-settings-card-title font-display">Admin login</h2>
+          <p className="admin-settings-card-desc font-ui">
+            Credentials are set via <code className="admin-code">SEED_ADMIN_EMAIL</code> and{" "}
+            <code className="admin-code">SEED_ADMIN_PASSWORD</code> (applied on{" "}
+            <code className="admin-code">prisma db seed</code>). Default:{" "}
+            <code className="admin-code">admin@example.com</code>
+          </p>
+        </section>
       </div>
     </AdminShell>
   );

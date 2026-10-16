@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import StoreHeader from "@/components/store/StoreHeaderServer";
-import StoreFooter from "@/components/store/StoreFooter";
+import StoreFooter from "@/components/store/StoreFooterServer";
+import PageHero from "@/components/store/PageHero";
 import ProductCard from "@/components/store/ProductCard";
 import ShopSidebar from "@/components/store/ShopSidebar";
 import Pagination from "@/components/store/Pagination";
@@ -77,14 +78,36 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
     <div className="store-page store-page-ambient">
       <StoreHeader />
       <main className="store-main">
-        <section className="page-hero">
-          <p className="section-eyebrow">{name}</p>
-          <h1 className="section-title mt-2">{heading}</h1>
-          <div className="section-divider" />
-          {activeCategory?.description && (
-            <p className="section-desc max-w-xl mx-auto">{activeCategory.description}</p>
-          )}
-        </section>
+        <PageHero
+          eyebrow={name}
+          title={heading}
+          description={activeCategory?.description}
+          breadcrumbs={[
+            { label: "Home", href: "/" },
+            ...(activeCategory || params.q
+              ? [
+                  { label: "Shop", href: "/shop" },
+                  {
+                    label: activeCategory
+                      ? activeCategory.name
+                      : params.q
+                        ? `“${params.q}”`
+                        : "Shop",
+                  },
+                ]
+              : [{ label: "Shop" }]),
+          ]}
+        >
+          <div className="page-hero-meta">
+            <span className="page-hero-chip page-hero-chip--accent">
+              <span className="page-hero-chip-dot" aria-hidden="true" />
+              {result.total} {result.total === 1 ? "product" : "products"}
+            </span>
+            <span className="page-hero-chip">
+              Sorted by {SORT_LABELS[params.sort ?? "newest"]}
+            </span>
+          </div>
+        </PageHero>
 
         <div className="shop-layout">
           <Suspense fallback={<div />}>

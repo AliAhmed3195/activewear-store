@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import StoreHeader from "@/components/store/StoreHeaderServer";
-import StoreFooter from "@/components/store/StoreFooter";
+import StoreFooter from "@/components/store/StoreFooterServer";
+import PageHero from "@/components/store/PageHero";
 import { IconMail, IconMessage, IconHeadset } from "@/components/ui/icons";
 
 export const metadata: Metadata = {
@@ -17,14 +18,12 @@ export default function ContactPage() {
     <div className="store-page store-page-ambient">
       <StoreHeader />
       <main className="store-main">
-        <section className="page-hero">
-          <p className="section-eyebrow">Client Care</p>
-          <h1 className="section-title mt-2">Contact Us</h1>
-          <div className="section-divider" />
-          <p className="section-desc max-w-xl mx-auto">
-            For order status, sizing, or delivery questions — we respond with discretion and care.
-          </p>
-        </section>
+        <PageHero
+          eyebrow="Client Care"
+          title="Contact Us"
+          description="For order status, sizing, or delivery questions — we respond with discretion and care."
+          breadcrumbs={[{ label: "Home", href: "/" }, { label: "Contact" }]}
+        />
 
         <div className="contact-grid">
           <div className="luxury-card contact-card">

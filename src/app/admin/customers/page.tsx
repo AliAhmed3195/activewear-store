@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import AdminShell from "@/components/admin/AdminShell";
+import { adminFetchJson } from "@/lib/admin-fetch";
 import { formatPrice } from "@/lib/utils";
 
 interface Customer {
@@ -21,11 +22,12 @@ export default function AdminCustomersPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/admin/customers")
-      .then((r) => r.json())
+    adminFetchJson<Customer[]>("/api/admin/customers")
       .then(setCustomers)
+      .catch((err) => setLoadError(err instanceof Error ? err.message : "Failed to load customers"))
       .finally(() => setLoading(false));
   }, []);
 
@@ -47,6 +49,12 @@ export default function AdminCustomersPage() {
       <p className="font-ui text-sm text-pearl-muted mt-1">
         Built from checkout orders — {customers.length} unique buyers
       </p>
+
+      {loadError && (
+        <p className="admin-brand-error font-ui mt-3" role="alert">
+          {loadError}
+        </p>
+      )}
 
       <input
         className="admin-input mt-6 max-w-md"

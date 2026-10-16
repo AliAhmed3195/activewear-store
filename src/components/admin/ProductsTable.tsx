@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { adminFetchJson } from "@/lib/admin-fetch";
 import { formatPrice } from "@/lib/utils";
 
 export type AdminProductRow = {
@@ -39,13 +40,14 @@ export default function ProductsTable({ products: initial }: { products: AdminPr
   const remove = async (id: string, name: string) => {
     if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
     setBusyId(id);
-    const res = await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
-    setBusyId(null);
-    if (!res.ok) {
+    try {
+      await adminFetchJson(`/api/admin/products/${id}`, { method: "DELETE" });
+      setProducts((prev) => prev.filter((p) => p.id !== id));
+    } catch {
       alert("Failed to delete product");
-      return;
+    } finally {
+      setBusyId(null);
     }
-    setProducts((prev) => prev.filter((p) => p.id !== id));
   };
 
   return (

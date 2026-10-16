@@ -4,10 +4,22 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import BrandLogo from "@/components/store/BrandLogo";
-import { IconArrowRight, IconInstagram, IconPinterest } from "@/components/ui/icons";
+import {
+  IconArrowRight,
+  IconCheck,
+  IconGlobe,
+  IconInstagram,
+  IconPinterest,
+  IconShield,
+  IconTruck,
+} from "@/components/ui/icons";
 import { storeName, storeTagline } from "@/lib/utils";
 
-export default function StoreFooter() {
+type StoreFooterProps = {
+  logoUrl?: string | null;
+};
+
+export default function StoreFooter({ logoUrl = null }: StoreFooterProps) {
   const name = storeName();
   const pathname = usePathname();
   const [email, setEmail] = useState("");
@@ -22,15 +34,18 @@ export default function StoreFooter() {
 
   return (
     <>
-      <section className="newsletter">
+      <section className="newsletter" aria-labelledby="newsletter-heading">
         <div className="newsletter-inner">
-          <span className="section-eyebrow">Training updates</span>
-          <h2 className="section-title mt-3">New drops & restocks</h2>
-          <p className="section-desc">
+          <span className="section-eyebrow newsletter-eyebrow">Training updates</span>
+          <h2 id="newsletter-heading" className="section-title newsletter-heading mt-3">
+            New drops &amp; restocks
+          </h2>
+          <p className="section-desc newsletter-desc">
             Be first to know about new arrivals, restocks, and limited drops.
           </p>
+
           {subscribed ? (
-            <p className="font-display text-lg text-copper mt-6">
+            <p className="newsletter-thanks font-display" role="status">
               Thank you. You&apos;re on the list.
             </p>
           ) : (
@@ -43,84 +58,134 @@ export default function StoreFooter() {
                 placeholder="Your email address"
                 className="newsletter-input"
                 aria-label="Email address"
+                autoComplete="email"
               />
-              <button type="submit" className="btn-copper">
+              <button type="submit" className="newsletter-submit">
                 Subscribe
                 <IconArrowRight size={14} />
               </button>
             </form>
           )}
-          <p className="font-ui text-[10px] text-pearl-muted tracking-wide mt-4">
-            By subscribing you agree to our Privacy Policy. Unsubscribe anytime.
+
+          <p className="newsletter-legal font-ui">
+            By subscribing you agree to our{" "}
+            <Link href="/privacy" className="newsletter-legal-link">Privacy Policy</Link>. Unsubscribe
+            anytime.
           </p>
         </div>
       </section>
 
       <footer className="site-footer">
-        {/* Row 1 — Brand */}
-        <div className="footer-row footer-row-brand">
-          <div className="footer-brand">
-            <BrandLogo className="footer-brand-logo" />
-            <p>
-              {storeTagline()} Premium activewear for gym, run, and everyday — PKR & international
-              shipping.
-            </p>
-            <div className="footer-social">
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="footer-social-link"
-                aria-label="Instagram"
-              >
-                <IconInstagram size={18} />
-              </a>
-              <a
-                href="https://pinterest.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="footer-social-link"
-                aria-label="Pinterest"
-              >
-                <IconPinterest size={18} />
-              </a>
+        <div className="footer-row footer-main">
+          <div className="footer-main-grid">
+            <div className="footer-brand">
+              <BrandLogo className="footer-brand-logo" logoUrl={logoUrl} />
+              <p className="footer-tagline font-ui">
+                <strong>{storeTagline()}</strong> Premium activewear for gym, run, and everyday — PKR
+                &amp; international shipping.
+              </p>
+              <div className="footer-social">
+                <a
+                  href="https://instagram.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="footer-social-link"
+                  aria-label="Instagram"
+                >
+                  <IconInstagram size={18} />
+                </a>
+                <a
+                  href="https://pinterest.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="footer-social-link"
+                  aria-label="Pinterest"
+                >
+                  <IconPinterest size={18} />
+                </a>
+              </div>
+            </div>
+
+            <div className="footer-navs">
+              <div className="footer-col">
+                <h4 className="font-ui">Shop</h4>
+                <ul className="footer-links">
+                  <li><Link href="/shop">All Products</Link></li>
+                  <li><Link href="/shop?sort=newest">New Arrivals</Link></li>
+                  <li><Link href="/shop?sort=rating">Best Sellers</Link></li>
+                  <li><Link href="/wishlist">Wishlist</Link></li>
+                  <li><Link href="/shop?category=mens-tops">Men&apos;s Tops</Link></li>
+                  <li><Link href="/shop?category=mens-bottoms">Men&apos;s Bottoms</Link></li>
+                  <li><Link href="/shop?category=womens-tops">Women&apos;s Tops</Link></li>
+                  <li><Link href="/shop?category=sets-coords">Sets &amp; Co-ords</Link></li>
+                </ul>
+              </div>
+
+              <div className="footer-col">
+                <h4 className="font-ui">Support</h4>
+                <ul className="footer-links">
+                  <li><Link href="/about">About Us</Link></li>
+                  <li><Link href="/track">Order Tracking</Link></li>
+                  <li><Link href="/shipping">Shipping &amp; Returns</Link></li>
+                  <li><Link href="/contact">Contact Us</Link></li>
+                  <li><Link href="/faq">FAQ</Link></li>
+                </ul>
+              </div>
+
+              <div className="footer-col">
+                <h4 className="font-ui">Company</h4>
+                <ul className="footer-links">
+                  <li><Link href="/about">About {name}</Link></li>
+                  <li><Link href="/privacy">Privacy Policy</Link></li>
+                  <li><Link href="/terms">Terms of Service</Link></li>
+                  <li><Link href="/shipping">Shipping Info</Link></li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Row 2 — Link columns */}
-        <div className="footer-row footer-row-links">
-          <div className="footer-col">
-            <h4>Shop</h4>
-            <Link href="/shop">All Products</Link>
-            <Link href="/shop?sort=newest">New Arrivals</Link>
-            <Link href="/shop?sort=rating">Best Sellers</Link>
-            <Link href="/wishlist">Wishlist</Link>
-            <Link href="/shop?category=mens-tops">Men&apos;s Tops</Link>
-            <Link href="/shop?category=mens-bottoms">Men&apos;s Bottoms</Link>
-            <Link href="/shop?category=womens-tops">Women&apos;s Tops</Link>
-            <Link href="/shop?category=sets-coords">Sets & Co-ords</Link>
-          </div>
-
-          <div className="footer-col">
-            <h4>Support</h4>
-            <Link href="/about">About Us</Link>
-            <Link href="/track">Order Tracking</Link>
-            <Link href="/shipping">Shipping &amp; Returns</Link>
-            <Link href="/contact">Contact Us</Link>
-            <Link href="/faq">FAQ</Link>
-          </div>
-
-          <div className="footer-col">
-            <h4>Company</h4>
-            <Link href="/about">About {name}</Link>
-            <Link href="/privacy">Privacy Policy</Link>
-            <Link href="/terms">Terms of Service</Link>
-            <Link href="/shipping">Shipping Info</Link>
+        <div className="footer-trust" aria-label="Store benefits">
+          <div className="footer-trust-inner footer-row">
+            <div className="footer-trust-item">
+              <span className="footer-trust-icon" aria-hidden="true">
+                <IconTruck size={20} />
+              </span>
+              <div>
+                <p className="footer-trust-title font-ui">Nationwide shipping</p>
+                <p className="footer-trust-desc font-ui">PK &amp; international delivery</p>
+              </div>
+            </div>
+            <div className="footer-trust-item">
+              <span className="footer-trust-icon" aria-hidden="true">
+                <IconShield size={20} />
+              </span>
+              <div>
+                <p className="footer-trust-title font-ui">Secure checkout</p>
+                <p className="footer-trust-desc font-ui">Card, COD &amp; wallets</p>
+              </div>
+            </div>
+            <div className="footer-trust-item">
+              <span className="footer-trust-icon" aria-hidden="true">
+                <IconCheck size={20} />
+              </span>
+              <div>
+                <p className="footer-trust-title font-ui">Quality guaranteed</p>
+                <p className="footer-trust-desc font-ui">Performance-first fabrics</p>
+              </div>
+            </div>
+            <div className="footer-trust-item">
+              <span className="footer-trust-icon" aria-hidden="true">
+                <IconGlobe size={20} />
+              </span>
+              <div>
+                <p className="footer-trust-title font-ui">Easy returns</p>
+                <p className="footer-trust-desc font-ui">Clear shipping policy</p>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Row 3 — Copyright + payments */}
         <div className="footer-row footer-row-bottom">
           <div className="footer-bottom-inner">
             <p className="footer-copy">

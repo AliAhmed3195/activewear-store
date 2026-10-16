@@ -6,6 +6,7 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import { useCart } from "@/lib/cart-context";
 import BrandLogo from "@/components/store/BrandLogo";
 import ScrollProgress from "@/components/store/ScrollProgress";
+import StoreValueStrip from "@/components/store/StoreValueStrip";
 import { IconBag, IconHeart, IconSearch, IconMenu, IconClose, IconChevronDown } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 
@@ -24,25 +25,27 @@ const NAV_LINKS = [
 
 interface StoreHeaderProps {
   categories?: CategoryLink[];
+  logoUrl?: string | null;
 }
 
 function normalizeCategories(list: CategoryLink[]) {
   return list.filter((cat) => cat.productCount > 0);
 }
 
-export default function StoreHeader({ categories = [] }: StoreHeaderProps) {
+export default function StoreHeader({ categories = [], logoUrl = null }: StoreHeaderProps) {
   return (
-    <Suspense fallback={<StoreHeaderBar categories={categories} />}>
-      <StoreHeaderWithParams categories={categories} />
+    <Suspense fallback={<StoreHeaderBar categories={categories} logoUrl={logoUrl} />}>
+      <StoreHeaderWithParams categories={categories} logoUrl={logoUrl} />
     </Suspense>
   );
 }
 
-function StoreHeaderWithParams({ categories = [] }: StoreHeaderProps) {
+function StoreHeaderWithParams({ categories = [], logoUrl = null }: StoreHeaderProps) {
   const searchParams = useSearchParams();
   return (
     <StoreHeaderBar
       categories={categories}
+      logoUrl={logoUrl}
       sort={searchParams.get("sort")}
       category={searchParams.get("category")}
       queryParam={searchParams.get("q")}
@@ -52,6 +55,7 @@ function StoreHeaderWithParams({ categories = [] }: StoreHeaderProps) {
 
 function StoreHeaderBar({
   categories = [],
+  logoUrl = null,
   sort = null,
   category = null,
   queryParam = null,
@@ -206,34 +210,11 @@ function StoreHeaderBar({
   return (
     <>
       <ScrollProgress />
-      <div className="announcement-bar" role="region" aria-label="Store announcements">
-        <div className="announcement-track">
-          {Array.from({ length: 2 }).map((_, loop) => (
-            <div key={loop} className="announcement-group">
-              <span>Free Shipping on Qualifying Orders</span>
-              <span className="dot">·</span>
-              <span>Performance Fabrics</span>
-              <span className="dot">·</span>
-              <span>Ships Across Pakistan</span>
-              <span className="dot">·</span>
-              <span>Secure Checkout</span>
-              <span className="dot">·</span>
-              <span>
-                <Link href="/track" className="underline-offset-2 hover:underline">
-                  Order Tracking
-                </Link>
-              </span>
-              <span className="dot">·</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
       <header className={cn("store-header", scrolled && "store-header-scrolled")}>
         <div className="store-header-inner">
           <div className="header-left">
             <Link href="/" className="store-brand" aria-label="Peak Activewear home">
-              <BrandLogo className="store-brand-logo" />
+              <BrandLogo className="store-brand-logo" logoUrl={logoUrl} />
             </Link>
           </div>
 
@@ -348,6 +329,8 @@ function StoreHeaderBar({
           </div>
         </div>
       </header>
+
+      <StoreValueStrip />
 
       <div
         className={cn("search-overlay", searchOpen && "open")}

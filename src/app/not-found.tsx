@@ -1,6 +1,6 @@
 import Link from "next/link";
 import StoreHeader from "@/components/store/StoreHeaderServer";
-import StoreFooter from "@/components/store/StoreFooter";
+import StoreFooter from "@/components/store/StoreFooterServer";
 import { IconArrowRight } from "@/components/ui/icons";
 
 export default function NotFound() {

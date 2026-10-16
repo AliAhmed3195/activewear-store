@@ -12,6 +12,8 @@
     "lint": "eslint",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
+    "demo:images": "tsx prisma/sync-demo-images.ts",
+    "test:upload": "tsx prisma/test-product-upload.ts",
     "db:studio": "prisma studio",
     "postinstall": "prisma generate"
   },

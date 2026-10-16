@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import StoreHeader from "@/components/store/StoreHeaderServer";
-import StoreFooter from "@/components/store/StoreFooter";
+import StoreFooter from "@/components/store/StoreFooterServer";
+import PageHero from "@/components/store/PageHero";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
@@ -13,11 +14,11 @@ export default function TermsPage() {
     <div className="store-page">
       <StoreHeader />
       <main className="store-main">
-        <section className="page-hero">
-          <p className="section-eyebrow">The Maison</p>
-          <h1 className="section-title mt-2">Terms of Service</h1>
-          <div className="section-divider" />
-        </section>
+        <PageHero
+          eyebrow="Legal"
+          title="Terms of Service"
+          breadcrumbs={[{ label: "Home", href: "/" }, { label: "Terms" }]}
+        />
         <article className="legal-prose luxury-card max-w-3xl mx-auto p-6 md:p-10 mb-16">
           <p className="text-pearl-muted text-sm mb-6">Last updated: July 2026</p>
           <h2>Agreement</h2>

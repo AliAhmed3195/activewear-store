@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { cn, storeName } from "@/lib/utils";
+import AdminThemeToggle from "@/components/admin/AdminThemeToggle";
+import { useAdminTheme } from "@/components/admin/AdminThemeProvider";
 
 const NAV = [
   { href: "/admin/dashboard", label: "Dashboard" },
@@ -22,9 +24,10 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   const userName = session?.user?.name ?? "Admin";
   const userEmail = session?.user?.email ?? "";
   const role = (session?.user as { role?: string } | undefined)?.role ?? "ADMIN";
+  const { theme } = useAdminTheme();
 
   return (
-    <div className="admin-shell">
+    <div className="admin-shell" data-admin-theme={theme}>
       <aside className="admin-sidebar">
         <Link href="/admin/dashboard" className="admin-brand block mb-8">
           <span className="font-display text-pearl text-lg">{storeName()}</span>
@@ -78,6 +81,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
               </p>
             </div>
           </div>
+          <AdminThemeToggle variant="compact" />
           <nav className="admin-mobile-nav lg:hidden">
             {NAV.map((item) => (
               <Link

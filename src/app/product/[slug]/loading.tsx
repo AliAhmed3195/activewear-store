@@ -1,4 +1,4 @@
-import StoreHeader from "@/components/store/StoreHeader";
+import StoreHeader from "@/components/store/StoreHeaderServer";
 
 export default function ProductLoading() {
   return (

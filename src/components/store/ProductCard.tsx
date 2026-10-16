@@ -52,17 +52,20 @@ export default function ProductCard({ product, priority }: ProductCardProps) {
     <Link href={`/product/${product.slug}`} className="product-card group">
       <span className="product-card-corner" aria-hidden="true" />
       <div className="product-card-media">
-        {badge && <span className="product-card-badge">{badge}</span>}
-        {onSale && (
-          <span className="product-card-badge" style={{ top: "auto", bottom: "0.75rem" }}>
-            Sale
-          </span>
+        {(badge || onSale) && (
+          <div className="product-card-badges">
+            {badge && (
+              <span className="product-card-badge product-card-badge--accent">{badge}</span>
+            )}
+            {onSale && <span className="product-card-badge product-card-badge--sale">Sale</span>}
+          </div>
         )}
         <button
           type="button"
-          className="product-card-wishlist"
+          className={cn("product-card-wishlist", wishlisted && "is-active")}
           onClick={handleWishlist}
           aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+          aria-pressed={wishlisted}
         >
           <IconHeart size={15} filled={wishlisted} />
         </button>
@@ -72,13 +75,13 @@ export default function ProductCard({ product, priority }: ProductCardProps) {
           fallbackLabel={product.name}
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          className="product-image-contain transition-transform duration-700 group-hover:scale-105"
+          className="product-image-contain transition-transform duration-700 ease-out group-hover:scale-[1.04]"
           priority={priority}
         />
         <div className="product-card-actions">
           <button
             type="button"
-            className="btn-copper w-full"
+            className="btn-copper product-card-add-btn w-full"
             onClick={handleQuickAdd}
             disabled={sizeLeft <= 0}
           >
@@ -91,45 +94,38 @@ export default function ProductCard({ product, priority }: ProductCardProps) {
         {product.category && (
           <p className="product-card-category">{product.category.name}</p>
         )}
-        <h3 className="product-card-name text-pearl mt-1.5 group-hover:text-blush transition-colors">
-          {product.name}
-        </h3>
+        <h3 className="product-card-name mt-1.5 line-clamp-2">{product.name}</h3>
         {product.tagline && (
-          <p className="font-accent text-sm text-pearl-muted mt-1 line-clamp-1">{product.tagline}</p>
+          <p className="product-card-tagline line-clamp-1">{product.tagline}</p>
         )}
-        <div className="flex items-center gap-1.5 mt-2">
-          <div className="flex text-copper">
+        <div className="product-card-rating">
+          <div className="product-card-stars" aria-hidden="true">
             {Array.from({ length: 5 }).map((_, i) => (
               <IconStar
                 key={i}
                 size={11}
-                className={i < Math.floor(product.rating) ? "opacity-100" : "opacity-25"}
+                className={i < Math.floor(product.rating) ? "is-filled" : ""}
               />
             ))}
           </div>
-          <span className="font-ui text-[10px] text-pearl-muted">({product.reviewCount})</span>
+          <span className="product-card-review-count">({product.reviewCount})</span>
         </div>
         {product.variants.length > 1 && (
-          <div className="flex gap-1.5 mt-2">
+          <div className="product-card-swatches" aria-label="Available colors">
             {product.variants.map((v) => (
               <span
                 key={v.id}
-                className={cn(
-                  "w-4 h-4 rounded-full border border-white/20",
-                  v.colorHex && "border-transparent"
-                )}
-                style={{ backgroundColor: v.colorHex ?? "#666" }}
+                className="product-card-swatch"
+                style={{ backgroundColor: v.colorHex ?? "#6b7280" }}
                 title={v.colorName}
               />
             ))}
           </div>
         )}
-        <div className="flex items-center gap-2 mt-2.5">
-          <p className="font-display text-copper">{formatPrice(price, currency)}</p>
+        <div className="product-card-price-row">
+          <p className="product-card-price">{formatPrice(price, currency)}</p>
           {onSale && (
-            <p className="font-ui text-xs text-pearl-muted line-through">
-              {formatPrice(compareAt!, currency)}
-            </p>
+            <p className="product-card-price-compare">{formatPrice(compareAt!, currency)}</p>
           )}
         </div>
       </div>

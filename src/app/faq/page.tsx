@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import StoreHeader from "@/components/store/StoreHeaderServer";
-import StoreFooter from "@/components/store/StoreFooter";
+import StoreFooter from "@/components/store/StoreFooterServer";
+import PageHero from "@/components/store/PageHero";
 
 export const metadata: Metadata = {
   title: "FAQ",
@@ -40,14 +41,12 @@ export default function FaqPage() {
     <div className="store-page store-page-ambient">
       <StoreHeader />
       <main className="store-main">
-        <section className="page-hero">
-          <p className="section-eyebrow">Client Care</p>
-          <h1 className="section-title mt-2">FAQ</h1>
-          <div className="section-divider" />
-          <p className="section-desc max-w-xl mx-auto">
-            Answers to common questions about shipping, payments, and returns.
-          </p>
-        </section>
+        <PageHero
+          eyebrow="Client Care"
+          title="FAQ"
+          description="Answers to common questions about shipping, payments, and returns."
+          breadcrumbs={[{ label: "Home", href: "/" }, { label: "FAQ" }]}
+        />
 
         <div className="faq-list">
           {FAQS.map((item) => (

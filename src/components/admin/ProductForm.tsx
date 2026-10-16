@@ -114,6 +114,29 @@ export default function ProductForm({ categories, initial }: ProductFormProps) {
   );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [uploadingKey, setUploadingKey] = useState<string | null>(null);
+
+  const uploadVariantImage = async (vi: number, ii: number, file: File) => {
+    const key = `${vi}-${ii}`;
+    setUploadingKey(key);
+    setError(null);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/admin/uploads", { method: "POST", body: formData });
+      const data = (await res.json().catch(() => ({}))) as { url?: string; error?: string };
+      if (!res.ok || !data.url) {
+        throw new Error(data.error ?? "Upload failed");
+      }
+      const images = [...variants[vi].images];
+      images[ii] = { ...images[ii], url: data.url };
+      updateVariant(vi, { images });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploadingKey(null);
+    }
+  };
 
   const updateVariant = (index: number, patch: Partial<VariantRow>) => {
     setVariants((prev) => prev.map((v, i) => (i === index ? { ...v, ...patch } : v)));
@@ -323,28 +346,61 @@ export default function ProductForm({ categories, initial }: ProductFormProps) {
 
             <div>
               <span className="admin-label">Variant Images</span>
+              <p className="font-ui text-xs text-pearl-muted mt-1 mb-2">
+                Upload JPEG/PNG/WebP (max 5 MB) or paste a URL.
+              </p>
               {variant.images.map((img, ii) => (
-                <div key={ii} className="flex gap-2 mt-2">
-                  <input
-                    className="admin-input flex-1"
-                    placeholder="https://..."
-                    value={img.url}
-                    onChange={(e) => {
-                      const images = [...variant.images];
-                      images[ii] = { ...images[ii], url: e.target.value };
-                      updateVariant(vi, { images });
-                    }}
-                  />
-                  <input
-                    className="admin-input w-32"
-                    placeholder="Label"
-                    value={img.label}
-                    onChange={(e) => {
-                      const images = [...variant.images];
-                      images[ii] = { ...images[ii], label: e.target.value };
-                      updateVariant(vi, { images });
-                    }}
-                  />
+                <div key={ii} className="mt-3 space-y-2 rounded-sm border border-[var(--divider)] p-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    {img.url ? (
+                      <img
+                        src={img.url}
+                        alt=""
+                        className="h-14 w-14 rounded object-cover border border-[var(--divider)] bg-[var(--surface)]"
+                      />
+                    ) : (
+                      <div
+                        className="h-14 w-14 rounded border border-dashed border-[var(--divider)] bg-[var(--surface)]"
+                        aria-hidden
+                      />
+                    )}
+                    <label className="btn-outline text-xs py-2 px-3 cursor-pointer">
+                      {uploadingKey === `${vi}-${ii}` ? "Uploading…" : "Upload image"}
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        className="sr-only"
+                        disabled={uploadingKey === `${vi}-${ii}`}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          e.target.value = "";
+                          if (file) uploadVariantImage(vi, ii, file);
+                        }}
+                      />
+                    </label>
+                  </div>
+                  <div className="flex gap-2">
+                    <input
+                      className="admin-input flex-1"
+                      placeholder="/uploads/products/... or https://..."
+                      value={img.url}
+                      onChange={(e) => {
+                        const images = [...variant.images];
+                        images[ii] = { ...images[ii], url: e.target.value };
+                        updateVariant(vi, { images });
+                      }}
+                    />
+                    <input
+                      className="admin-input w-32"
+                      placeholder="Label"
+                      value={img.label}
+                      onChange={(e) => {
+                        const images = [...variant.images];
+                        images[ii] = { ...images[ii], label: e.target.value };
+                        updateVariant(vi, { images });
+                      }}
+                    />
+                  </div>
                 </div>
               ))}
               <button

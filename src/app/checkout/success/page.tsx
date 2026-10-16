@@ -1,6 +1,6 @@
 import Link from "next/link";
 import StoreHeader from "@/components/store/StoreHeaderServer";
-import StoreFooter from "@/components/store/StoreFooter";
+import StoreFooter from "@/components/store/StoreFooterServer";
 import ClearCartOnSuccess from "@/components/store/ClearCartOnSuccess";
 import { IconGem } from "@/components/ui/icons";
 import { formatPrice } from "@/lib/utils";

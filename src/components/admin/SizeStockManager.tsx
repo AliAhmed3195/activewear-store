@@ -19,6 +19,8 @@ interface SizeStockManagerProps {
   onApply?: (next: { sizes: string[]; sizeStock: SizeStockMap }) => void;
   allSizes?: string[];
   compact?: boolean;
+  /** Hide “Size inventory” header block (e.g. when parent already shows totals) */
+  showHeader?: boolean;
 }
 
 export default function SizeStockManager({
@@ -29,6 +31,7 @@ export default function SizeStockManager({
   onApply,
   allSizes = DEFAULT_SIZES,
   compact = false,
+  showHeader = true,
 }: SizeStockManagerProps) {
   const [fillQty, setFillQty] = useState(10);
   const [poolQty, setPoolQty] = useState(50);
@@ -109,7 +112,7 @@ export default function SizeStockManager({
 
   return (
     <div className={`size-stock-manager ${compact ? "is-compact" : ""}`}>
-      {!compact && (
+      {!compact && showHeader && (
         <div className="size-stock-manager-head">
           <div>
             <p className="admin-label mb-0">Size inventory</p>

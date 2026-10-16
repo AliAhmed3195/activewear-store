@@ -2,6 +2,7 @@
 
 import { Fragment, useEffect, useMemo, useState } from "react";
 import AdminShell from "@/components/admin/AdminShell";
+import { adminFetchJson } from "@/lib/admin-fetch";
 import { formatPrice } from "@/lib/utils";
 
 interface OrderItem {
@@ -59,11 +60,13 @@ export default function AdminOrdersPage() {
   const [q, setQ] = useState("");
   const [status, setStatus] = useState("ALL");
   const [pay, setPay] = useState("ALL");
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [statusError, setStatusError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/admin/orders")
-      .then((r) => r.json())
+    adminFetchJson<OrderRow[]>("/api/admin/orders")
       .then(setOrders)
+      .catch((err) => setLoadError(err instanceof Error ? err.message : "Failed to load orders"))
       .finally(() => setLoading(false));
   }, []);
 
@@ -84,12 +87,21 @@ export default function AdminOrdersPage() {
   }, [orders, q, status, pay]);
 
   const updateStatus = async (id: string, next: string) => {
-    await fetch(`/api/admin/orders/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: next }),
-    });
-    setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status: next } : o)));
+    setStatusError(null);
+    const previous = orders.find((o) => o.id === id)?.status;
+    try {
+      await adminFetchJson(`/api/admin/orders/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: next }),
+      });
+      setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status: next } : o)));
+    } catch (err) {
+      setStatusError(err instanceof Error ? err.message : "Could not update status");
+      if (previous) {
+        setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status: previous } : o)));
+      }
+    }
   };
 
   const toggle = (id: string) => {
@@ -102,6 +114,17 @@ export default function AdminOrdersPage() {
       <p className="font-ui text-sm text-pearl-muted mt-1">
         {orders.length} total · {filtered.length} shown — click a row for full details
       </p>
+
+      {loadError && (
+        <p className="admin-brand-error font-ui mt-3" role="alert">
+          {loadError}
+        </p>
+      )}
+      {statusError && (
+        <p className="admin-brand-error font-ui mt-3" role="alert">
+          {statusError}
+        </p>
+      )}
 
       <div className="flex flex-col sm:flex-row gap-3 mt-6">
         <input

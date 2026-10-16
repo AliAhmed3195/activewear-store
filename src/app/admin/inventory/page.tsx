@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import AdminShell from "@/components/admin/AdminShell";
 import SizeStockManager from "@/components/admin/SizeStockManager";
+import { adminFetchJson } from "@/lib/admin-fetch";
 import { formatPrice } from "@/lib/utils";
 import { totalFromSizeStock, type SizeStockMap } from "@/lib/size-stock";
 
@@ -33,12 +34,13 @@ export default function AdminInventoryPage() {
   const [onlyLow, setOnlyLow] = useState(false);
   const [drafts, setDrafts] = useState<Record<string, Draft>>({});
   const [savingId, setSavingId] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const load = () => {
     setLoading(true);
-    fetch("/api/admin/inventory")
-      .then((r) => r.json())
-      .then((data: InvRow[]) => {
+    setLoadError(null);
+    adminFetchJson<InvRow[]>("/api/admin/inventory")
+      .then((data) => {
         setRows(data);
         const map: Record<string, Draft> = {};
         data.forEach((row) => {
@@ -46,6 +48,7 @@ export default function AdminInventoryPage() {
         });
         setDrafts(map);
       })
+      .catch((err) => setLoadError(err instanceof Error ? err.message : "Failed to load inventory"))
       .finally(() => setLoading(false));
   };
 
@@ -105,21 +108,23 @@ export default function AdminInventoryPage() {
       ? draft.sizes
       : ALL_SIZES.filter((s) => (draft.sizeStock[s] ?? 0) > 0);
     setSavingId(row.id);
-    const res = await fetch("/api/admin/inventory", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        variantId: row.id,
-        sizeStock: draft.sizeStock,
-        sizes: sizes.length ? sizes : ["S", "M", "L"],
-      }),
-    });
-    setSavingId(null);
-    if (!res.ok) {
+    let data: { stock: number; sizeStock: SizeStockMap; sizes: string[] };
+    try {
+      data = await adminFetchJson("/api/admin/inventory", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          variantId: row.id,
+          sizeStock: draft.sizeStock,
+          sizes: sizes.length ? sizes : ["S", "M", "L"],
+        }),
+      });
+    } catch {
       alert("Failed to update stock");
+      setSavingId(null);
       return;
     }
-    const data = await res.json();
+    setSavingId(null);
     setRows((prev) =>
       prev.map((r) =>
         r.id === row.id
@@ -139,6 +144,12 @@ export default function AdminInventoryPage() {
       <p className="font-ui text-sm text-pearl-muted mt-1">
         Per-color variant stock — toggle sizes and save
       </p>
+
+      {loadError && (
+        <p className="admin-brand-error font-ui mt-3" role="alert">
+          {loadError}
+        </p>
+      )}
 
       <div className="flex flex-col sm:flex-row gap-3 mt-6">
         <input
@@ -210,6 +221,7 @@ export default function AdminInventoryPage() {
                 <SizeStockManager
                   sizes={draft.sizes}
                   sizeStock={draft.sizeStock}
+                  showHeader={false}
                   onToggle={(s) => toggleSize(row.id, s)}
                   onQty={(s, qty) => setQty(row.id, s, qty)}
                   onApply={(next) =>

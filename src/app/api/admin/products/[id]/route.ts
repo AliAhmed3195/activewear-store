@@ -61,6 +61,12 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
+  const existing = await prisma.product.findUnique({
+    where: { id },
+    select: { slug: true },
+  });
+  if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
   const body = await req.json();
   const parsed = productFormSchema.safeParse(body);
   if (!parsed.success) {
@@ -109,7 +115,9 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
     include: productInclude,
   });
 
-  invalidateCatalogCache();
+  invalidateCatalogCache({
+    productSlugs: [existing.slug, data.slug].filter(Boolean),
+  });
   return NextResponse.json(product);
 }
 
@@ -118,7 +126,13 @@ export async function DELETE(_req: NextRequest, { params }: RouteParams) {
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
+  const existing = await prisma.product.findUnique({
+    where: { id },
+    select: { slug: true },
+  });
+  if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
   await prisma.product.delete({ where: { id } });
-  invalidateCatalogCache();
+  invalidateCatalogCache({ productSlugs: [existing.slug] });
   return NextResponse.json({ success: true });
 }

@@ -19,7 +19,13 @@ export async function POST(req: NextRequest) {
     });
 
     if (!order) {
-      return NextResponse.json({ error: "Order not found" }, { status: 404 });
+      return NextResponse.json(
+        {
+          error:
+            "No order matches that number and email. Check both fields and try again, or contact support if you need help.",
+        },
+        { status: 404 }
+      );
     }
 
     return NextResponse.json({
@@ -32,7 +38,8 @@ export async function POST(req: NextRequest) {
       country: order.country,
       totalCents: order.totalCents,
       currency: order.currency,
-      createdAt: order.createdAt,
+      createdAt: order.createdAt.toISOString(),
+      updatedAt: order.updatedAt.toISOString(),
       items: order.items.map((i) => ({
         productName: i.productName,
         size: i.size,

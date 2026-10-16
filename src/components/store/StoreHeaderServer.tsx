@@ -1,5 +1,6 @@
 import StoreHeader from "@/components/store/StoreHeader";
 import { getCategoryPreviews } from "@/lib/queries";
+import { getStoreBranding } from "@/lib/store-branding";
 
 /** RSC wrapper — ships categories without a client /api round-trip. */
 export default async function StoreHeaderServer() {
@@ -12,5 +13,6 @@ export default async function StoreHeaderServer() {
   } catch {
     /* DB not ready */
   }
-  return <StoreHeader categories={categories} />;
+  const { logoUrl } = await getStoreBranding();
+  return <StoreHeader categories={categories} logoUrl={logoUrl} />;
 }

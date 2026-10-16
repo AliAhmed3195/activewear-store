@@ -104,6 +104,6 @@ export async function POST(req: NextRequest) {
     include: productInclude,
   });
 
-  invalidateCatalogCache();
+  invalidateCatalogCache({ productSlugs: [data.slug] });
   return NextResponse.json(product, { status: 201 });
 }

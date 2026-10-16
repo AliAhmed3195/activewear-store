@@ -62,6 +62,12 @@ NEXT_PUBLIC_STORE_URL="https://yourdomain.com"
 
 Adjust rates and shipping in `.env.example`.
 
+## Production deployment
+
+- Set `AUTH_SECRET`, `AUTH_URL`, and `NEXT_PUBLIC_STORE_URL` to your live domain.
+- **Uploads** (`public/uploads/products`, `public/uploads/brand`) are stored on the server filesystem. Use a VPS, Docker volume, or sync uploads to object storage (S3/R2) — serverless hosts without persistent disk will lose uploaded images on redeploy.
+- Run `npm run build` && `npm start` (or your process manager). Ensure PostgreSQL is reachable and run `npm run db:push` once on the production database before seeding.
+
 ## Project structure
 
 ```

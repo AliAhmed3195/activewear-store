@@ -24,6 +24,27 @@ const EMPTY_SIZE_COUNTS: Record<string, number> = {
   XXL: 0,
 };
 
+const SHOP_SIZES = new Set(Object.keys(EMPTY_SIZE_COUNTS));
+
+/** Products that have the given size in stock (per sizeStock JSON or legacy total stock). */
+async function productIdsInStockForSize(size: string): Promise<string[]> {
+  const rows = await prisma.$queryRaw<{ id: string }[]>`
+    SELECT DISTINCT p.id
+    FROM "Product" p
+    INNER JOIN "ProductVariant" v ON v."productId" = p.id
+    WHERE p.status = 'ACTIVE'::"ProductStatus"
+      AND ${size} = ANY(v.sizes)
+      AND (
+        COALESCE((v."sizeStock"->>${size})::int, 0) > 0
+        OR (
+          (v."sizeStock" IS NULL OR v."sizeStock"::text = '{}' OR v."sizeStock"::text = 'null')
+          AND v.stock > 0
+        )
+      )
+  `;
+  return rows.map((r) => r.id);
+}
+
 export const getCategories = unstable_cache(
   async () =>
     withDbFallback(() => prisma.category.findMany({ orderBy: { position: "asc" } }), []),
@@ -40,6 +61,13 @@ export const getSizeProductCounts = unstable_cache(
         JOIN "Product" p ON p.id = v."productId"
         CROSS JOIN UNNEST(v.sizes) AS size
         WHERE p.status = 'ACTIVE'::"ProductStatus"
+          AND (
+            COALESCE((v."sizeStock"->>size)::int, 0) > 0
+            OR (
+              (v."sizeStock" IS NULL OR v."sizeStock"::text = '{}' OR v."sizeStock"::text = 'null')
+              AND v.stock > 0
+            )
+          )
         GROUP BY size
       `;
       const counts: Record<string, number> = { ...EMPTY_SIZE_COUNTS };
@@ -257,8 +285,12 @@ export async function getProducts(filters: ShopFilters = {}): Promise<PaginatedP
           where.gender = filters.gender as Prisma.EnumGenderFilter;
         }
 
-        if (filters.size) {
-          where.variants = { some: { sizes: { has: filters.size } } };
+        if (filters.size && SHOP_SIZES.has(filters.size)) {
+          const ids = await productIdsInStockForSize(filters.size);
+          if (ids.length === 0) {
+            return { products: [], total: 0, page, totalPages: 1 };
+          }
+          where.id = { in: ids };
         }
 
         if (filters.color) {

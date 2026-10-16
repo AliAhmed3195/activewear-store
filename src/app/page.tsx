@@ -1,6 +1,6 @@
 import Link from "next/link";
 import StoreHeader from "@/components/store/StoreHeaderServer";
-import StoreFooter from "@/components/store/StoreFooter";
+import StoreFooter from "@/components/store/StoreFooterServer";
 import ProductCard from "@/components/store/ProductCard";
 import ReviewsSection from "@/components/store/ReviewsSection";
 import {
@@ -10,7 +10,15 @@ import {
   getApprovedReviews,
 } from "@/lib/queries";
 import { storeName, storeTagline } from "@/lib/utils";
-import { IconLock, IconGlobe, IconGem, IconHeadset } from "@/components/ui/icons";
+import {
+  IconArrowRight,
+  IconGem,
+  IconGlobe,
+  IconHeadset,
+  IconLock,
+  IconRuler,
+  IconShield,
+} from "@/components/ui/icons";
 
 export const revalidate = 120;
 
@@ -23,14 +31,17 @@ const TRUST = [
 
 const STORY = [
   {
+    icon: IconGem,
     title: "Train-ready fabrics",
     body: "Lightweight, flexible materials that stay comfortable through heavy sessions and daily wear.",
   },
   {
+    icon: IconRuler,
     title: "Cut for movement",
     body: "Athletic silhouettes engineered for gym, run, and street — no stiff costume feel.",
   },
   {
+    icon: IconShield,
     title: "Built to last",
     body: "Durable construction and clean finishing so your rotation stays sharp wash after wash.",
   },
@@ -38,14 +49,30 @@ const STORY = [
 
 const CAT_IMAGES: Record<string, string> = {
   "mens-tops":
-    "url(https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=900&q=80)",
+    "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1000&q=85",
   "mens-bottoms":
-    "url(https://images.unsplash.com/photo-1556906781-9a412961c28c?auto=format&fit=crop&w=900&q=80)",
+    "https://images.unsplash.com/photo-1556906781-9a412961c28c?auto=format&fit=crop&w=1000&q=85",
   "womens-tops":
-    "url(https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=900&q=80)",
+    "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1000&q=85",
   "sets-coords":
-    "url(https://images.unsplash.com/photo-1599058945522-28d584b6f14f?auto=format&fit=crop&w=900&q=80)",
+    "https://images.unsplash.com/photo-1517836357463-d6dfe875ebe0?auto=format&fit=crop&w=1000&q=85",
 };
+
+const CAT_IMAGE_FALLBACKS = [
+  "photo-1571902943202-507ec2618e8f",
+  "photo-1544367567-0f2fcb009e0b",
+  "photo-1571019614242-c5c5dee9f50b",
+  "photo-1594381898411-5e2c99501087",
+];
+
+function categoryImageUrl(slug: string) {
+  const mapped = CAT_IMAGES[slug];
+  if (mapped) return mapped;
+  let hash = 0;
+  for (let i = 0; i < slug.length; i++) hash = (hash * 31 + slug.charCodeAt(i)) >>> 0;
+  const id = CAT_IMAGE_FALLBACKS[hash % CAT_IMAGE_FALLBACKS.length];
+  return `https://images.unsplash.com/${id}?auto=format&fit=crop&w=1000&q=85`;
+}
 
 export default async function HomePage() {
   const name = storeName();
@@ -95,31 +122,44 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section className="section-pad">
+        <section className="section-pad peak-cat-section">
           <div className="container-luxury">
-            <div className="peak-section-head">
+            <div className="peak-section-head peak-cat-head">
               <div>
                 <p className="peak-section-kicker">Shop by category</p>
-                <h2 className="peak-section-title section-title text-pearl">Find your gear</h2>
+                <h2 className="peak-cat-title font-display">Find your gear</h2>
               </div>
-              <Link href="/shop" className="nav-link text-sm">
+              <Link href="/shop" className="peak-cat-viewall font-ui">
                 View all
+                <IconArrowRight size={14} aria-hidden="true" />
               </Link>
             </div>
-            <div className="peak-cat-grid">
-              {categories.map((cat) => (
+            <div
+              className="peak-cat-grid"
+              data-count={categories.length > 8 ? 8 : categories.length}
+            >
+              {categories.slice(0, 8).map((cat, i) => (
                 <Link
                   key={cat.id}
                   href={`/shop?category=${cat.slug}`}
-                  className="peak-cat-card"
+                  className={`peak-cat-card${i === 0 ? " peak-cat-card--lead" : ""}`}
                   style={{
-                    ["--cat-image" as string]: CAT_IMAGES[cat.slug] ?? CAT_IMAGES["mens-tops"],
+                    ["--cat-image" as string]: `url(${categoryImageUrl(cat.slug)})`,
                   }}
                 >
+                  <span className="peak-cat-card-media" aria-hidden="true" />
+                  <span className="peak-cat-card-scrim" aria-hidden="true" />
                   <div className="peak-cat-card-body">
+                    <span className="peak-cat-card-eyebrow font-ui">Explore</span>
                     <h3>{cat.name}</h3>
-                    <p className="font-ui">{cat.productCount} products</p>
+                    <p className="font-ui">
+                      {cat.productCount} {cat.productCount === 1 ? "product" : "products"}
+                    </p>
                   </div>
+                  <span className="peak-cat-card-cta font-ui" aria-hidden="true">
+                    Shop
+                    <IconArrowRight size={14} />
+                  </span>
                 </Link>
               ))}
             </div>
@@ -155,29 +195,43 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section className="section-pad border-t border-[var(--divider)]">
+        <section className="section-pad peak-story-section border-t border-[var(--divider)]">
           <div className="container-luxury peak-story">
-            <div className="peak-story-visual" role="img" aria-label="Athlete training in performance wear" />
-            <div>
+            <div className="peak-story-media">
+              <div
+                className="peak-story-visual"
+                role="img"
+                aria-label="Athlete training in performance wear"
+              />
+              <span className="peak-story-media-tag font-ui">Peak standard</span>
+            </div>
+            <div className="peak-story-copy">
               <p className="peak-section-kicker">Why Peak</p>
-              <h2 className="peak-section-title section-title text-pearl">
-                Gear that keeps up
-              </h2>
-              <p className="font-ui text-pearl-muted mt-4 max-w-md leading-relaxed">
+              <h2 className="peak-story-title font-display">Gear that keeps up</h2>
+              <p className="peak-story-lead font-ui">
                 We design activewear for people who train with intent — clean lines, serious comfort,
                 and performance details you feel the moment you move.
               </p>
-              <div className="peak-story-points">
+              <ul className="peak-story-points">
                 {STORY.map((item, i) => (
-                  <div key={item.title} className="peak-story-point">
-                    <span className="peak-story-index">{String(i + 1).padStart(2, "0")}</span>
-                    <div>
-                      <strong className="text-pearl">{item.title}</strong>
-                      <span className="font-ui">{item.body}</span>
+                  <li key={item.title} className="peak-story-point">
+                    <span className="peak-story-index" aria-hidden="true">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="peak-story-point-icon" aria-hidden="true">
+                      <item.icon size={18} />
+                    </span>
+                    <div className="peak-story-point-body">
+                      <strong>{item.title}</strong>
+                      <p className="font-ui">{item.body}</p>
                     </div>
-                  </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
+              <Link href="/about" className="peak-story-cta font-ui">
+                Read our story
+                <IconArrowRight size={16} aria-hidden="true" />
+              </Link>
             </div>
           </div>
         </section>

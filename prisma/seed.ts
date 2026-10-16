@@ -9,15 +9,16 @@ import { computeProductPriceCache } from "../src/lib/product-mapper";
 
 const prisma = new PrismaClient();
 
+/** Local demo assets — run `npm run demo:images` to refresh files from CDN sources. */
 const IMG = {
-  tee: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80",
-  jogger: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=80",
-  shorts: "https://images.unsplash.com/photo-1594381898411-846e7d193883?w=800&q=80",
-  tank: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=800&q=80",
-  hoodie: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=800&q=80",
-  crop: "https://images.unsplash.com/photo-1518310383805-640c2de311b2?w=800&q=80",
-  coord: "https://images.unsplash.com/photo-1541534741688-6079c06471ca?w=800&q=80",
-  legging: "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=800&q=80",
+  tee: "/uploads/products/performance-oversized-tee.jpg",
+  jogger: "/uploads/products/grt-performance-joggers.jpg",
+  shorts: "/uploads/products/split-running-shorts.jpg",
+  tank: "/uploads/products/stealth-performance-tank.jpg",
+  hoodie: "/uploads/products/alpha-roar-hoodie.jpg",
+  crop: "/uploads/products/acid-wash-crop-top.jpg",
+  coord: "/uploads/products/nomad-knit-coord.jpg",
+  legging: "/uploads/products/ankle-length-legging.jpg",
 };
 
 const categories = [

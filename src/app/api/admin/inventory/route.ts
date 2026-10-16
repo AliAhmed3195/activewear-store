@@ -101,10 +101,14 @@ export async function PATCH(req: NextRequest) {
       stock: true,
       sizeStock: true,
       sizes: true,
+      product: { select: { slug: true } },
     },
   });
 
+  const slug = variant.product?.slug;
+  const { product: _product, ...payload } = variant;
+
   const { invalidateCatalogCache } = await import("@/lib/cache");
-  invalidateCatalogCache();
-  return NextResponse.json(variant);
+  invalidateCatalogCache({ productSlugs: slug ? [slug] : [] });
+  return NextResponse.json(payload);
 }
