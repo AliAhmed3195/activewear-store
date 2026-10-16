@@ -315,11 +315,13 @@ export async function getProducts(filters: ShopFilters = {}): Promise<PaginatedP
 
 export async function getProductsByIds(ids: string[]): Promise<Product[]> {
   if (ids.length === 0) return [];
-  const products = await prisma.product.findMany({
-    where: { id: { in: ids }, status: ProductStatus.ACTIVE },
-    include: productInclude,
-  });
-  return products.map(mapProduct);
+  return withDbFallback(async () => {
+    const products = await prisma.product.findMany({
+      where: { id: { in: ids }, status: ProductStatus.ACTIVE },
+      include: productInclude,
+    });
+    return products.map(mapProduct);
+  }, []);
 }
 
 export async function getApprovedReviews(limit = 12): Promise<Review[]> {

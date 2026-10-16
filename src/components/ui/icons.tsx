@@ -181,6 +181,25 @@ export function IconInstagram({ className, size = 20 }: IconProps) {
   );
 }
 
+export function IconTruck({ className, size = 20 }: IconProps) {
+  return (
+    <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M3 7h11v10H3zM14 10h4l3 3v4h-7" />
+      <circle cx="7.5" cy="18" r="1.5" />
+      <circle cx="17.5" cy="18" r="1.5" />
+    </svg>
+  );
+}
+
+export function IconShield({ className, size = 20 }: IconProps) {
+  return (
+    <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M12 3l8 3v6c0 5-3.4 8.2-8 9-4.6-.8-8-4-8-9V6l8-3z" />
+      <path d="M9 12l2 2 4-4" />
+    </svg>
+  );
+}
+
 export function IconPinterest({ className, size = 20 }: IconProps) {
   return (
     <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="currentColor">

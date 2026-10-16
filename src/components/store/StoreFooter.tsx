@@ -95,6 +95,7 @@ export default function StoreFooter() {
             <Link href="/shop">All Products</Link>
             <Link href="/shop?sort=newest">New Arrivals</Link>
             <Link href="/shop?sort=rating">Best Sellers</Link>
+            <Link href="/wishlist">Wishlist</Link>
             <Link href="/shop?category=mens-tops">Men&apos;s Tops</Link>
             <Link href="/shop?category=mens-bottoms">Men&apos;s Bottoms</Link>
             <Link href="/shop?category=womens-tops">Women&apos;s Tops</Link>
