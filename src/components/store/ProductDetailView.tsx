@@ -1,14 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import ProductMediaStage from "@/components/store/ProductMediaStage";
 import VariantProductActions, { ProductMeta } from "@/components/store/VariantProductActions";
+import SizeGuideModal from "@/components/store/SizeGuideModal";
 import { IconGlobe, IconLock, IconGem, IconHeadset } from "@/components/ui/icons";
+import { FABRIC_QUALITY_POINTS, matchFabric } from "@/lib/fabric-catalog";
 import type { Product } from "@/types";
 
 const ASSURANCES = [
   { icon: IconLock, text: "Cash on Delivery", sub: "Pay on arrival" },
-  { icon: IconGem, text: "Quality Checked", sub: "Performance fabrics" },
+  { icon: IconGem, text: "Quality Fabric", sub: "Performance knits" },
   { icon: IconHeadset, text: "Easy Returns", sub: "Hassle-free support" },
   { icon: IconGlobe, text: "Fast Dispatch", sub: "Nationwide shipping" },
 ];
@@ -19,10 +22,14 @@ interface ProductDetailViewProps {
 
 export default function ProductDetailView({ product }: ProductDetailViewProps) {
   const [variant, setVariant] = useState(product.variants[0]);
+  const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
   const [openAccordions, setOpenAccordions] = useState<Record<string, boolean>>({
     details: true,
+    fabric: true,
     shipping: false,
   });
+
+  const fabric = matchFabric(product.material);
 
   if (!variant) {
     return <p className="text-pearl-muted">Product unavailable.</p>;
@@ -30,6 +37,10 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
 
   const toggle = (key: string) =>
     setOpenAccordions((prev) => ({ ...prev, [key]: !prev[key] }));
+
+  const isBottom =
+    product.category?.slug?.includes("bottom") ||
+    /jogger|short|trouser|pant/i.test(product.name);
 
   return (
     <div className="pdp-layout">
@@ -50,6 +61,19 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
           variant={variant}
           onVariantChange={setVariant}
         />
+
+        <div className="pdp-helper-row">
+          <button
+            type="button"
+            className="pdp-text-btn"
+            onClick={() => setSizeGuideOpen(true)}
+          >
+            Size guide
+          </button>
+          <Link href="/custom" className="pdp-text-btn">
+            Custom / team print
+          </Link>
+        </div>
 
         <div className="pdp-trust">
           {ASSURANCES.map((a) => (
@@ -86,6 +110,46 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
             )}
           </div>
 
+          <div className={`pdp-acc ${openAccordions.fabric ? "is-open" : ""}`}>
+            <button type="button" className="pdp-acc-btn" onClick={() => toggle("fabric")}>
+              <span>Fabric & quality</span>
+              <span aria-hidden="true">{openAccordions.fabric ? "−" : "+"}</span>
+            </button>
+            {openAccordions.fabric && (
+              <div className="pdp-acc-body">
+                {fabric ? (
+                  <>
+                    <p>
+                      <strong>{fabric.name}</strong> · {fabric.gsm} · {fabric.feel}
+                    </p>
+                    <p>
+                      Built for {fabric.productType.toLowerCase()}. Starting from PKR{" "}
+                      {fabric.ratePkr.toLocaleString("en-PK")} (fabric program rate).
+                    </p>
+                    <ul>
+                      {fabric.highlights.map((h) => (
+                        <li key={h}>{h}</li>
+                      ))}
+                    </ul>
+                  </>
+                ) : (
+                  <>
+                    <p>
+                      VIFACTIVE pieces use performance knits chosen for breathability, soft
+                      handfeel, and full-sublimation print quality — ideal for training and team
+                      kits.
+                    </p>
+                    <ul>
+                      {FABRIC_QUALITY_POINTS.map((p) => (
+                        <li key={p}>{p}</li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+
           <div className={`pdp-acc ${openAccordions.shipping ? "is-open" : ""}`}>
             <button type="button" className="pdp-acc-btn" onClick={() => toggle("shipping")}>
               <span>Shipping & returns</span>
@@ -101,6 +165,12 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
           </div>
         </div>
       </aside>
+
+      <SizeGuideModal
+        open={sizeGuideOpen}
+        onClose={() => setSizeGuideOpen(false)}
+        defaultTab={isBottom ? "trouser" : "shirt"}
+      />
     </div>
   );
 }

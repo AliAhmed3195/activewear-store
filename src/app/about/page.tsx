@@ -57,7 +57,7 @@ export default function AboutPage() {
             <h2 className="section-title mt-3">Move better. Look ready.</h2>
             <p className="section-desc">
               Great gear should disappear into the work — flexible fit, clean design, and fabrics
-              that keep up when the session gets serious. That is the standard behind every Peak drop.
+              that keep up when the session gets serious. That is the standard behind every VIFACTIVE drop.
             </p>
             <p className="section-desc">
               From men&apos;s and women&apos;s essentials to coordinated sets, we keep the edit focused so
@@ -83,8 +83,8 @@ export default function AboutPage() {
 
         <section className="section-tight">
           <Reveal className="section-head">
-            <p className="section-eyebrow">Why Peak</p>
-            <h2 className="section-title">The Peak standard</h2>
+            <p className="section-eyebrow">Why VIFACTIVE</p>
+            <h2 className="section-title">The VIFACTIVE standard</h2>
             <div className="section-divider" />
           </Reveal>
           <div className="values-grid">

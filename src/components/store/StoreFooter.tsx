@@ -27,7 +27,7 @@ export default function StoreFooter() {
           <span className="peak-section-kicker">Training updates</span>
           <h2 className="section-title mt-3">New drops & restocks</h2>
           <p className="section-desc">
-            Be first when fresh Peak pieces land — arrivals, restocks, and limited drops.
+            Be first when fresh VIFACTIVE pieces land — arrivals, restocks, and team drops.
           </p>
           {subscribed ? (
             <p className="font-display text-lg text-copper mt-6">
@@ -95,6 +95,7 @@ export default function StoreFooter() {
             <Link href="/shop">All Products</Link>
             <Link href="/shop?sort=newest">New Arrivals</Link>
             <Link href="/shop?sort=rating">Best Sellers</Link>
+            <Link href="/custom">Custom / Teams</Link>
             <Link href="/shop?category=mens-tops">Men&apos;s Tops</Link>
             <Link href="/shop?category=mens-bottoms">Men&apos;s Bottoms</Link>
             <Link href="/shop?category=womens-tops">Women&apos;s Tops</Link>

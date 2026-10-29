@@ -204,3 +204,43 @@ model AdminUser {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 }
+
+enum CustomOrderStatus {
+  NEW
+  QUOTED
+  CONFIRMED
+  IN_PRODUCTION
+  SHIPPED
+  DONE
+  CANCELLED
+}
+
+/// Team / custom merch quote requests (names, numbers, logos).
+model CustomOrder {
+  id              String            @id @default(cuid())
+  reference       String            @unique
+  name            String
+  email           String
+  phone           String
+  organization    String?
+  productType     String
+  quantity        Int
+  sizeBreakdown   String?
+  fabricId        String?
+  printNames      Boolean           @default(false)
+  printNumbers    Boolean           @default(false)
+  printLogo       Boolean           @default(false)
+  placement       String?
+  colorPreference String?
+  deadline        String?
+  notes           String?
+  logoUrl         String?
+  status          CustomOrderStatus @default(NEW)
+  quotedPricePkr  Int?
+  adminNotes      String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@index([status, createdAt])
+  @@index([email])
+}

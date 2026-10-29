@@ -1,15 +1,22 @@
+"use client";
+
+import Image from "next/image";
 import { storeName } from "@/lib/utils";
 
-/** Text wordmark — keeps brand clear without legacy logo assets. */
 export default function BrandLogo({ className }: { className?: string }) {
   const name = storeName();
-  const [main, ...rest] = name.split(" ");
-  const sub = rest.join(" ") || "Activewear";
 
   return (
-    <span className={`brand-wordmark ${className ?? ""}`.trim()}>
-      <span className="brand-wordmark-main">{main}</span>
-      <span className="brand-wordmark-sub">{sub}</span>
+    <span className={`brand-logo ${className ?? ""}`.trim()}>
+      <Image
+        src="/brand/vifactive-logo.png"
+        alt={name}
+        width={160}
+        height={56}
+        className="brand-logo-img"
+        priority
+      />
+      <span className="sr-only">{name}</span>
     </span>
   );
 }

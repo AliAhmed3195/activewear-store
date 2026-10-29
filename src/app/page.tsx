@@ -235,13 +235,13 @@ export default async function HomePage() {
 
         {/* Lookband */}
         <section className="peak-lookband" aria-label="Training look">
-          <div className="peak-lookband-media" role="img" aria-label="Athlete in Peak activewear" />
+          <div className="peak-lookband-media" role="img" aria-label="Athlete in VIFACTIVE activewear" />
           <div className="peak-lookband-copy">
             <p className="peak-section-kicker peak-kicker-on-dark">Train harder</p>
             <h2>Move with intent</h2>
             <p className="font-ui">
-              From warm-up to cool-down — Peak pieces hold their shape, breathe when you push, and
-              look sharp enough for the street.
+              From warm-up to cool-down — VIFACTIVE pieces hold their shape, breathe when you push,
+              and look sharp enough for the street.
             </p>
             <div className="peak-lookband-actions">
               <Link href="/shop" className="btn-copper">
@@ -265,11 +265,11 @@ export default async function HomePage() {
               <span className="peak-story-badge">Engineered for reps</span>
             </div>
             <div>
-              <p className="peak-section-kicker">Why Peak</p>
+              <p className="peak-section-kicker">Why VIFACTIVE</p>
               <h2 className="peak-section-title section-title text-pearl">Gear that keeps up</h2>
               <p className="peak-section-sub font-ui" style={{ maxWidth: "28rem" }}>
-                Activewear for people who train with intent — clean lines, serious comfort, and
-                details you feel the moment you move.
+                Activewear for people who train with intent — performance fabrics, clean lines, and
+                custom team kits when you need names and logos.
               </p>
               <div className="peak-story-points">
                 {STORY.map((item, i) => (
@@ -282,9 +282,14 @@ export default async function HomePage() {
                   </div>
                 ))}
               </div>
-              <Link href="/shop" className="btn-copper peak-story-cta">
-                Shop Peak
-              </Link>
+              <div className="peak-story-cta-row">
+                <Link href="/shop" className="btn-copper peak-story-cta">
+                  Shop VIFACTIVE
+                </Link>
+                <Link href="/custom" className="peak-text-link">
+                  Custom / Teams →
+                </Link>
+              </div>
             </div>
           </div>
         </section>

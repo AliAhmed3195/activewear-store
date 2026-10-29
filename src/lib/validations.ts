@@ -106,6 +106,28 @@ export const orderLookupSchema = z.object({
   email: z.string().email(),
 });
 
+export const customOrderSchema = z.object({
+  name: z.string().min(2),
+  email: z.string().email(),
+  phone: z
+    .string()
+    .min(10)
+    .regex(/^[0-9+\-\s()]{10,20}$/, "Enter a valid phone number"),
+  organization: z.string().optional().nullable(),
+  productType: z.string().min(2),
+  quantity: z.number().int().min(6).max(5000),
+  sizeBreakdown: z.string().optional().nullable(),
+  fabricId: z.string().optional().nullable(),
+  printNames: z.boolean().default(false),
+  printNumbers: z.boolean().default(false),
+  printLogo: z.boolean().default(false),
+  placement: z.string().optional().nullable(),
+  colorPreference: z.string().optional().nullable(),
+  deadline: z.string().optional().nullable(),
+  notes: z.string().optional().nullable(),
+});
+
 export type ProductFormInput = z.infer<typeof productFormSchema>;
 export type CategoryFormInput = z.infer<typeof categoryFormSchema>;
 export type ReviewFormInput = z.infer<typeof reviewFormSchema>;
+export type CustomOrderInput = z.infer<typeof customOrderSchema>;

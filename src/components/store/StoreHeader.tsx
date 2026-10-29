@@ -18,7 +18,7 @@ interface CategoryLink {
 const NAV_LINKS = [
   { href: "/shop", label: "Shop All" },
   { href: "/shop?sort=newest", label: "New In" },
-  { href: "/shop?sort=rating", label: "Best Sellers" },
+  { href: "/custom", label: "Custom / Teams" },
   { href: "/about", label: "About" },
 ];
 
@@ -81,6 +81,7 @@ export default function StoreHeader({ categories = [] }: StoreHeaderProps) {
   const isActive = (href: string) => {
     if (href === "/shop") return pathname === "/shop";
     if (href.startsWith("/about")) return pathname.startsWith("/about");
+    if (href.startsWith("/custom")) return pathname.startsWith("/custom");
     return false;
   };
 
@@ -93,7 +94,7 @@ export default function StoreHeader({ categories = [] }: StoreHeaderProps) {
             <div key={loop} className="announcement-group">
               <span>Free Shipping on Qualifying Orders</span>
               <span className="dot">·</span>
-              <span>Performance Fabrics</span>
+              <span>Custom Team Kits</span>
               <span className="dot">·</span>
               <span>Ships Across Pakistan</span>
               <span className="dot">·</span>
@@ -113,7 +114,7 @@ export default function StoreHeader({ categories = [] }: StoreHeaderProps) {
       <header className={cn("store-header", scrolled && "store-header-scrolled")}>
         <div className="store-header-inner">
           <div className="header-left">
-            <Link href="/" className="store-brand" aria-label="Peak Activewear home">
+            <Link href="/" className="store-brand" aria-label="VIFACTIVE home">
               <BrandLogo className="store-brand-logo" />
             </Link>
           </div>

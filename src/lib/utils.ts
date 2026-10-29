@@ -1,11 +1,11 @@
 import type { StoreCurrency } from "@/types";
 
 export function storeName(): string {
-  return process.env.NEXT_PUBLIC_STORE_NAME ?? "Peak Activewear";
+  return process.env.NEXT_PUBLIC_STORE_NAME ?? "VIFACTIVE";
 }
 
 export function storeTagline(): string {
-  return process.env.NEXT_PUBLIC_STORE_TAGLINE ?? "Gear Up. Move Better.";
+  return process.env.NEXT_PUBLIC_STORE_TAGLINE ?? "Move Sharp. Stay Active.";
 }
 
 export function storeUrl(): string {
