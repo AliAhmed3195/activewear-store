@@ -10,6 +10,8 @@ import {
   getApprovedReviews,
 } from "@/lib/queries";
 import { storeName, storeTagline } from "@/lib/utils";
+import { FABRIC_OPTIONS } from "@/lib/fabric-catalog";
+import { getHeroUrl } from "@/lib/product-mapper";
 import { IconLock, IconGlobe, IconGem, IconHeadset } from "@/components/ui/icons";
 
 export const revalidate = 60;
@@ -17,7 +19,7 @@ export const revalidate = 60;
 const TRUST = [
   { icon: IconLock, n: "01", title: "Secure pay", desc: "COD, JazzCash, EasyPaisa & cards" },
   { icon: IconGlobe, n: "02", title: "Fast ship", desc: "Nationwide Pakistan · worldwide ready" },
-  { icon: IconGem, n: "03", title: "Pro fit", desc: "Breathable fabrics built to move" },
+  { icon: IconGem, n: "03", title: "Pro fabrics", desc: "Sublimation-ready performance knits" },
   { icon: IconHeadset, n: "04", title: "Real help", desc: "Track, update, get support fast" },
 ];
 
@@ -36,25 +38,22 @@ const STORY = [
   },
 ];
 
+/** Men / product-only imagery — no female model photos */
 const CAT_IMAGES: Record<string, string> = {
-  "mens-tops":
-    "url(https://images.unsplash.com/photo-1583454110551-21d2eb27fc31?auto=format&fit=crop&w=1400&q=80)",
+  "mens-tops": "url(/vifactive/exquisite-camo-front.jpg)",
   "mens-bottoms":
     "url(https://images.unsplash.com/photo-1556906781-9a412961c28c?auto=format&fit=crop&w=1200&q=80)",
-  // Category tile uses men training imagery (no female model photos)
-  "womens-tops":
-    "url(https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=1200&q=80)",
-  "sublimation-tees":
-    "url(https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=1200&q=80)",
+  "womens-tops": "url(/vifactive/exquisite-gradient.jpg)",
+  "sublimation-tees": "url(/vifactive/exquisite-scratch.jpg)",
   "sets-coords":
-    "url(https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1200&q=80)",
+    "url(https://images.unsplash.com/photo-1583454110551-21d2eb27fc31?auto=format&fit=crop&w=1200&q=80)",
 };
 
 const TICKER = [
   "Performance fabrics",
   "True-to-size fit",
   "COD across Pakistan",
-  "New drops weekly",
+  "Custom team print",
   "Gym · Run · Street",
 ];
 
@@ -84,6 +83,8 @@ export default async function HomePage() {
   const shopCategories = categories.filter((c) => !c.name.toLowerCase().includes("legacy"));
   const featured = shopCategories[0];
   const rest = shopCategories.slice(1);
+  const spotlight = newArrivals.slice(0, 1)[0];
+  const arrivalGrid = spotlight ? newArrivals.slice(1) : newArrivals;
 
   return (
     <>
@@ -93,6 +94,7 @@ export default async function HomePage() {
           <div className="peak-hero-media" aria-hidden="true" />
           <div className="peak-hero-grain" aria-hidden="true" />
           <div className="peak-hero-inner">
+            <p className="peak-hero-eyebrow">New season edit</p>
             <h1 className="peak-brand-mark">
               {name}
               <span>Performance Activewear</span>
@@ -105,8 +107,8 @@ export default async function HomePage() {
               <Link href="/shop" className="btn-copper">
                 Shop Collection
               </Link>
-              <Link href="/shop?sort=newest" className="btn-outline">
-                New Arrivals
+              <Link href="/custom" className="btn-outline">
+                Custom / Teams
               </Link>
             </div>
             <p className="peak-hero-meta font-ui">
@@ -130,7 +132,26 @@ export default async function HomePage() {
           </div>
         </div>
 
-        {/* Categories — editorial bento (not 4 equal cards) */}
+        <section className="peak-fabric-strip" aria-label="Fabric program">
+          <div className="container-luxury peak-fabric-strip-inner">
+            <div className="peak-fabric-strip-copy">
+              <p className="peak-section-kicker">Fabric program</p>
+              <h2 className="peak-fabric-strip-title">Built on performance knits</h2>
+            </div>
+            <div className="peak-fabric-pills">
+              {FABRIC_OPTIONS.slice(0, 5).map((f) => (
+                <span key={f.id} className="peak-fabric-pill">
+                  <strong>{f.name}</strong>
+                  <em>{f.gsm}</em>
+                </span>
+              ))}
+              <Link href="/custom" className="peak-fabric-pill is-link">
+                Custom kits →
+              </Link>
+            </div>
+          </div>
+        </section>
+
         <section className="section-pad peak-sec-cats">
           <div className="container-luxury">
             <div className="peak-section-head">
@@ -194,7 +215,6 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* Trust — dark promise band (not basic icon row) */}
         <section className="peak-promise" aria-label="Why shop with us">
           <div className="peak-promise-inner">
             {TRUST.map((t) => (
@@ -214,7 +234,6 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* New arrivals */}
         <section className="section-pad peak-sec-arrivals">
           <div className="container-luxury">
             <div className="peak-section-head">
@@ -229,15 +248,30 @@ export default async function HomePage() {
                 Shop new <span aria-hidden="true">→</span>
               </Link>
             </div>
+
+            {spotlight && (
+              <Link href={`/product/${spotlight.slug}`} className="peak-spotlight">
+                <div className="peak-spotlight-media">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={getHeroUrl(spotlight) || "/vifactive/exquisite-camo-front.jpg"} alt={spotlight.name} />
+                </div>
+                <div className="peak-spotlight-copy">
+                  <p className="peak-section-kicker">Editor’s pick</p>
+                  <h3>{spotlight.name}</h3>
+                  <p>{spotlight.tagline}</p>
+                  <span className="peak-bento-go">View product →</span>
+                </div>
+              </Link>
+            )}
+
             <div className="product-grid">
-              {newArrivals.map((p, i) => (
+              {arrivalGrid.map((p, i) => (
                 <ProductCard key={p.id} product={p} priority={i < 4} />
               ))}
             </div>
           </div>
         </section>
 
-        {/* Lookband */}
         <section className="peak-lookband" aria-label="Training look">
           <div className="peak-lookband-media" role="img" aria-label="Athlete in VIFACTIVE activewear" />
           <div className="peak-lookband-copy">
@@ -258,7 +292,6 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* Story */}
         <section className="section-pad peak-sec-story">
           <div className="container-luxury peak-story">
             <div

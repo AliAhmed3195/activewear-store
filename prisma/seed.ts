@@ -26,15 +26,12 @@ const IMG = {
   pro04: `${P}/pro-tee-04.jpg`,
   jogger:
     "https://images.unsplash.com/photo-1556906781-9a412961c28c?auto=format&fit=crop&w=800&q=80",
-  shorts:
-    "https://images.unsplash.com/photo-1594381898411-846e7d193883?auto=format&fit=crop&w=800&q=80",
+  shorts: `${P}/tee-08.jpg`,
   menTrain:
     "https://images.unsplash.com/photo-1583454110551-21d2eb27fc31?auto=format&fit=crop&w=800&q=80",
   // Product-only shots (no female model photos)
-  womensTee:
-    "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=800&q=80",
-  womensTank:
-    "https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=800&q=80",
+  womensTee: `${P}/exquisite-gradient.jpg`,
+  womensTank: `${P}/pro-tee-04.jpg`,
 };
 
 const categories = [
@@ -483,6 +480,22 @@ async function main() {
     where: { slug: { in: ["acid-wash-crop-top", "ankle-length-legging"] } },
     data: { status: ProductStatus.DRAFT, featured: false },
   });
+
+  // Swap any leftover female-model Unsplash URLs to product shots
+  const femaleModelUrls = [
+    "photo-1571019614242",
+    "photo-1594381898411",
+    "photo-1518310383802",
+    "photo-1518611012118",
+    "photo-1544367560",
+    "photo-1518310383802",
+  ];
+  for (const frag of femaleModelUrls) {
+    await prisma.productImage.updateMany({
+      where: { url: { contains: frag } },
+      data: { url: IMG.womensTee },
+    });
+  }
 
   for (const cat of categories) {
     await prisma.category.upsert({

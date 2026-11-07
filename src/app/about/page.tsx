@@ -74,7 +74,7 @@ export default function AboutPage() {
             style={{
               minHeight: 420,
               background:
-                "linear-gradient(160deg, rgba(7,8,9,.2), rgba(7,8,9,.55)), url(https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80) center/cover",
+                "linear-gradient(160deg, rgba(7,8,9,.2), rgba(7,8,9,.55)), url(https://images.unsplash.com/photo-1583454110551-21d2eb27fc31?auto=format&fit=crop&w=1200&q=80) center/cover",
             }}
           >
             <span className="editorial-media-tag">Train Ready</span>

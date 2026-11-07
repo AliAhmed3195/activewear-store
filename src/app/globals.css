@@ -4657,7 +4657,7 @@ h3,
   border: 1px solid var(--divider);
   background:
     linear-gradient(160deg, rgba(7, 8, 9, 0.15), rgba(7, 8, 9, 0.55)),
-    url("https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=1400&q=80")
+    url("https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1400&q=80")
       center / cover no-repeat;
 }
 
@@ -7281,4 +7281,262 @@ a.pdp-text-btn {
     linear-gradient(180deg, rgba(5, 6, 7, 0.15) 0%, rgba(5, 6, 7, 0.88) 100%),
     url("https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=2000&q=80")
       center / cover no-repeat !important;
+}
+
+/* ============================================================
+   VIFACTIVE PREMIUM V4 — polish + men/product imagery only
+   ============================================================ */
+
+.peak-hero-eyebrow {
+  display: inline-block;
+  margin: 0 0 0.85rem;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  animation: peak-rise 0.95s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.peak-hero-media {
+  background:
+    linear-gradient(105deg, rgba(5, 6, 7, 0.92) 0%, rgba(5, 6, 7, 0.5) 45%, rgba(5, 6, 7, 0.2) 100%),
+    linear-gradient(180deg, rgba(5, 6, 7, 0.1) 0%, rgba(5, 6, 7, 0.88) 100%),
+    url("https://images.unsplash.com/photo-1583454110551-21d2eb27fc31?auto=format&fit=crop&w=2000&q=80")
+      center / cover no-repeat !important;
+}
+
+.peak-fabric-strip {
+  border-bottom: 1px solid var(--divider);
+  background: #fff;
+  padding: 1.35rem 0;
+}
+
+.peak-fabric-strip-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+}
+
+.peak-fabric-strip-title {
+  margin: 0;
+  font-family: var(--font-display-face), "Arial Narrow", sans-serif;
+  font-size: clamp(1.15rem, 2vw, 1.45rem);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.peak-fabric-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.peak-fabric-pill {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--divider);
+  background: #f8fafc;
+  min-width: 6.5rem;
+}
+
+.peak-fabric-pill strong {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #111827;
+}
+
+.peak-fabric-pill em {
+  font-style: normal;
+  font-size: 0.68rem;
+  color: #6b7280;
+}
+
+.peak-fabric-pill.is-link {
+  text-decoration: none;
+  background: #111827;
+  border-color: #111827;
+  justify-content: center;
+}
+
+.peak-fabric-pill.is-link,
+.peak-fabric-pill.is-link strong {
+  color: #fff;
+}
+
+.peak-spotlight {
+  display: grid;
+  gap: 0;
+  margin-bottom: 1.75rem;
+  border: 1px solid var(--divider);
+  background: #111827;
+  color: #fff;
+  text-decoration: none;
+  overflow: hidden;
+}
+
+@media (min-width: 860px) {
+  .peak-spotlight {
+    grid-template-columns: 1.15fr 0.85fr;
+    min-height: 360px;
+  }
+}
+
+.peak-spotlight-media {
+  min-height: 240px;
+  background: #e8ecf0;
+}
+
+.peak-spotlight-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease;
+}
+
+.peak-spotlight:hover .peak-spotlight-media img {
+  transform: scale(1.04);
+}
+
+.peak-spotlight-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 1.5rem 1.35rem 1.75rem;
+}
+
+@media (min-width: 860px) {
+  .peak-spotlight-copy {
+    padding: 2rem 2.25rem;
+  }
+}
+
+.peak-spotlight-copy h3 {
+  margin: 0;
+  font-family: var(--font-display-face), "Arial Narrow", sans-serif;
+  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+.peak-spotlight-copy p {
+  margin: 0;
+  color: rgba(248, 250, 252, 0.72);
+  max-width: 28rem;
+  line-height: 1.5;
+}
+
+.peak-spotlight .peak-section-kicker {
+  color: #d4d4d8 !important;
+}
+
+.peak-spotlight .peak-bento-go {
+  margin-top: 0.5rem;
+  align-self: flex-start;
+}
+
+.peak-theme .store-header {
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.peak-theme .store-header-scrolled {
+  box-shadow: 0 10px 30px rgba(16, 20, 24, 0.08);
+}
+
+.collections-dropdown {
+  min-width: 280px;
+  padding: 0.85rem 0.65rem 0.65rem;
+  border: 1px solid rgba(16, 20, 24, 0.1);
+  box-shadow: 0 24px 48px -28px rgba(16, 20, 24, 0.45);
+  background: #fff;
+}
+
+.collections-dropdown-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem 0.75rem;
+  font-size: 0.88rem;
+  transition: background 0.15s, color 0.15s;
+}
+
+.collections-dropdown-link:hover {
+  background: #f4f5f7;
+  color: #111827;
+}
+
+.peak-theme .product-card {
+  background: #fff;
+}
+
+.peak-theme .product-card-media {
+  background:
+    linear-gradient(180deg, #eef1f4 0%, #e4e8ec 100%);
+}
+
+.peak-theme .product-card:hover {
+  border-color: rgba(17, 24, 39, 0.35);
+  box-shadow: 0 22px 40px -26px rgba(16, 20, 24, 0.4);
+  transform: translateY(-3px);
+}
+
+.shop-hero {
+  padding: 2.25rem 0 1.75rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--divider);
+  background:
+    radial-gradient(ellipse 50% 80% at 0% 0%, rgba(17, 24, 39, 0.04), transparent 55%);
+}
+
+.peak-lookband-media {
+  background:
+    linear-gradient(120deg, rgba(17, 24, 39, 0.25), rgba(17, 24, 39, 0.15)),
+    url(https://images.unsplash.com/photo-1583454110551-21d2eb27fc31?auto=format&fit=crop&w=1400&q=80)
+      center / cover no-repeat !important;
+}
+
+.peak-story-visual {
+  background:
+    linear-gradient(160deg, rgba(7, 8, 9, 0.05), rgba(7, 8, 9, 0.45)),
+    url("https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1400&q=80")
+      center / cover no-repeat !important;
+}
+
+.peak-theme .newsletter {
+  border-top: 1px solid var(--divider);
+}
+
+.brand-logo-img {
+  height: 44px;
+  max-width: 168px;
+}
+
+.pdp-page {
+  background:
+    radial-gradient(ellipse 50% 35% at 0% 0%, rgba(17, 24, 39, 0.035), transparent 55%),
+    var(--bg);
+}
+
+.pdp-info {
+  box-shadow: 0 24px 50px -32px rgba(16, 20, 24, 0.4);
+}
+
+@media (max-width: 700px) {
+  .peak-fabric-strip-inner {
+    align-items: start;
+  }
+
+  .peak-spotlight-copy {
+    padding: 1.25rem 1.1rem 1.4rem;
+  }
 }
