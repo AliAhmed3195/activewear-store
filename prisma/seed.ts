@@ -9,40 +9,52 @@ import { computeProductPriceCache } from "../src/lib/product-mapper";
 
 const prisma = new PrismaClient();
 
+const P = "/vifactive";
+
 const IMG = {
-  tee: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80",
-  jogger: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=80",
-  shorts: "https://images.unsplash.com/photo-1594381898411-846e7d193883?w=800&q=80",
-  tank: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=800&q=80",
-  hoodie: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=800&q=80",
-  crop: "https://images.unsplash.com/photo-1518310383805-640c2de311b2?w=800&q=80",
-  coord: "https://images.unsplash.com/photo-1541534741688-6079c06471ca?w=800&q=80",
-  legging: "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=800&q=80",
+  camoFront: `${P}/exquisite-camo-front.jpg`,
+  camoBack: `${P}/exquisite-camo-back.jpg`,
+  gradient: `${P}/exquisite-gradient.jpg`,
+  scratch: `${P}/exquisite-scratch.jpg`,
+  tee04: `${P}/tee-04.jpg`,
+  tee06: `${P}/tee-06.jpg`,
+  tee07: `${P}/tee-07.jpg`,
+  tee08: `${P}/tee-08.jpg`,
+  proGreen: `${P}/pro-tee-green.jpg`,
+  pro02: `${P}/pro-tee-02.jpg`,
+  pro03: `${P}/pro-tee-03.jpg`,
+  pro04: `${P}/pro-tee-04.jpg`,
+  jogger:
+    "https://images.unsplash.com/photo-1556906781-9a412961c28c?auto=format&fit=crop&w=800&q=80",
+  shorts:
+    "https://images.unsplash.com/photo-1594381898411-846e7d193883?auto=format&fit=crop&w=800&q=80",
+  menTrain:
+    "https://images.unsplash.com/photo-1583454110551-21d2eb27fc31?auto=format&fit=crop&w=800&q=80",
 };
 
 const categories = [
   {
     slug: "mens-tops",
     name: "Men's Tops",
-    description: "Performance tees, tanks, and hoodies built for training.",
+    description: "Performance tees and training tops for men.",
     position: 0,
   },
   {
     slug: "mens-bottoms",
     name: "Men's Bottoms",
-    description: "Joggers, shorts, and track pants for every session.",
+    description: "Joggers and shorts built for training.",
     position: 1,
   },
   {
-    slug: "womens-tops",
-    name: "Women's Tops",
-    description: "Crop tops, tanks, and performance tops.",
+    slug: "sublimation-tees",
+    name: "Sublimation Tees",
+    description: "Full sublimation men's tees — fabric program from VIFACTIVE.",
     position: 2,
   },
   {
     slug: "sets-coords",
-    name: "Sets & Co-ords",
-    description: "Matching activewear sets for gym and street.",
+    name: "Training Sets",
+    description: "Matched men's training looks.",
     position: 3,
   },
 ];
@@ -58,6 +70,7 @@ type VariantSeed = {
   sizes: string[];
   stockPerSize: number;
   image: string;
+  imageBack?: string;
 };
 
 type ProductSeed = {
@@ -73,49 +86,215 @@ type ProductSeed = {
   variants: VariantSeed[];
 };
 
+const SIZES = ["S", "M", "L", "XL", "XXL"];
+
+/** Prices from client fabric rate sheet (PKR) × 100 for cents */
 const products: ProductSeed[] = [
   {
-    slug: "performance-oversized-tee",
-    name: "Performance Oversized Tee",
-    tagline: "Relaxed fit. Zero compromise.",
+    slug: "exquisite-blue-camo-tee",
+    name: "Exquisite Blue Camo Tee",
+    tagline: "Full sublimation · athletic fit",
     description:
-      "Premium cotton-blend oversized tee with moisture-wicking finish. Drop-shoulder cut for unrestricted movement during training and everyday wear.",
-    material: "85% Polyester, 15% Spandex",
-    gender: Gender.UNISEX,
+      "Men's full-sublimation performance tee with all-over blue camo print and Exquisite chest mark. Soft cool handfeel — ideal for gym, run, and team kits.",
+    material: "Popcorn Lycra",
+    gender: Gender.MEN,
+    categorySlug: "sublimation-tees",
+    badge: ProductBadge.NEW,
+    featured: true,
+    variants: [
+      {
+        colorName: "Blue Camo",
+        colorSlug: "blue-camo",
+        colorHex: "#2563eb",
+        priceCentsPkr: 210000,
+        priceCentsUsd: 749,
+        sizes: SIZES,
+        stockPerSize: 10,
+        image: IMG.camoFront,
+        imageBack: IMG.camoBack,
+      },
+    ],
+  },
+  {
+    slug: "exquisite-cyan-gradient-tee",
+    name: "Exquisite Cyan Gradient Tee",
+    tagline: "Gradient print · butter soft",
+    description:
+      "Men's sublimation tee with cyan-to-navy gradient and Exquisite branding. Smooth butter fabric for all-day training comfort.",
+    material: "Butter",
+    gender: Gender.MEN,
+    categorySlug: "sublimation-tees",
+    badge: ProductBadge.BEST_SELLER,
+    featured: true,
+    variants: [
+      {
+        colorName: "Cyan Gradient",
+        colorSlug: "cyan-gradient",
+        colorHex: "#06b6d4",
+        priceCentsPkr: 125000,
+        priceCentsUsd: 449,
+        sizes: SIZES,
+        stockPerSize: 12,
+        image: IMG.gradient,
+      },
+    ],
+  },
+  {
+    slug: "exquisite-scratch-gradient-tee",
+    name: "Exquisite Scratch Gradient Tee",
+    tagline: "Distressed print · tricot knit",
+    description:
+      "Men's athletic tee with scratch texture over a cyan-to-teal gradient. Tricot construction for a classic sports finish.",
+    material: "Tricot",
+    gender: Gender.MEN,
+    categorySlug: "sublimation-tees",
+    featured: true,
+    variants: [
+      {
+        colorName: "Teal Gradient",
+        colorSlug: "teal-gradient",
+        colorHex: "#0f766e",
+        priceCentsPkr: 125000,
+        priceCentsUsd: 449,
+        sizes: SIZES,
+        stockPerSize: 10,
+        image: IMG.scratch,
+      },
+    ],
+  },
+  {
+    slug: "vifactive-pro-mesh-tee",
+    name: "VIFACTIVE Pro Mesh Tee",
+    tagline: "Breathable chawaldana mesh",
+    description:
+      "Lightweight men's mesh tee for high-output sessions. Soft, cool, and full-sublimation ready for custom names and numbers.",
+    material: "Mesh (Chawaldana)",
+    gender: Gender.MEN,
     categorySlug: "mens-tops",
     badge: ProductBadge.NEW,
     featured: true,
     variants: [
       {
-        colorName: "Black",
-        colorSlug: "black",
-        colorHex: "#111111",
-        priceCentsPkr: 229900,
-        priceCentsUsd: 2499,
-        compareAtCentsPkr: 311300,
-        compareAtCentsUsd: 3500,
-        sizes: ["S", "M", "L", "XL"],
-        stockPerSize: 12,
-        image: IMG.tee,
+        colorName: "Forest",
+        colorSlug: "forest",
+        colorHex: "#14532d",
+        priceCentsPkr: 110000,
+        priceCentsUsd: 399,
+        sizes: SIZES,
+        stockPerSize: 14,
+        image: IMG.proGreen,
       },
       {
-        colorName: "Navy",
-        colorSlug: "navy",
-        colorHex: "#1e3a5f",
-        priceCentsPkr: 229900,
-        priceCentsUsd: 2499,
-        sizes: ["S", "M", "L", "XL"],
-        stockPerSize: 10,
-        image: IMG.tee,
+        colorName: "Graphite",
+        colorSlug: "graphite",
+        colorHex: "#374151",
+        priceCentsPkr: 110000,
+        priceCentsUsd: 399,
+        sizes: SIZES,
+        stockPerSize: 12,
+        image: IMG.pro02,
       },
     ],
   },
   {
-    slug: "split-running-shorts",
-    name: "Men's Split Running Shorts",
-    tagline: "Built for speed sessions",
+    slug: "pk-dot-performance-tee",
+    name: "P.K Dot Performance Tee",
+    tagline: "Piqué texture · classic sports",
     description:
-      "Lightweight performance shorts with split hem design and inner brief. Quick-dry fabric keeps you cool on long runs and HIIT days.",
+      "Men's P.K Dot knit tee — soft classic handfeel with athletic silhouette. Built for gym and everyday wear.",
+    material: "P.K Dot",
+    gender: Gender.MEN,
+    categorySlug: "mens-tops",
+    featured: false,
+    variants: [
+      {
+        colorName: "Black",
+        colorSlug: "black",
+        colorHex: "#111111",
+        priceCentsPkr: 125000,
+        priceCentsUsd: 449,
+        sizes: SIZES,
+        stockPerSize: 12,
+        image: IMG.tee04,
+      },
+    ],
+  },
+  {
+    slug: "sk-training-tee",
+    name: "S.K Training Tee",
+    tagline: "Durable knit · soft handfeel",
+    description:
+      "Everyday men's training tee in S.K fabric (150–165 GSM). Soft, feeless wear for long sessions.",
+    material: "S.K",
+    gender: Gender.MEN,
+    categorySlug: "mens-tops",
+    featured: false,
+    variants: [
+      {
+        colorName: "Navy",
+        colorSlug: "navy",
+        colorHex: "#1e3a5f",
+        priceCentsPkr: 115000,
+        priceCentsUsd: 419,
+        sizes: SIZES,
+        stockPerSize: 12,
+        image: IMG.pro03,
+      },
+    ],
+  },
+  {
+    slug: "lycra-mesh-pro-tee",
+    name: "Lycra Mesh Pro Tee",
+    tagline: "Stretch mesh · recovery ready",
+    description:
+      "Premium men's lycra mesh tee with stretch and breathability. Full sublimation compatible for club and team print.",
+    material: "Lycra Mesh",
+    gender: Gender.MEN,
+    categorySlug: "sublimation-tees",
+    badge: ProductBadge.BEST_SELLER,
+    featured: true,
+    variants: [
+      {
+        colorName: "Steel",
+        colorSlug: "steel",
+        colorHex: "#64748b",
+        priceCentsPkr: 210000,
+        priceCentsUsd: 749,
+        sizes: SIZES,
+        stockPerSize: 8,
+        image: IMG.tee06,
+      },
+    ],
+  },
+  {
+    slug: "popcorn-lycra-club-tee",
+    name: "Popcorn Lycra Club Tee",
+    tagline: "Textured cool · team ready",
+    description:
+      "Popcorn Lycra men's club tee — soft and cool textured knit for custom print kits and daily training.",
+    material: "Popcorn Lycra",
+    gender: Gender.MEN,
+    categorySlug: "sublimation-tees",
+    featured: false,
+    variants: [
+      {
+        colorName: "White Print Ready",
+        colorSlug: "white",
+        colorHex: "#f8fafc",
+        priceCentsPkr: 210000,
+        priceCentsUsd: 749,
+        sizes: SIZES,
+        stockPerSize: 10,
+        image: IMG.tee07,
+      },
+    ],
+  },
+  {
+    slug: "vifactive-training-shorts",
+    name: "VIFACTIVE Training Shorts",
+    tagline: "Light. Fast. Men’s cut.",
+    description:
+      "Men's performance shorts with quick-dry feel for HIIT, run, and gym. True athletic fit.",
     material: "100% Polyester",
     gender: Gender.MEN,
     categorySlug: "mens-bottoms",
@@ -123,212 +302,73 @@ const products: ProductSeed[] = [
     featured: true,
     variants: [
       {
-        colorName: "Navy",
-        colorSlug: "navy",
-        colorHex: "#1e3a5f",
-        priceCentsPkr: 319900,
-        priceCentsUsd: 3499,
-        compareAtCentsPkr: 379900,
-        compareAtCentsUsd: 4200,
-        sizes: ["S", "M", "L", "XL"],
-        stockPerSize: 8,
-        image: IMG.shorts,
-      },
-      {
         colorName: "Black",
         colorSlug: "black",
         colorHex: "#111111",
-        priceCentsPkr: 319900,
-        priceCentsUsd: 3499,
+        priceCentsPkr: 149900,
+        priceCentsUsd: 549,
         sizes: ["S", "M", "L", "XL"],
-        stockPerSize: 6,
+        stockPerSize: 10,
         image: IMG.shorts,
       },
       {
-        colorName: "Grey",
-        colorSlug: "grey",
-        colorHex: "#6b7280",
-        priceCentsPkr: 319900,
-        priceCentsUsd: 3499,
+        colorName: "Navy",
+        colorSlug: "navy",
+        colorHex: "#1e3a5f",
+        priceCentsPkr: 149900,
+        priceCentsUsd: 549,
         sizes: ["S", "M", "L", "XL"],
-        stockPerSize: 5,
+        stockPerSize: 8,
         image: IMG.shorts,
       },
     ],
   },
   {
-    slug: "grt-performance-joggers",
-    name: "GRT Performance Joggers",
-    tagline: "Your go-to training joggers",
+    slug: "vifactive-performance-joggers",
+    name: "VIFACTIVE Performance Joggers",
+    tagline: "Train hard. Move clean.",
     description:
-      "Tapered athletic joggers with zip pockets and elastic waistband. Durable build for workouts, sports, and athleisure.",
+      "Men's tapered training joggers with stretch comfort for workouts and athleisure.",
     material: "90% Polyester, 10% Spandex",
     gender: Gender.MEN,
     categorySlug: "mens-bottoms",
     featured: true,
     variants: [
       {
-        colorName: "Grey",
-        colorSlug: "grey",
-        colorHex: "#6b7280",
-        priceCentsPkr: 299900,
-        priceCentsUsd: 3299,
-        compareAtCentsPkr: 361300,
-        compareAtCentsUsd: 4000,
-        sizes: ["S", "M", "L", "XL"],
-        stockPerSize: 10,
+        colorName: "Charcoal",
+        colorSlug: "charcoal",
+        colorHex: "#374151",
+        priceCentsPkr: 249900,
+        priceCentsUsd: 899,
+        sizes: ["S", "M", "L", "XL", "XXL"],
+        stockPerSize: 8,
         image: IMG.jogger,
       },
     ],
   },
   {
-    slug: "stealth-performance-tank",
-    name: "Stealth Performance Tank",
-    tagline: "Form-fitting muscle tank",
+    slug: "mens-training-set",
+    name: "Men's Training Set",
+    tagline: "Tee + shorts ready look",
     description:
-      "Sleeveless performance tank with breathable knit and athletic muscle fit. Ideal for lifting, cardio, and layering.",
-    material: "100% Polyester",
+      "Matched men's training set vibe — pair a VIFACTIVE tee with shorts for gym-to-street sessions.",
+    material: "Performance Knit",
     gender: Gender.MEN,
-    categorySlug: "mens-tops",
-    featured: false,
-    variants: [
-      {
-        colorName: "Black",
-        colorSlug: "black",
-        colorHex: "#111111",
-        priceCentsPkr: 179900,
-        priceCentsUsd: 1999,
-        sizes: ["S", "M", "L", "XL"],
-        stockPerSize: 15,
-        image: IMG.tank,
-      },
-    ],
-  },
-  {
-    slug: "acid-wash-crop-top",
-    name: "Acid Wash Crop Top",
-    tagline: "Street-ready performance",
-    description:
-      "Drop-shoulder crop top with acid wash finish. 100% cotton construction for breathable comfort during training and recovery.",
-    material: "100% Cotton",
-    gender: Gender.WOMEN,
-    categorySlug: "womens-tops",
-    badge: ProductBadge.NEW,
-    featured: true,
-    variants: [
-      {
-        colorName: "Pink",
-        colorSlug: "pink",
-        colorHex: "#ec4899",
-        priceCentsPkr: 239900,
-        priceCentsUsd: 2599,
-        sizes: ["XS", "S", "M", "L"],
-        stockPerSize: 8,
-        image: IMG.crop,
-      },
-      {
-        colorName: "Beige",
-        colorSlug: "beige",
-        colorHex: "#d4c4a8",
-        priceCentsPkr: 239900,
-        priceCentsUsd: 2599,
-        sizes: ["XS", "S", "M", "L"],
-        stockPerSize: 6,
-        image: IMG.crop,
-      },
-    ],
-  },
-  {
-    slug: "nomad-knit-coord",
-    name: "The Nomad Knit Co-ord",
-    tagline: "Effortless matching set",
-    description:
-      "Premium knit co-ord set with relaxed silhouette. Transitions seamlessly from gym to street with elevated comfort.",
-    material: "Cotton Blend Knit",
-    gender: Gender.UNISEX,
     categorySlug: "sets-coords",
     badge: ProductBadge.SALE,
-    featured: true,
-    variants: [
-      {
-        colorName: "Navy",
-        colorSlug: "navy",
-        colorHex: "#1e3a5f",
-        priceCentsPkr: 599900,
-        priceCentsUsd: 6499,
-        sizes: ["S", "M", "L", "XL"],
-        stockPerSize: 4,
-        image: IMG.coord,
-      },
-      {
-        colorName: "Asphalt",
-        colorSlug: "asphalt",
-        colorHex: "#374151",
-        priceCentsPkr: 599900,
-        priceCentsUsd: 6499,
-        sizes: ["S", "M", "L", "XL"],
-        stockPerSize: 3,
-        image: IMG.coord,
-      },
-    ],
-  },
-  {
-    slug: "alpha-roar-hoodie",
-    name: "Alpha Roar Hoodie",
-    tagline: "Warmth meets mobility",
-    description:
-      "Athletic-fit hoodie with soft-touch fabric. Built for workouts, streetwear, and recovery days.",
-    material: "Fleece Blend",
-    gender: Gender.MEN,
-    categorySlug: "mens-tops",
     featured: false,
     variants: [
       {
-        colorName: "Black",
-        colorSlug: "black",
+        colorName: "Black Set",
+        colorSlug: "black-set",
         colorHex: "#111111",
-        priceCentsPkr: 319900,
-        priceCentsUsd: 3499,
-        compareAtCentsPkr: 687500,
-        compareAtCentsUsd: 7500,
-        sizes: ["S", "M", "L", "XL", "XXL"],
-        stockPerSize: 6,
-        image: IMG.hoodie,
-      },
-    ],
-  },
-  {
-    slug: "ankle-length-legging",
-    name: "Ankle Length Legging",
-    tagline: "Slim fit. Full stretch.",
-    description:
-      "Mid-rise ankle leggings with Great Gears side typography. Poly-spandex blend for squat-proof flexibility.",
-    material: "Poly & Spandex Blend",
-    gender: Gender.WOMEN,
-    categorySlug: "womens-tops",
-    featured: false,
-    variants: [
-      {
-        colorName: "Sky Blue",
-        colorSlug: "sky-blue",
-        colorHex: "#38bdf8",
-        priceCentsPkr: 279900,
-        priceCentsUsd: 2999,
-        compareAtCentsPkr: 346300,
-        compareAtCentsUsd: 3800,
-        sizes: ["XS", "S", "M", "L"],
-        stockPerSize: 7,
-        image: IMG.legging,
-      },
-      {
-        colorName: "Maroon",
-        colorSlug: "maroon",
-        colorHex: "#7f1d1d",
-        priceCentsPkr: 279900,
-        priceCentsUsd: 2999,
-        sizes: ["XS", "S", "M", "L"],
+        priceCentsPkr: 329900,
+        priceCentsUsd: 1199,
+        compareAtCentsPkr: 379900,
+        compareAtCentsUsd: 1399,
+        sizes: ["S", "M", "L", "XL"],
         stockPerSize: 5,
-        image: IMG.legging,
+        image: IMG.menTrain,
       },
     ],
   },
@@ -341,34 +381,57 @@ const reviews = [
     body: "Fitting and fabric is very good, very comfortable to wear. Keep it up!",
   },
   {
-    authorName: "Mahvash Shehzad",
-    rating: 5,
-    body: "Great quality, items are exactly the same as shown in the pictures.",
-  },
-  {
-    authorName: "Mahnoor Hania",
-    rating: 5,
-    body: "The fit is exactly as shown. Comfortable enough to wear all day, premium fabric.",
-  },
-  {
     authorName: "Faisal Saleem",
     rating: 4,
     body: "Good product with good price. Would recommend for gym wear.",
-  },
-  {
-    authorName: "Aisha Faisal",
-    rating: 5,
-    body: "Very nice stuff. Soft and summer friendly — perfect for training.",
   },
   {
     authorName: "Ahmed Raza",
     rating: 4,
     body: "Good decent product. Fast delivery and quality stitching.",
   },
+  {
+    authorName: "Bilal Khan",
+    rating: 5,
+    body: "Sublimation print looks sharp. Soft fabric for long training sessions.",
+  },
+  {
+    authorName: "Hassan Ali",
+    rating: 5,
+    body: "True to size men's fit. Ordering team kits next.",
+  },
+  {
+    authorName: "Usman Sheikh",
+    rating: 5,
+    body: "Quality feels premium for the price. Will buy again.",
+  },
 ];
 
+const OLD_WOMEN_SLUGS = ["acid-wash-crop-top", "ankle-length-legging"];
+
 async function main() {
-  console.log("Seeding activewear store...");
+  console.log("Seeding VIFACTIVE men's catalog...");
+
+  // Hide legacy women category / products
+  await prisma.product.updateMany({
+    where: { OR: [{ gender: Gender.WOMEN }, { slug: { in: OLD_WOMEN_SLUGS } }] },
+    data: { status: ProductStatus.DRAFT, featured: false },
+  });
+
+  await prisma.category.upsert({
+    where: { slug: "womens-tops" },
+    update: {
+      name: "Sublimation Tees (legacy)",
+      description: "Replaced by sublimation-tees",
+      position: 99,
+    },
+    create: {
+      slug: "womens-tops",
+      name: "Sublimation Tees (legacy)",
+      description: "Replaced by sublimation-tees",
+      position: 99,
+    },
+  });
 
   for (const cat of categories) {
     await prisma.category.upsert({
@@ -387,6 +450,12 @@ async function main() {
       const sizeStock: Record<string, number> = {};
       for (const s of v.sizes) sizeStock[s] = v.stockPerSize;
       const stock = v.sizes.length * v.stockPerSize;
+      const images = [
+        { url: v.image, label: v.colorName, position: 0 },
+        ...(v.imageBack
+          ? [{ url: v.imageBack, label: `${v.colorName} back`, position: 1 }]
+          : []),
+      ];
       return {
         colorName: v.colorName,
         colorSlug: v.colorSlug,
@@ -399,7 +468,7 @@ async function main() {
         sizeStock,
         stock,
         position: idx,
-        images: [{ url: v.image, label: v.colorName, position: 0 }],
+        images,
       };
     });
 
@@ -476,6 +545,16 @@ async function main() {
     }
   }
 
+  // Draft any leftover non-men active products from old seed
+  await prisma.product.updateMany({
+    where: {
+      status: ProductStatus.ACTIVE,
+      gender: { not: Gender.MEN },
+      slug: { notIn: products.map((p) => p.slug) },
+    },
+    data: { status: ProductStatus.DRAFT, featured: false },
+  });
+
   await prisma.review.deleteMany();
   for (const r of reviews) {
     await prisma.review.create({
@@ -494,7 +573,7 @@ async function main() {
     create: { email, passwordHash: hash, name },
   });
 
-  console.log(`Seeded ${products.length} products, ${reviews.length} reviews`);
+  console.log(`Seeded ${products.length} men's products, ${reviews.length} reviews`);
   console.log(`Admin: ${email}`);
 }
 

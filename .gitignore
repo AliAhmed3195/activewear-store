@@ -52,3 +52,5 @@ next-env.d.ts
 /public/products
 
 .vercel
+
+tmp-design/

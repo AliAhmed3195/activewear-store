@@ -41,10 +41,10 @@ const CAT_IMAGES: Record<string, string> = {
     "url(https://images.unsplash.com/photo-1583454110551-21d2eb27fc31?auto=format&fit=crop&w=1400&q=80)",
   "mens-bottoms":
     "url(https://images.unsplash.com/photo-1556906781-9a412961c28c?auto=format&fit=crop&w=1200&q=80)",
-  "womens-tops":
-    "url(https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1200&q=80)",
+  "sublimation-tees":
+    "url(https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=1200&q=80)",
   "sets-coords":
-    "url(https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1200&q=80)",
+    "url(https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1200&q=80)",
 };
 
 const TICKER = [
@@ -78,8 +78,9 @@ export default async function HomePage() {
     console.error("[homepage] failed to load catalog", error);
   }
 
-  const featured = categories[0];
-  const rest = categories.slice(1);
+  const shopCategories = categories.filter((c) => c.slug !== "womens-tops");
+  const featured = shopCategories[0];
+  const rest = shopCategories.slice(1);
 
   return (
     <>
@@ -142,7 +143,7 @@ export default async function HomePage() {
               </Link>
             </div>
 
-            {categories.length > 0 && (
+            {shopCategories.length > 0 && (
               <div className="peak-bento">
                 {featured && (
                   <Link

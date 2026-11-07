@@ -60,8 +60,8 @@ export default function AboutPage() {
               that keep up when the session gets serious. That is the standard behind every VIFACTIVE drop.
             </p>
             <p className="section-desc">
-              From men&apos;s and women&apos;s essentials to coordinated sets, we keep the edit focused so
-              you can build a rotation that actually gets worn.
+              From men&apos;s performance tees to training bottoms and custom team kits, we keep the
+              edit focused so you can build a rotation that actually gets worn.
             </p>
             <div className="mt-8">
               <Link href="/shop" className="btn-copper">
