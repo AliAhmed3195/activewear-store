@@ -98,6 +98,7 @@ export default function StoreFooter() {
             <Link href="/custom">Custom / Teams</Link>
             <Link href="/shop?category=mens-tops">Men&apos;s Tops</Link>
             <Link href="/shop?category=mens-bottoms">Men&apos;s Bottoms</Link>
+            <Link href="/shop?category=womens-tops">Women&apos;s Tops</Link>
             <Link href="/shop?category=sublimation-tees">Sublimation Tees</Link>
             <Link href="/shop?category=sets-coords">Training Sets</Link>
           </div>

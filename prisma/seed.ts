@@ -30,6 +30,11 @@ const IMG = {
     "https://images.unsplash.com/photo-1594381898411-846e7d193883?auto=format&fit=crop&w=800&q=80",
   menTrain:
     "https://images.unsplash.com/photo-1583454110551-21d2eb27fc31?auto=format&fit=crop&w=800&q=80",
+  // Product-only shots (no female model photos)
+  womensTee:
+    "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=800&q=80",
+  womensTank:
+    "https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=800&q=80",
 };
 
 const categories = [
@@ -46,16 +51,22 @@ const categories = [
     position: 1,
   },
   {
-    slug: "sublimation-tees",
-    name: "Sublimation Tees",
-    description: "Full sublimation men's tees — fabric program from VIFACTIVE.",
+    slug: "womens-tops",
+    name: "Women's Tops",
+    description: "Performance tops for training and everyday.",
     position: 2,
   },
   {
-    slug: "sets-coords",
-    name: "Training Sets",
-    description: "Matched men's training looks.",
+    slug: "sublimation-tees",
+    name: "Sublimation Tees",
+    description: "Full sublimation tees — fabric program from VIFACTIVE.",
     position: 3,
+  },
+  {
+    slug: "sets-coords",
+    name: "Sets & Co-ords",
+    description: "Matching activewear sets for gym and street.",
+    position: 4,
   },
 ];
 
@@ -372,6 +383,63 @@ const products: ProductSeed[] = [
       },
     ],
   },
+  {
+    slug: "womens-performance-tee",
+    name: "Women's Performance Tee",
+    tagline: "Soft. Light. Train-ready.",
+    description:
+      "Women's performance tee with breathable knit and clean athletic cut for gym and everyday wear.",
+    material: "Butter",
+    gender: Gender.WOMEN,
+    categorySlug: "womens-tops",
+    badge: ProductBadge.NEW,
+    featured: true,
+    variants: [
+      {
+        colorName: "Black",
+        colorSlug: "black",
+        colorHex: "#111111",
+        priceCentsPkr: 125000,
+        priceCentsUsd: 449,
+        sizes: ["XS", "S", "M", "L", "XL"],
+        stockPerSize: 10,
+        image: IMG.womensTee,
+      },
+      {
+        colorName: "White",
+        colorSlug: "white",
+        colorHex: "#f8fafc",
+        priceCentsPkr: 125000,
+        priceCentsUsd: 449,
+        sizes: ["XS", "S", "M", "L", "XL"],
+        stockPerSize: 8,
+        image: IMG.womensTee,
+      },
+    ],
+  },
+  {
+    slug: "womens-training-tank",
+    name: "Women's Training Tank",
+    tagline: "Breathable support for sessions",
+    description:
+      "Women's training tank with soft stretch and light coverage — built for studio, run, and lift days.",
+    material: "Mesh (Chawaldana)",
+    gender: Gender.WOMEN,
+    categorySlug: "womens-tops",
+    featured: false,
+    variants: [
+      {
+        colorName: "Navy",
+        colorSlug: "navy",
+        colorHex: "#1e3a5f",
+        priceCentsPkr: 110000,
+        priceCentsUsd: 399,
+        sizes: ["XS", "S", "M", "L", "XL"],
+        stockPerSize: 10,
+        image: IMG.womensTank,
+      },
+    ],
+  },
 ];
 
 const reviews = [
@@ -407,30 +475,13 @@ const reviews = [
   },
 ];
 
-const OLD_WOMEN_SLUGS = ["acid-wash-crop-top", "ankle-length-legging"];
-
 async function main() {
-  console.log("Seeding VIFACTIVE men's catalog...");
+  console.log("Seeding VIFACTIVE catalog...");
 
-  // Hide legacy women category / products
+  // Archive old demo women's SKUs that used female model photos
   await prisma.product.updateMany({
-    where: { OR: [{ gender: Gender.WOMEN }, { slug: { in: OLD_WOMEN_SLUGS } }] },
+    where: { slug: { in: ["acid-wash-crop-top", "ankle-length-legging"] } },
     data: { status: ProductStatus.DRAFT, featured: false },
-  });
-
-  await prisma.category.upsert({
-    where: { slug: "womens-tops" },
-    update: {
-      name: "Sublimation Tees (legacy)",
-      description: "Replaced by sublimation-tees",
-      position: 99,
-    },
-    create: {
-      slug: "womens-tops",
-      name: "Sublimation Tees (legacy)",
-      description: "Replaced by sublimation-tees",
-      position: 99,
-    },
   });
 
   for (const cat of categories) {
@@ -545,16 +596,6 @@ async function main() {
     }
   }
 
-  // Draft any leftover non-men active products from old seed
-  await prisma.product.updateMany({
-    where: {
-      status: ProductStatus.ACTIVE,
-      gender: { not: Gender.MEN },
-      slug: { notIn: products.map((p) => p.slug) },
-    },
-    data: { status: ProductStatus.DRAFT, featured: false },
-  });
-
   await prisma.review.deleteMany();
   for (const r of reviews) {
     await prisma.review.create({
@@ -573,7 +614,7 @@ async function main() {
     create: { email, passwordHash: hash, name },
   });
 
-  console.log(`Seeded ${products.length} men's products, ${reviews.length} reviews`);
+  console.log(`Seeded ${products.length} products, ${reviews.length} reviews`);
   console.log(`Admin: ${email}`);
 }
 
