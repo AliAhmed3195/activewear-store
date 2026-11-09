@@ -6,7 +6,16 @@ import { useEffect, useState } from "react";
 import { useCart } from "@/lib/cart-context";
 import BrandLogo from "@/components/store/BrandLogo";
 import ScrollProgress from "@/components/store/ScrollProgress";
-import { IconBag, IconHeart, IconSearch, IconMenu, IconClose, IconChevronDown } from "@/components/ui/icons";
+import {
+  IconBag,
+  IconHeart,
+  IconSearch,
+  IconMenu,
+  IconClose,
+  IconChevronDown,
+  IconUser,
+} from "@/components/ui/icons";
+import { MAIN_NAV } from "@/lib/nav";
 import { cn } from "@/lib/utils";
 
 interface CategoryLink {
@@ -14,13 +23,6 @@ interface CategoryLink {
   name: string;
   productCount: number;
 }
-
-const NAV_LINKS = [
-  { href: "/shop", label: "Shop All" },
-  { href: "/shop?sort=newest", label: "New In" },
-  { href: "/custom", label: "Custom / Teams" },
-  { href: "/about", label: "About" },
-];
 
 interface StoreHeaderProps {
   categories?: CategoryLink[];
@@ -32,7 +34,8 @@ export default function StoreHeader({ categories = [] }: StoreHeaderProps) {
   const { toggleCart, wishlist, totalItems } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [collectionsOpen, setCollectionsOpen] = useState(false);
+  const [openGroup, setOpenGroup] = useState<string | null>(null);
+  const [mobileOpen, setMobileOpen] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [scrolled, setScrolled] = useState(false);
 
@@ -56,6 +59,7 @@ export default function StoreHeader({ categories = [] }: StoreHeaderProps) {
   useEffect(() => {
     setMenuOpen(false);
     setSearchOpen(false);
+    setOpenGroup(null);
   }, [pathname]);
 
   useEffect(() => {
@@ -63,6 +67,7 @@ export default function StoreHeader({ categories = [] }: StoreHeaderProps) {
       if (e.key === "Escape") {
         setSearchOpen(false);
         setMenuOpen(false);
+        setOpenGroup(null);
       }
     };
     window.addEventListener("keydown", onKey);
@@ -76,13 +81,6 @@ export default function StoreHeader({ categories = [] }: StoreHeaderProps) {
     const q = query.trim();
     setSearchOpen(false);
     router.push(q ? `/shop?q=${encodeURIComponent(q)}` : "/shop");
-  };
-
-  const isActive = (href: string) => {
-    if (href === "/shop") return pathname === "/shop";
-    if (href.startsWith("/about")) return pathname.startsWith("/about");
-    if (href.startsWith("/custom")) return pathname.startsWith("/custom");
-    return false;
   };
 
   return (
@@ -120,51 +118,54 @@ export default function StoreHeader({ categories = [] }: StoreHeaderProps) {
           </div>
 
           <nav className="header-nav" aria-label="Primary">
-            <div
-              className="relative"
-              onMouseEnter={() => setCollectionsOpen(true)}
-              onMouseLeave={() => setCollectionsOpen(false)}
-            >
-              <button
-                type="button"
-                className="header-nav-link flex items-center gap-1"
-                onClick={() => router.push("/shop")}
-              >
-                Collections
-                <IconChevronDown size={12} />
-              </button>
-              {collectionsOpen && categories.length > 0 && (
-                <div className="collections-dropdown" role="menu">
-                  <p className="collections-dropdown-title">Shop collections</p>
-                  <div>
-                    {categories.map((cat) => (
-                      <Link
-                        key={cat.slug}
-                        href={`/shop?category=${cat.slug}`}
-                        className="collections-dropdown-link"
-                        role="menuitem"
-                      >
-                        <span>{cat.name}</span>
-                        <span>{cat.productCount}</span>
-                      </Link>
-                    ))}
-                    <Link href="/shop" className="collections-dropdown-link collections-dropdown-all">
-                      <span>View all products</span>
-                      <span>→</span>
-                    </Link>
-                  </div>
+            {MAIN_NAV.map((group) =>
+              group.children?.length ? (
+                <div
+                  key={group.label}
+                  className="relative"
+                  onMouseEnter={() => setOpenGroup(group.label)}
+                  onMouseLeave={() => setOpenGroup(null)}
+                >
+                  <button
+                    type="button"
+                    className="header-nav-link flex items-center gap-1"
+                    onClick={() => {
+                      if (group.href) router.push(group.href);
+                      setOpenGroup((v) => (v === group.label ? null : group.label));
+                    }}
+                    aria-expanded={openGroup === group.label}
+                  >
+                    {group.label}
+                    <IconChevronDown size={12} />
+                  </button>
+                  {openGroup === group.label && (
+                    <div className="collections-dropdown nav-mega" role="menu">
+                      <p className="collections-dropdown-title">{group.label}</p>
+                      <div>
+                        {group.children.map((child) => (
+                          <Link
+                            key={child.href}
+                            href={child.href}
+                            className="collections-dropdown-link"
+                            role="menuitem"
+                          >
+                            <span>{child.label}</span>
+                            <span>→</span>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                className={cn("header-nav-link", isActive(link.href) && "active")}
-              >
-                {link.label}
-              </Link>
-            ))}
+              ) : (
+                <Link key={group.label} href={group.href || "/shop"} className="header-nav-link">
+                  {group.label}
+                </Link>
+              )
+            )}
+            <Link href="/custom" className="header-nav-link">
+              Custom / Teams
+            </Link>
           </nav>
 
           <div className="header-actions">
@@ -176,6 +177,9 @@ export default function StoreHeader({ categories = [] }: StoreHeaderProps) {
             >
               <IconSearch size={18} />
             </button>
+            <Link href="/account" className="icon-btn relative hidden sm:flex" aria-label="My Account">
+              <IconUser size={18} />
+            </Link>
             <Link href="/shop" className="icon-btn relative hidden sm:flex" aria-label="Wishlist">
               <IconHeart size={18} />
               {wishlist.length > 0 && <span className="badge-count">{wishlist.length}</span>}
@@ -248,29 +252,71 @@ export default function StoreHeader({ categories = [] }: StoreHeaderProps) {
               </button>
             </div>
             <nav className="mobile-nav-links">
-              <Link href="/shop" className="mobile-nav-link">
-                Shop All
+              {MAIN_NAV.map((group) => (
+                <div key={group.label}>
+                  {group.children?.length ? (
+                    <>
+                      <button
+                        type="button"
+                        className="mobile-nav-link mobile-nav-toggle"
+                        onClick={() =>
+                          setMobileOpen((v) => (v === group.label ? null : group.label))
+                        }
+                      >
+                        <span>{group.label}</span>
+                        <IconChevronDown size={14} />
+                      </button>
+                      {mobileOpen === group.label &&
+                        group.children.map((child) => (
+                          <Link
+                            key={child.href}
+                            href={child.href}
+                            className="mobile-nav-link mobile-nav-link-sub"
+                            onClick={() => setMenuOpen(false)}
+                          >
+                            {child.label}
+                          </Link>
+                        ))}
+                    </>
+                  ) : (
+                    <Link
+                      href={group.href || "/shop"}
+                      className="mobile-nav-link"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      {group.label}
+                    </Link>
+                  )}
+                </div>
+              ))}
+              <Link href="/custom" className="mobile-nav-link" onClick={() => setMenuOpen(false)}>
+                Custom / Teams
               </Link>
-              <Link href="/shop?sort=newest" className="mobile-nav-link">
-                New In
+              <Link href="/account" className="mobile-nav-link" onClick={() => setMenuOpen(false)}>
+                Sign In / My Account
               </Link>
-              <Link href="/shop?sort=rating" className="mobile-nav-link">
-                Best Sellers
+              <Link href="/track" className="mobile-nav-link" onClick={() => setMenuOpen(false)}>
+                Order Tracking
+              </Link>
+              <Link href="/contact" className="mobile-nav-link" onClick={() => setMenuOpen(false)}>
+                Contact Us
+              </Link>
+              <Link href="/about" className="mobile-nav-link" onClick={() => setMenuOpen(false)}>
+                About Us
               </Link>
               {categories.length > 0 && (
-                <p className="mobile-nav-section">Collections</p>
+                <p className="mobile-nav-section">Live collections</p>
               )}
-              {categories.map((cat) => (
-                <Link key={cat.slug} href={`/shop?category=${cat.slug}`} className="mobile-nav-link mobile-nav-link-sub">
+              {categories.slice(0, 8).map((cat) => (
+                <Link
+                  key={cat.slug}
+                  href={`/shop?category=${cat.slug}`}
+                  className="mobile-nav-link mobile-nav-link-sub"
+                  onClick={() => setMenuOpen(false)}
+                >
                   {cat.name}
                 </Link>
               ))}
-              <Link href="/about" className="mobile-nav-link">
-                About
-              </Link>
-              <Link href="/track" className="mobile-nav-link mobile-nav-link-sub">
-                Order Tracking
-              </Link>
             </nav>
             <div className="mobile-nav-footer">
               <p>Nationwide Shipping · COD Available</p>

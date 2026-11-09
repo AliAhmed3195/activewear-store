@@ -25,6 +25,7 @@ const SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
 const GENDERS = [
   { value: "MEN", label: "Men" },
   { value: "WOMEN", label: "Women" },
+  { value: "KIDS", label: "Kids" },
   { value: "UNISEX", label: "Unisex" },
 ];
 

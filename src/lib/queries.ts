@@ -1,6 +1,6 @@
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
-import { Prisma, ProductStatus } from "@prisma/client";
+import { Gender, Prisma, ProductStatus } from "@prisma/client";
 import { prisma, withDbFallback } from "@/lib/db";
 import { mapProduct } from "@/lib/product-mapper";
 import type { PaginatedProducts, Product, Review, ShopFilters, StoreCurrency } from "@/types";
@@ -254,7 +254,7 @@ export async function getProducts(filters: ShopFilters = {}): Promise<PaginatedP
         }
 
         if (filters.gender) {
-          where.gender = filters.gender as Prisma.EnumGenderFilter;
+          where.gender = filters.gender as Gender;
         }
 
         if (filters.size) {

@@ -21,6 +21,7 @@ enum ProductBadge {
 enum Gender {
   MEN
   WOMEN
+  KIDS
   UNISEX
 }
 
@@ -203,6 +204,19 @@ model AdminUser {
   role         AdminRole @default(ADMIN)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
+}
+
+/// Storefront customer accounts (separate from admin).
+model Customer {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  phone        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([email])
 }
 
 enum CustomOrderStatus {

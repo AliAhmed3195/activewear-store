@@ -36,34 +36,82 @@ const IMG = {
 
 const categories = [
   {
-    slug: "mens-tops",
-    name: "Men's Tops",
-    description: "Performance tees and training tops for men.",
+    slug: "mens-polo-shirts",
+    name: "Men's Polo Shirts",
+    description: "Performance and casual polo shirts for men.",
     position: 0,
   },
   {
-    slug: "mens-bottoms",
-    name: "Men's Bottoms",
-    description: "Joggers and shorts built for training.",
+    slug: "mens-trousers",
+    name: "Men's Trousers",
+    description: "Joggers, shorts, and training trousers.",
     position: 1,
   },
   {
-    slug: "womens-tops",
-    name: "Women's Tops",
-    description: "Performance tops for training and everyday.",
+    slug: "mens-casual-wear",
+    name: "Men's Casual Wear",
+    description: "Everyday tees and casual activewear for men.",
     position: 2,
   },
   {
-    slug: "sublimation-tees",
-    name: "Sublimation Tees",
-    description: "Full sublimation tees — fabric program from VIFACTIVE.",
+    slug: "mens-sets",
+    name: "Men's Sets",
+    description: "Matching co-ord sets for men.",
     position: 3,
   },
   {
-    slug: "sets-coords",
-    name: "Sets & Co-ords",
-    description: "Matching activewear sets for gym and street.",
+    slug: "womens-polo-shirts",
+    name: "Women's Polo Shirts",
+    description: "Women's performance polo shirts.",
     position: 4,
+  },
+  {
+    slug: "womens-shirts",
+    name: "Women's Shirts",
+    description: "Training shirts and tops for women.",
+    position: 5,
+  },
+  {
+    slug: "womens-sets",
+    name: "Women's Sets",
+    description: "Matching women's activewear sets.",
+    position: 6,
+  },
+  {
+    slug: "womens-activewear",
+    name: "Women's Activewear",
+    description: "Tanks, tees, and training essentials for women.",
+    position: 7,
+  },
+  {
+    slug: "kids-bottoms",
+    name: "Kids Bottoms",
+    description: "Comfortable bottoms for kids.",
+    position: 8,
+  },
+  {
+    slug: "kids-shirts",
+    name: "Kids Shirts",
+    description: "Kids performance and casual shirts.",
+    position: 9,
+  },
+  {
+    slug: "kids-coords",
+    name: "Kids Co-ords / Sets",
+    description: "Matching sets for kids.",
+    position: 10,
+  },
+  {
+    slug: "kids-other",
+    name: "Other Kidswear",
+    description: "Additional kids activewear styles.",
+    position: 11,
+  },
+  {
+    slug: "accessories",
+    name: "Accessories",
+    description: "Caps, socks, and training accessories.",
+    position: 12,
   },
 ];
 
@@ -106,7 +154,7 @@ const products: ProductSeed[] = [
       "Men's full-sublimation performance tee with all-over blue camo print and Exquisite chest mark. Soft cool handfeel — ideal for gym, run, and team kits.",
     material: "Popcorn Lycra",
     gender: Gender.MEN,
-    categorySlug: "sublimation-tees",
+    categorySlug: "mens-casual-wear",
     badge: ProductBadge.NEW,
     featured: true,
     variants: [
@@ -131,7 +179,7 @@ const products: ProductSeed[] = [
       "Men's sublimation tee with cyan-to-navy gradient and Exquisite branding. Smooth butter fabric for all-day training comfort.",
     material: "Butter",
     gender: Gender.MEN,
-    categorySlug: "sublimation-tees",
+    categorySlug: "mens-casual-wear",
     badge: ProductBadge.BEST_SELLER,
     featured: true,
     variants: [
@@ -155,7 +203,7 @@ const products: ProductSeed[] = [
       "Men's athletic tee with scratch texture over a cyan-to-teal gradient. Tricot construction for a classic sports finish.",
     material: "Tricot",
     gender: Gender.MEN,
-    categorySlug: "sublimation-tees",
+    categorySlug: "mens-casual-wear",
     featured: true,
     variants: [
       {
@@ -178,7 +226,7 @@ const products: ProductSeed[] = [
       "Lightweight men's mesh tee for high-output sessions. Soft, cool, and full-sublimation ready for custom names and numbers.",
     material: "Mesh (Chawaldana)",
     gender: Gender.MEN,
-    categorySlug: "mens-tops",
+    categorySlug: "mens-polo-shirts",
     badge: ProductBadge.NEW,
     featured: true,
     variants: [
@@ -212,7 +260,7 @@ const products: ProductSeed[] = [
       "Men's P.K Dot knit tee — soft classic handfeel with athletic silhouette. Built for gym and everyday wear.",
     material: "P.K Dot",
     gender: Gender.MEN,
-    categorySlug: "mens-tops",
+    categorySlug: "mens-polo-shirts",
     featured: false,
     variants: [
       {
@@ -235,7 +283,7 @@ const products: ProductSeed[] = [
       "Everyday men's training tee in S.K fabric (150–165 GSM). Soft, feeless wear for long sessions.",
     material: "S.K",
     gender: Gender.MEN,
-    categorySlug: "mens-tops",
+    categorySlug: "mens-polo-shirts",
     featured: false,
     variants: [
       {
@@ -258,7 +306,7 @@ const products: ProductSeed[] = [
       "Premium men's lycra mesh tee with stretch and breathability. Full sublimation compatible for club and team print.",
     material: "Lycra Mesh",
     gender: Gender.MEN,
-    categorySlug: "sublimation-tees",
+    categorySlug: "mens-casual-wear",
     badge: ProductBadge.BEST_SELLER,
     featured: true,
     variants: [
@@ -282,7 +330,7 @@ const products: ProductSeed[] = [
       "Popcorn Lycra men's club tee — soft and cool textured knit for custom print kits and daily training.",
     material: "Popcorn Lycra",
     gender: Gender.MEN,
-    categorySlug: "sublimation-tees",
+    categorySlug: "mens-casual-wear",
     featured: false,
     variants: [
       {
@@ -305,7 +353,7 @@ const products: ProductSeed[] = [
       "Men's performance shorts with quick-dry feel for HIIT, run, and gym. True athletic fit.",
     material: "100% Polyester",
     gender: Gender.MEN,
-    categorySlug: "mens-bottoms",
+    categorySlug: "mens-trousers",
     badge: ProductBadge.BEST_SELLER,
     featured: true,
     variants: [
@@ -339,7 +387,7 @@ const products: ProductSeed[] = [
       "Men's tapered training joggers with stretch comfort for workouts and athleisure.",
     material: "90% Polyester, 10% Spandex",
     gender: Gender.MEN,
-    categorySlug: "mens-bottoms",
+    categorySlug: "mens-trousers",
     featured: true,
     variants: [
       {
@@ -362,7 +410,7 @@ const products: ProductSeed[] = [
       "Matched men's training set vibe — pair a VIFACTIVE tee with shorts for gym-to-street sessions.",
     material: "Performance Knit",
     gender: Gender.MEN,
-    categorySlug: "sets-coords",
+    categorySlug: "mens-sets",
     badge: ProductBadge.SALE,
     featured: false,
     variants: [
@@ -388,7 +436,7 @@ const products: ProductSeed[] = [
       "Women's performance tee with breathable knit and clean athletic cut for gym and everyday wear.",
     material: "Butter",
     gender: Gender.WOMEN,
-    categorySlug: "womens-tops",
+    categorySlug: "womens-activewear",
     badge: ProductBadge.NEW,
     featured: true,
     variants: [
@@ -422,7 +470,7 @@ const products: ProductSeed[] = [
       "Women's training tank with soft stretch and light coverage — built for studio, run, and lift days.",
     material: "Mesh (Chawaldana)",
     gender: Gender.WOMEN,
-    categorySlug: "womens-tops",
+    categorySlug: "womens-activewear",
     featured: false,
     variants: [
       {
@@ -434,6 +482,209 @@ const products: ProductSeed[] = [
         sizes: ["XS", "S", "M", "L", "XL"],
         stockPerSize: 10,
         image: IMG.womensTank,
+      },
+    ],
+  },
+  {
+    slug: "womens-studio-set",
+    name: "Women's Studio Set",
+    tagline: "Matching top + bottom",
+    description: "Women's matching studio set for training and everyday movement.",
+    material: "Butter",
+    gender: Gender.WOMEN,
+    categorySlug: "womens-sets",
+    badge: ProductBadge.BEST_SELLER,
+    featured: true,
+    variants: [
+      {
+        colorName: "Black Set",
+        colorSlug: "black-set",
+        colorHex: "#111111",
+        priceCentsPkr: 299900,
+        priceCentsUsd: 1099,
+        sizes: ["XS", "S", "M", "L", "XL"],
+        stockPerSize: 6,
+        image: IMG.scratch,
+      },
+    ],
+  },
+  {
+    slug: "womens-performance-polo",
+    name: "Women's Performance Polo",
+    tagline: "Clean polo cut · soft knit",
+    description: "Women's polo shirt with breathable knit and athletic fit for training and casual wear.",
+    material: "Butter",
+    gender: Gender.WOMEN,
+    categorySlug: "womens-polo-shirts",
+    badge: ProductBadge.NEW,
+    featured: true,
+    variants: [
+      {
+        colorName: "Black",
+        colorSlug: "black",
+        colorHex: "#111111",
+        priceCentsPkr: 145000,
+        priceCentsUsd: 529,
+        sizes: ["XS", "S", "M", "L", "XL"],
+        stockPerSize: 8,
+        image: IMG.pro04,
+      },
+    ],
+  },
+  {
+    slug: "womens-training-shirt",
+    name: "Women's Training Shirt",
+    tagline: "Light shirt for studio days",
+    description: "Soft women's training shirt with clean lines and easy movement.",
+    material: "Popcorn Lycra",
+    gender: Gender.WOMEN,
+    categorySlug: "womens-shirts",
+    featured: false,
+    variants: [
+      {
+        colorName: "White",
+        colorSlug: "white",
+        colorHex: "#f8fafc",
+        priceCentsPkr: 135000,
+        priceCentsUsd: 499,
+        sizes: ["XS", "S", "M", "L", "XL"],
+        stockPerSize: 8,
+        image: IMG.tee06,
+      },
+    ],
+  },
+  {
+    slug: "kids-performance-tee",
+    name: "Kids Performance Tee",
+    tagline: "Soft knit for active kids",
+    description: "Kids performance tee with soft stretch and durable print — built for play and practice.",
+    material: "Butter",
+    gender: Gender.KIDS,
+    categorySlug: "kids-shirts",
+    badge: ProductBadge.NEW,
+    featured: true,
+    variants: [
+      {
+        colorName: "Green",
+        colorSlug: "green",
+        colorHex: "#166534",
+        priceCentsPkr: 99000,
+        priceCentsUsd: 349,
+        sizes: ["XS", "S", "M", "L"],
+        stockPerSize: 12,
+        image: IMG.proGreen,
+      },
+    ],
+  },
+  {
+    slug: "kids-training-shorts",
+    name: "Kids Training Shorts",
+    tagline: "Light shorts for practice",
+    description: "Kids training shorts with stretch waist and quick-dry feel.",
+    material: "Mesh (Chawaldana)",
+    gender: Gender.KIDS,
+    categorySlug: "kids-bottoms",
+    featured: false,
+    variants: [
+      {
+        colorName: "Black",
+        colorSlug: "black",
+        colorHex: "#111111",
+        priceCentsPkr: 89000,
+        priceCentsUsd: 319,
+        sizes: ["XS", "S", "M", "L"],
+        stockPerSize: 12,
+        image: IMG.tee08,
+      },
+    ],
+  },
+  {
+    slug: "kids-coord-set",
+    name: "Kids Co-ord Set",
+    tagline: "Matching top + bottom",
+    description: "Kids matching co-ord set for training and everyday wear.",
+    material: "Butter",
+    gender: Gender.KIDS,
+    categorySlug: "kids-coords",
+    badge: ProductBadge.BEST_SELLER,
+    featured: true,
+    variants: [
+      {
+        colorName: "Navy Set",
+        colorSlug: "navy-set",
+        colorHex: "#1e3a5f",
+        priceCentsPkr: 189000,
+        priceCentsUsd: 679,
+        sizes: ["XS", "S", "M", "L"],
+        stockPerSize: 8,
+        image: IMG.pro02,
+      },
+    ],
+  },
+  {
+    slug: "kids-hoodie-essentials",
+    name: "Kids Hoodie Essential",
+    tagline: "Warm layer for cool days",
+    description: "Soft kids hoodie for warm-ups and everyday activewear.",
+    material: "Soft Knit",
+    gender: Gender.KIDS,
+    categorySlug: "kids-other",
+    featured: false,
+    variants: [
+      {
+        colorName: "Charcoal",
+        colorSlug: "charcoal",
+        colorHex: "#374151",
+        priceCentsPkr: 159000,
+        priceCentsUsd: 579,
+        sizes: ["XS", "S", "M", "L"],
+        stockPerSize: 8,
+        image: IMG.pro03,
+      },
+    ],
+  },
+  {
+    slug: "training-cap",
+    name: "Training Cap",
+    tagline: "Lightweight everyday cap",
+    description: "Breathable training cap with clean VIFACTIVE-ready look.",
+    material: "Cotton Blend",
+    gender: Gender.UNISEX,
+    categorySlug: "accessories",
+    badge: ProductBadge.BEST_SELLER,
+    featured: true,
+    variants: [
+      {
+        colorName: "Black",
+        colorSlug: "black",
+        colorHex: "#111111",
+        priceCentsPkr: 149000,
+        priceCentsUsd: 549,
+        sizes: ["OS"],
+        stockPerSize: 25,
+        image: IMG.tee07,
+      },
+    ],
+  },
+  {
+    slug: "performance-socks-pack",
+    name: "Performance Socks Pack",
+    tagline: "3-pack cushioned socks",
+    description: "Cushioned performance socks for training — sold as a 3-pack.",
+    material: "Athletic Knit",
+    gender: Gender.UNISEX,
+    categorySlug: "accessories",
+    featured: false,
+    variants: [
+      {
+        colorName: "Mixed",
+        colorSlug: "mixed",
+        colorHex: "#6b7280",
+        priceCentsPkr: 99000,
+        priceCentsUsd: 349,
+        sizes: ["S", "M", "L"],
+        stockPerSize: 20,
+        image: IMG.tee04,
       },
     ],
   },
@@ -504,6 +755,21 @@ async function main() {
       create: cat,
     });
   }
+
+  // Remove legacy category slugs from older storefront structure
+  await prisma.category.deleteMany({
+    where: {
+      slug: {
+        in: [
+          "mens-tops",
+          "mens-bottoms",
+          "womens-tops",
+          "sublimation-tees",
+          "sets-coords",
+        ],
+      },
+    },
+  });
 
   const categoryMap = Object.fromEntries(
     (await prisma.category.findMany()).map((c) => [c.slug, c.id])
@@ -637,3 +903,4 @@ main()
     process.exit(1);
   })
   .finally(() => prisma.$disconnect());
+

@@ -3,11 +3,14 @@ import StoreHeader from "@/components/store/StoreHeaderServer";
 import StoreFooter from "@/components/store/StoreFooter";
 import ProductCard from "@/components/store/ProductCard";
 import ReviewsSection from "@/components/store/ReviewsSection";
+import HomeSlider, { type HomeSlide } from "@/components/store/HomeSlider";
+import BestSellersSection from "@/components/store/BestSellersSection";
 import {
   getNewArrivals,
   getCategoryPreviews,
   getActiveProductCount,
   getApprovedReviews,
+  getBestSellers,
 } from "@/lib/queries";
 import { storeName, storeTagline } from "@/lib/utils";
 import { FABRIC_OPTIONS } from "@/lib/fabric-catalog";
@@ -38,15 +41,22 @@ const STORY = [
   },
 ];
 
-/** Men / product-only imagery — no female model photos */
 const CAT_IMAGES: Record<string, string> = {
-  "mens-tops": "url(/vifactive/exquisite-camo-front.jpg)",
-  "mens-bottoms":
+  "mens-polo-shirts": "url(/vifactive/exquisite-camo-front.jpg)",
+  "mens-trousers":
     "url(https://images.unsplash.com/photo-1556906781-9a412961c28c?auto=format&fit=crop&w=1200&q=80)",
-  "womens-tops": "url(/vifactive/exquisite-gradient.jpg)",
-  "sublimation-tees": "url(/vifactive/exquisite-scratch.jpg)",
-  "sets-coords":
+  "mens-casual-wear": "url(/vifactive/exquisite-gradient.jpg)",
+  "mens-sets":
     "url(https://images.unsplash.com/photo-1583454110551-21d2eb27fc31?auto=format&fit=crop&w=1200&q=80)",
+  "womens-polo-shirts": "url(/vifactive/pro-tee-04.jpg)",
+  "womens-shirts": "url(/vifactive/tee-06.jpg)",
+  "womens-sets": "url(/vifactive/exquisite-scratch.jpg)",
+  "womens-activewear": "url(/vifactive/exquisite-gradient.jpg)",
+  "kids-bottoms": "url(/vifactive/tee-08.jpg)",
+  "kids-shirts": "url(/vifactive/tee-04.jpg)",
+  "kids-coords": "url(/vifactive/pro-tee-green.jpg)",
+  "kids-other": "url(/vifactive/pro-tee-02.jpg)",
+  accessories: "url(/vifactive/pro-tee-03.jpg)",
 };
 
 const TICKER = [
@@ -61,6 +71,44 @@ function productLabel(count: number) {
   return `${count} ${count === 1 ? "product" : "products"}`;
 }
 
+const SLIDES: HomeSlide[] = [
+  {
+    id: "1",
+    eyebrow: "New season edit",
+    title: "Performance Activewear",
+    subtitle:
+      "Engineered for real training — breathable fabrics, sharp fit, studio to street.",
+    ctaLabel: "Shop Collection",
+    ctaHref: "/shop",
+    secondaryLabel: "Custom / Teams",
+    secondaryHref: "/custom",
+    image:
+      "https://images.unsplash.com/photo-1583454110551-21d2eb27fc31?auto=format&fit=crop&w=2000&q=80",
+  },
+  {
+    id: "2",
+    eyebrow: "Best sellers",
+    title: "Train-ready essentials",
+    subtitle: "Men, women, and kids gear with clear sizes and fast add-to-cart.",
+    ctaLabel: "Shop Best Sellers",
+    ctaHref: "/shop?sort=rating",
+    secondaryLabel: "Shop Men",
+    secondaryHref: "/shop?gender=MEN",
+    image: "/vifactive/exquisite-camo-front.jpg",
+  },
+  {
+    id: "3",
+    eyebrow: "Custom kits",
+    title: "Names, numbers, logos",
+    subtitle: "Team merch on pro fabrics — request a quote in minutes.",
+    ctaLabel: "Start Custom Order",
+    ctaHref: "/custom",
+    secondaryLabel: "View Fabrics",
+    secondaryHref: "/custom#fabrics",
+    image: "/vifactive/exquisite-gradient.jpg",
+  },
+];
+
 export default async function HomePage() {
   const name = storeName();
 
@@ -68,13 +116,15 @@ export default async function HomePage() {
   let categories: Awaited<ReturnType<typeof getCategoryPreviews>> = [];
   let productCount = 0;
   let reviews: Awaited<ReturnType<typeof getApprovedReviews>> = [];
+  let bestSellers: Awaited<ReturnType<typeof getBestSellers>> = [];
 
   try {
-    [newArrivals, categories, productCount, reviews] = await Promise.all([
+    [newArrivals, categories, productCount, reviews, bestSellers] = await Promise.all([
       getNewArrivals(8),
       getCategoryPreviews(),
       getActiveProductCount(),
       getApprovedReviews(6),
+      getBestSellers(8),
     ]);
   } catch (error) {
     console.error("[homepage] failed to load catalog", error);
@@ -82,44 +132,24 @@ export default async function HomePage() {
 
   const shopCategories = categories.filter((c) => !c.name.toLowerCase().includes("legacy"));
   const featured = shopCategories[0];
-  const rest = shopCategories.slice(1);
+  const rest = shopCategories.slice(1, 5);
   const spotlight = newArrivals.slice(0, 1)[0];
   const arrivalGrid = spotlight ? newArrivals.slice(1) : newArrivals;
+
+  const slides = SLIDES.map((s, i) =>
+    i === 0
+      ? {
+          ...s,
+          subtitle: `${storeTagline()} ${s.subtitle} ${productCount}+ styles · PKR & USD · COD.`,
+        }
+      : s
+  );
 
   return (
     <>
       <StoreHeader />
       <main>
-        <section className="peak-hero">
-          <div className="peak-hero-media" aria-hidden="true" />
-          <div className="peak-hero-grain" aria-hidden="true" />
-          <div className="peak-hero-inner">
-            <p className="peak-hero-eyebrow">New season edit</p>
-            <h1 className="peak-brand-mark">
-              {name}
-              <span>Performance Activewear</span>
-            </h1>
-            <p className="peak-hero-copy font-ui">
-              {storeTagline()} Engineered for real training — breathable fabrics, sharp fit, studio
-              to street.
-            </p>
-            <div className="peak-hero-actions">
-              <Link href="/shop" className="btn-copper">
-                Shop Collection
-              </Link>
-              <Link href="/custom" className="btn-outline">
-                Custom / Teams
-              </Link>
-            </div>
-            <p className="peak-hero-meta font-ui">
-              {productCount}+ styles · PKR & USD · Cash on delivery
-            </p>
-          </div>
-          <div className="peak-hero-scroll" aria-hidden="true">
-            <span>Scroll</span>
-            <i />
-          </div>
-        </section>
+        <HomeSlider slides={slides} brandName={name} />
 
         <div className="peak-ticker" aria-hidden="true">
           <div className="peak-ticker-track">
@@ -152,6 +182,8 @@ export default async function HomePage() {
           </div>
         </section>
 
+        <BestSellersSection products={bestSellers} />
+
         <section className="section-pad peak-sec-cats">
           <div className="container-luxury">
             <div className="peak-section-head">
@@ -159,7 +191,7 @@ export default async function HomePage() {
                 <p className="peak-section-kicker">Shop by category</p>
                 <h2 className="peak-section-title section-title text-pearl">Find your gear</h2>
                 <p className="peak-section-sub font-ui">
-                  Tops, bottoms, and co-ords cut for training — pick your lane.
+                  Men, women, kids, and accessories — clear menus, quick shopping.
                 </p>
               </div>
               <Link href="/shop" className="peak-text-link">
@@ -175,7 +207,7 @@ export default async function HomePage() {
                     className="peak-bento-main"
                     style={{
                       ["--cat-image" as string]:
-                        CAT_IMAGES[featured.slug] ?? CAT_IMAGES["mens-tops"],
+                        CAT_IMAGES[featured.slug] ?? CAT_IMAGES["mens-casual-wear"],
                     }}
                   >
                     <div className="peak-bento-shade" />
@@ -195,7 +227,7 @@ export default async function HomePage() {
                       className="peak-bento-tile"
                       style={{
                         ["--cat-image" as string]:
-                          CAT_IMAGES[cat.slug] ?? CAT_IMAGES["mens-tops"],
+                          CAT_IMAGES[cat.slug] ?? CAT_IMAGES["mens-casual-wear"],
                       }}
                     >
                       <div className="peak-bento-shade" />
@@ -241,7 +273,7 @@ export default async function HomePage() {
                 <p className="peak-section-kicker">Just dropped</p>
                 <h2 className="peak-section-title section-title text-pearl">New arrivals</h2>
                 <p className="peak-section-sub font-ui">
-                  Fresh cuts for your next session — limited sizes move fast.
+                  Fresh cuts for your next session — pick a size and add to cart.
                 </p>
               </div>
               <Link href="/shop?sort=newest" className="peak-text-link">
@@ -253,7 +285,10 @@ export default async function HomePage() {
               <Link href={`/product/${spotlight.slug}`} className="peak-spotlight">
                 <div className="peak-spotlight-media">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={getHeroUrl(spotlight) || "/vifactive/exquisite-camo-front.jpg"} alt={spotlight.name} />
+                  <img
+                    src={getHeroUrl(spotlight) || "/vifactive/exquisite-camo-front.jpg"}
+                    alt={spotlight.name}
+                  />
                 </div>
                 <div className="peak-spotlight-copy">
                   <p className="peak-section-kicker">Editor’s pick</p>
@@ -266,14 +301,18 @@ export default async function HomePage() {
 
             <div className="product-grid">
               {arrivalGrid.map((p, i) => (
-                <ProductCard key={p.id} product={p} priority={i < 4} />
+                <ProductCard key={p.id} product={p} priority={i < 4} showSizes />
               ))}
             </div>
           </div>
         </section>
 
         <section className="peak-lookband" aria-label="Training look">
-          <div className="peak-lookband-media" role="img" aria-label="Athlete in VIFACTIVE activewear" />
+          <div
+            className="peak-lookband-media"
+            role="img"
+            aria-label="Athlete in VIFACTIVE activewear"
+          />
           <div className="peak-lookband-copy">
             <p className="peak-section-kicker peak-kicker-on-dark">Train harder</p>
             <h2>Move with intent</h2>
@@ -323,8 +362,8 @@ export default async function HomePage() {
                 <Link href="/shop" className="btn-copper peak-story-cta">
                   Shop VIFACTIVE
                 </Link>
-                <Link href="/custom" className="peak-text-link">
-                  Custom / Teams →
+                <Link href="/account" className="peak-text-link">
+                  Sign In / My Account →
                 </Link>
               </div>
             </div>

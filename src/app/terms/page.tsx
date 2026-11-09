@@ -4,8 +4,8 @@ import StoreHeader from "@/components/store/StoreHeaderServer";
 import StoreFooter from "@/components/store/StoreFooter";
 
 export const metadata: Metadata = {
-  title: "Terms of Service",
-  description: "Terms governing use of the Elvene Noir online boutique.",
+  title: "Terms and conditions",
+  description: "Terms and conditions for shopping with VIFACTIVE.",
 };
 
 export default function TermsPage() {
@@ -14,8 +14,8 @@ export default function TermsPage() {
       <StoreHeader />
       <main className="store-main">
         <section className="page-hero">
-          <p className="section-eyebrow">The Maison</p>
-          <h1 className="section-title mt-2">Terms of Service</h1>
+          <p className="section-eyebrow">VIFACTIVE</p>
+          <h1 className="section-title mt-2">Terms and conditions</h1>
           <div className="section-divider" />
         </section>
         <article className="legal-prose luxury-card max-w-3xl mx-auto p-6 md:p-10 mb-16">

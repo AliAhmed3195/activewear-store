@@ -96,11 +96,11 @@ export default function StoreFooter() {
             <Link href="/shop?sort=newest">New Arrivals</Link>
             <Link href="/shop?sort=rating">Best Sellers</Link>
             <Link href="/custom">Custom / Teams</Link>
-            <Link href="/shop?category=mens-tops">Men&apos;s Tops</Link>
-            <Link href="/shop?category=mens-bottoms">Men&apos;s Bottoms</Link>
-            <Link href="/shop?category=womens-tops">Women&apos;s Tops</Link>
-            <Link href="/shop?category=sublimation-tees">Sublimation Tees</Link>
-            <Link href="/shop?category=sets-coords">Training Sets</Link>
+            <Link href="/shop?gender=MEN">Men</Link>
+            <Link href="/shop?gender=WOMEN">Women</Link>
+            <Link href="/shop?gender=KIDS">Kids</Link>
+            <Link href="/shop?category=accessories">Accessories</Link>
+            <Link href="/account">Sign In / My Account</Link>
           </div>
 
           <div className="footer-col">
@@ -116,7 +116,7 @@ export default function StoreFooter() {
             <h4>Company</h4>
             <Link href="/about">About {name}</Link>
             <Link href="/privacy">Privacy Policy</Link>
-            <Link href="/terms">Terms of Service</Link>
+            <Link href="/terms">Terms and conditions</Link>
             <Link href="/shipping">Shipping Info</Link>
           </div>
         </div>
