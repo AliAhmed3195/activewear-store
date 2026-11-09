@@ -7,7 +7,7 @@ export default function ShopLoading() {
       <StoreHeader />
       <main className="store-main">
         <section className="page-hero">
-          <p className="section-eyebrow">Elvene Noir</p>
+          <p className="section-eyebrow">VIFACTIVE</p>
           <h1 className="section-title mt-2">The Collection</h1>
           <div className="section-divider" />
         </section>

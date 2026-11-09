@@ -5,7 +5,7 @@ import StoreFooter from "@/components/store/StoreFooter";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "How Elvene Noir collects, uses, and protects your personal information.",
+  description: "How VIFACTIVE collects, uses, and protects your personal information.",
 };
 
 export default function PrivacyPage() {

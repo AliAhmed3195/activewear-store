@@ -10,7 +10,7 @@ function adminWhatsAppNumber(): string | null {
 
 export function buildWhatsAppOrderMessage(order: OrderWithItems): string {
   const lines = [
-    `New Elvene Noir order ${order.orderNumber}`,
+    `New VIFACTIVE order ${order.orderNumber}`,
     `Payment: ${order.paymentMethod}`,
     `Customer: ${order.name}`,
     `Phone: ${order.phone ?? "—"}`,
@@ -39,7 +39,7 @@ export async function notifyOrderPlaced(order: OrderWithItems): Promise<void> {
   }
 
   const resendKey = process.env.RESEND_API_KEY;
-  const from = process.env.ORDER_EMAIL_FROM ?? "orders@elvenenoir.com";
+  const from = process.env.ORDER_EMAIL_FROM ?? "orders@vifactive.com";
   const adminTo = process.env.ORDER_NOTIFY_EMAIL;
 
   if (!resendKey) {

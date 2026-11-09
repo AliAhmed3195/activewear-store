@@ -22,7 +22,7 @@ export default function TermsPage() {
           <p className="text-pearl-muted text-sm mb-6">Last updated: July 2026</p>
           <h2>Agreement</h2>
           <p>
-            By browsing or purchasing from Elvene Noir you agree to these terms. Prices are listed
+            By browsing or purchasing from VIFACTIVE you agree to these terms. Prices are listed
             in the store currency shown at checkout and may change without notice until an order is
             confirmed. We ship internationally — you must select a valid shipping country.
           </p>
@@ -46,7 +46,7 @@ export default function TermsPage() {
           </p>
           <h2>Liability</h2>
           <p>
-            To the fullest extent permitted by law, Elvene Noir is not liable for indirect or
+            To the fullest extent permitted by law, VIFACTIVE is not liable for indirect or
             consequential losses arising from use of the site or delays outside our control
             (including courier delays).
           </p>

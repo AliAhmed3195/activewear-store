@@ -5,7 +5,7 @@ import StoreFooter from "@/components/store/StoreFooter";
 
 export const metadata: Metadata = {
   title: "Shipping & Returns",
-  description: "Delivery timelines, discreet packaging, and return guidelines for Elvene Noir.",
+  description: "Delivery timelines, packaging, and return guidelines for VIFACTIVE.",
 };
 
 export default function ShippingPage() {

@@ -6,12 +6,12 @@ import { IconMail, IconMessage, IconHeadset } from "@/components/ui/icons";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Contact Elvene Noir for order help, sizing, and delivery questions.",
+  description: "Contact VIFACTIVE for order help, sizing, and delivery questions.",
 };
 
 export default function ContactPage() {
   const wa = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/\D/g, "");
-  const email = process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? "hello@elvenenoir.com";
+  const email = process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? "hello@vifactive.com";
 
   return (
     <div className="store-page store-page-ambient">
