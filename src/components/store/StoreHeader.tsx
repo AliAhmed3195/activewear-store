@@ -91,13 +91,13 @@ export default function StoreHeader({ categories = [] }: StoreHeaderProps) {
           <div className="announcement-track">
             {Array.from({ length: 2 }).map((_, loop) => (
               <div key={loop} className="announcement-group">
+                <span>Cash on Delivery · Pakistan</span>
+                <span className="dot">·</span>
                 <span>Free Shipping on Qualifying Orders</span>
                 <span className="dot">·</span>
                 <span>Custom Team Kits</span>
                 <span className="dot">·</span>
                 <span>Ships Across Pakistan</span>
-                <span className="dot">·</span>
-                <span>Secure Checkout</span>
                 <span className="dot">·</span>
                 <span>
                   <Link href="/track" className="underline-offset-2 hover:underline">
@@ -164,9 +164,6 @@ export default function StoreHeader({ categories = [] }: StoreHeaderProps) {
                 </Link>
               )
             )}
-            <Link href="/custom" className="header-nav-link">
-              Custom / Teams
-            </Link>
           </nav>
 
           <div className="header-actions">
@@ -291,9 +288,6 @@ export default function StoreHeader({ categories = [] }: StoreHeaderProps) {
                   )}
                 </div>
               ))}
-              <Link href="/custom" className="mobile-nav-link" onClick={() => setMenuOpen(false)}>
-                Custom / Teams
-              </Link>
               <Link href="/account" className="mobile-nav-link" onClick={() => setMenuOpen(false)}>
                 Sign In / My Account
               </Link>

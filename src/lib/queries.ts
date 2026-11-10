@@ -86,6 +86,11 @@ export async function getNewArrivals(limit = 8): Promise<Product[]> {
   )();
 }
 
+/** Larger pool for Men/Women homepage toggles */
+export async function getNewArrivalsPool(limit = 24): Promise<Product[]> {
+  return getNewArrivals(limit);
+}
+
 export async function getBestSellers(limit = 8): Promise<Product[]> {
   return unstable_cache(
     async (): Promise<Product[]> =>
@@ -93,7 +98,7 @@ export async function getBestSellers(limit = 8): Promise<Product[]> {
         const products = await prisma.product.findMany({
           where: { status: ProductStatus.ACTIVE },
           include: productInclude,
-          orderBy: [{ reviewCount: "desc" }, { rating: "desc" }],
+          orderBy: [{ reviewCount: "desc" }, { rating: "desc" }, { featured: "desc" }],
           take: limit,
         });
         return products.map(mapProduct);
@@ -101,6 +106,10 @@ export async function getBestSellers(limit = 8): Promise<Product[]> {
     ["best-sellers", String(limit)],
     { tags: ["catalog", "products"], revalidate: CATALOG_REVALIDATE }
   )();
+}
+
+export async function getBestSellersPool(limit = 24): Promise<Product[]> {
+  return getBestSellers(limit);
 }
 
 export interface CategoryPreview {

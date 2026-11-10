@@ -1,11 +1,13 @@
 import type { StoreCurrency } from "@/types";
 
 export function storeName(): string {
-  return process.env.NEXT_PUBLIC_STORE_NAME ?? "VIFACTIVE";
+  const raw = process.env.NEXT_PUBLIC_STORE_NAME?.trim();
+  return raw || "VIFACTIVE";
 }
 
 export function storeTagline(): string {
-  return process.env.NEXT_PUBLIC_STORE_TAGLINE ?? "Move Sharp. Stay Active.";
+  const raw = process.env.NEXT_PUBLIC_STORE_TAGLINE?.trim();
+  return raw || "Move Sharp. Stay Active.";
 }
 
 export function storeUrl(): string {

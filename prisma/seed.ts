@@ -20,18 +20,17 @@ const IMG = {
   tee06: `${P}/tee-06.jpg`,
   tee07: `${P}/tee-07.jpg`,
   tee08: `${P}/tee-08.jpg`,
-  proGreen: `${P}/pro-tee-green.jpg`,
-  pro02: `${P}/pro-tee-02.jpg`,
-  pro03: `${P}/pro-tee-03.jpg`,
-  pro04: `${P}/pro-tee-04.jpg`,
-  jogger:
-    "https://images.unsplash.com/photo-1556906781-9a412961c28c?auto=format&fit=crop&w=800&q=80",
+  // Prefer clean client product shots (avoid watermarked supplier frames)
+  proGreen: `${P}/tee-04.jpg`,
+  pro02: `${P}/tee-06.jpg`,
+  pro03: `${P}/tee-07.jpg`,
+  pro04: `${P}/exquisite-scratch.jpg`,
+  jogger: `${P}/tee-08.jpg`,
   shorts: `${P}/tee-08.jpg`,
-  menTrain:
-    "https://images.unsplash.com/photo-1583454110551-21d2eb27fc31?auto=format&fit=crop&w=800&q=80",
+  menTrain: `${P}/exquisite-camo-front.jpg`,
   // Product-only shots (no female model photos)
   womensTee: `${P}/exquisite-gradient.jpg`,
-  womensTank: `${P}/pro-tee-04.jpg`,
+  womensTank: `${P}/tee-06.jpg`,
 };
 
 const categories = [

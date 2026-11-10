@@ -9,7 +9,7 @@ export default function BrandLogo({ className }: { className?: string }) {
   return (
     <span className={`brand-logo ${className ?? ""}`.trim()}>
       <Image
-        src="/brand/vifactive-logo.png"
+        src="/brand/vifactive-logo-clear.png"
         alt={name}
         width={280}
         height={190}

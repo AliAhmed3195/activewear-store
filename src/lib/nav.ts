@@ -9,7 +9,7 @@ export type NavGroup = {
   children?: NavLink[];
 };
 
-/** Client-requested main menu structure */
+/** Storefront main menu — light + shoppable (Terms lives in footer) */
 export const MAIN_NAV: NavGroup[] = [
   { label: "Shop All", href: "/shop" },
   {
@@ -45,8 +45,8 @@ export const MAIN_NAV: NavGroup[] = [
       { label: "Custom order", href: "/custom" },
     ],
   },
-  { label: "Accessories", href: "/shop?category=accessories" },
-  { label: "Terms and conditions", href: "/terms" },
+  { label: "Sale", href: "/shop?sort=rating" },
+  { label: "Custom", href: "/custom" },
 ];
 
 export const STORE_CATEGORIES = [

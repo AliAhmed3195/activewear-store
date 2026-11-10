@@ -30,7 +30,7 @@ export default function HomeSlider({ slides, brandName }: HomeSliderProps) {
     if (total <= 1 || paused) return;
     const id = window.setInterval(() => {
       setIndex((i) => (i + 1) % total);
-    }, 5500);
+    }, 6000);
     return () => window.clearInterval(id);
   }, [total, paused]);
 
@@ -41,7 +41,7 @@ export default function HomeSlider({ slides, brandName }: HomeSliderProps) {
 
   return (
     <section
-      className="home-slider"
+      className="home-slider home-slider-lifestyle"
       aria-roledescription="carousel"
       aria-label={`${brandName} featured banners`}
       onMouseEnter={() => setPaused(true)}
@@ -69,20 +69,12 @@ export default function HomeSlider({ slides, brandName }: HomeSliderProps) {
 
       <div className="home-slider-inner">
         <p className="peak-hero-eyebrow">{slide.eyebrow}</p>
-        <h1 className="peak-brand-mark">
-          {brandName}
-          <span>{slide.title}</span>
-        </h1>
+        <h1 className="home-slider-title">{slide.title}</h1>
         <p className="peak-hero-copy font-ui">{slide.subtitle}</p>
         <div className="peak-hero-actions">
           <Link href={slide.ctaHref} className="btn-copper">
             {slide.ctaLabel}
           </Link>
-          {slide.secondaryHref && slide.secondaryLabel && (
-            <Link href={slide.secondaryHref} className="btn-outline">
-              {slide.secondaryLabel}
-            </Link>
-          )}
         </div>
       </div>
 

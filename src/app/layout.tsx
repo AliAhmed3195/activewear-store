@@ -6,6 +6,7 @@ import { CartProvider } from "@/lib/cart-context";
 import Providers from "@/components/Providers";
 import LazyCartDrawer from "@/components/store/LazyCartDrawer";
 import ScrollToTop from "@/components/store/ScrollToTop";
+import WhatsAppFloat from "@/components/store/WhatsAppFloat";
 import { storeName, storeTagline, storeUrl } from "@/lib/utils";
 
 const displayFont = Oswald({
@@ -68,6 +69,7 @@ export default function RootLayout({
             </Suspense>
             {children}
             <LazyCartDrawer />
+            <WhatsAppFloat />
           </Providers>
         </CartProvider>
       </body>
