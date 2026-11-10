@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { DM_Sans, Oswald } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/lib/cart-context";
 import Providers from "@/components/Providers";
 import LazyCartDrawer from "@/components/store/LazyCartDrawer";
+import ScrollToTop from "@/components/store/ScrollToTop";
 import { storeName, storeTagline, storeUrl } from "@/lib/utils";
 
 const displayFont = Oswald({
@@ -61,6 +63,9 @@ export default function RootLayout({
       <body className={`${bodyFont.className} antialiased page-enter peak-theme`}>
         <CartProvider>
           <Providers>
+            <Suspense fallback={null}>
+              <ScrollToTop />
+            </Suspense>
             {children}
             <LazyCartDrawer />
           </Providers>

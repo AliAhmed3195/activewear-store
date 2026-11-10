@@ -86,36 +86,37 @@ export default function StoreHeader({ categories = [] }: StoreHeaderProps) {
   return (
     <>
       <ScrollProgress />
-      <div className="announcement-bar" aria-hidden="true">
-        <div className="announcement-track">
-          {Array.from({ length: 2 }).map((_, loop) => (
-            <div key={loop} className="announcement-group">
-              <span>Free Shipping on Qualifying Orders</span>
-              <span className="dot">·</span>
-              <span>Custom Team Kits</span>
-              <span className="dot">·</span>
-              <span>Ships Across Pakistan</span>
-              <span className="dot">·</span>
-              <span>Secure Checkout</span>
-              <span className="dot">·</span>
-              <span>
-                <Link href="/track" className="underline-offset-2 hover:underline">
-                  Order Tracking
-                </Link>
-              </span>
-              <span className="dot">·</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <header className={cn("store-header", scrolled && "store-header-scrolled")}>
-        <div className="store-header-inner">
-          <div className="header-left">
-            <Link href="/" className="store-brand" aria-label="VIFACTIVE home">
-              <BrandLogo className="store-brand-logo" />
-            </Link>
+      <div className={cn("site-chrome", scrolled && "site-chrome-scrolled")}>
+        <div className="announcement-bar" aria-hidden="true">
+          <div className="announcement-track">
+            {Array.from({ length: 2 }).map((_, loop) => (
+              <div key={loop} className="announcement-group">
+                <span>Free Shipping on Qualifying Orders</span>
+                <span className="dot">·</span>
+                <span>Custom Team Kits</span>
+                <span className="dot">·</span>
+                <span>Ships Across Pakistan</span>
+                <span className="dot">·</span>
+                <span>Secure Checkout</span>
+                <span className="dot">·</span>
+                <span>
+                  <Link href="/track" className="underline-offset-2 hover:underline">
+                    Order Tracking
+                  </Link>
+                </span>
+                <span className="dot">·</span>
+              </div>
+            ))}
           </div>
+        </div>
+
+        <header className={cn("store-header", scrolled && "store-header-scrolled")}>
+          <div className="store-header-inner">
+            <div className="header-left">
+              <Link href="/" className="store-brand" aria-label="VIFACTIVE home">
+                <BrandLogo className="store-brand-logo" />
+              </Link>
+            </div>
 
           <nav className="header-nav" aria-label="Primary">
             {MAIN_NAV.map((group) =>
@@ -204,6 +205,7 @@ export default function StoreHeader({ categories = [] }: StoreHeaderProps) {
           </div>
         </div>
       </header>
+      </div>
 
       {searchOpen && (
         <div className="search-overlay" onClick={() => setSearchOpen(false)}>

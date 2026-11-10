@@ -11,10 +11,11 @@ export default function BrandLogo({ className }: { className?: string }) {
       <Image
         src="/brand/vifactive-logo.png"
         alt={name}
-        width={160}
-        height={56}
+        width={280}
+        height={190}
         className="brand-logo-img"
         priority
+        unoptimized
       />
       <span className="sr-only">{name}</span>
     </span>

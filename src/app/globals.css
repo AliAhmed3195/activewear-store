@@ -7902,3 +7902,78 @@ a.pdp-text-btn {
     display: none;
   }
 }
+
+/* ============================================================
+   Sticky chrome + larger transparent logo
+   ============================================================ */
+
+:root {
+  --header-height: 88px;
+}
+
+.site-chrome {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.site-chrome-scrolled {
+  box-shadow: 0 10px 28px rgba(16, 20, 24, 0.1);
+}
+
+.peak-theme .site-chrome .store-header,
+.peak-theme .store-header {
+  position: relative;
+  top: auto;
+  background: transparent;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+
+.peak-theme .store-header-scrolled {
+  background: transparent;
+  box-shadow: none;
+}
+
+.store-header-inner {
+  height: var(--header-height);
+}
+
+.brand-logo,
+.brand-logo-img,
+.store-brand-logo .brand-logo-img,
+.footer-brand-logo .brand-logo-img {
+  background: transparent !important;
+}
+
+.brand-logo-img,
+.store-brand-logo .brand-logo-img {
+  height: 58px !important;
+  width: auto !important;
+  max-width: 230px !important;
+  object-fit: contain;
+}
+
+@media (min-width: 640px) {
+  .brand-logo-img,
+  .store-brand-logo .brand-logo-img {
+    height: 68px !important;
+    max-width: 270px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .brand-logo-img,
+  .store-brand-logo .brand-logo-img {
+    height: 74px !important;
+    max-width: 300px !important;
+  }
+}
+
+.footer-brand-logo .brand-logo-img {
+  height: 64px !important;
+  max-width: 240px !important;
+}
