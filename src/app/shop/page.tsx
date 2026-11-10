@@ -74,22 +74,22 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
       : "All Products";
 
   return (
-    <div className="store-page store-page-ambient">
+    <div className="store-page">
       <StoreHeader />
-      <main className="store-main">
-        <section className="shop-hero">
+      <main className="store-main shop-page-premium">
+        <section className="shop-hero shop-hero-premium">
           <p className="peak-section-kicker">{name} · Collection</p>
           <h1 className="peak-section-title section-title text-pearl">{heading}</h1>
           {activeCategory?.description ? (
             <p className="peak-section-sub font-ui">{activeCategory.description}</p>
           ) : (
             <p className="peak-section-sub font-ui">
-              Performance activewear for gym, run, and everyday — filter by fit and find your gear.
+              Performance activewear for gym, run, and everyday — filter fast, checkout faster.
             </p>
           )}
         </section>
 
-        <div className="shop-layout">
+        <div className="shop-layout shop-layout-premium">
           <Suspense fallback={<div />}>
             <ShopSidebar
               categories={categories.map((c) => ({ slug: c.slug, name: c.name }))}
@@ -104,12 +104,12 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
             />
           </Suspense>
 
-          <div>
-            <div className="shop-toolbar">
-              <p className="font-ui text-xs text-pearl-muted tracking-widest capitalize">
+          <div className="shop-results">
+            <div className="shop-toolbar shop-toolbar-premium">
+              <p className="shop-toolbar-count">
                 {result.total} {result.total === 1 ? "Product" : "Products"}
               </p>
-              <p className="font-ui text-xs text-pearl-muted tracking-widest capitalize">
+              <p className="shop-toolbar-sort">
                 Sorted by {SORT_LABELS[params.sort ?? "newest"]}
               </p>
             </div>
@@ -118,12 +118,14 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
               <div className="shop-empty">
                 <p className="font-display text-2xl text-pearl">No products found</p>
                 <p className="font-ui text-sm text-pearl-muted mt-2">Try adjusting your filters.</p>
-                <Link href="/shop" className="btn-copper mt-6 inline-flex">View All</Link>
+                <Link href="/shop" className="btn-copper mt-6 inline-flex">
+                  View All
+                </Link>
               </div>
             ) : (
-              <div className="product-row">
+              <div className="product-row product-row-premium">
                 {result.products.map((product, i) => (
-                  <ProductCard key={product.id} product={product} priority={i === 0} />
+                  <ProductCard key={product.id} product={product} priority={i < 4} />
                 ))}
               </div>
             )}

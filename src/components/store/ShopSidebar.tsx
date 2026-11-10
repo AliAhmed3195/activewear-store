@@ -48,114 +48,116 @@ export default function ShopSidebar({ categories, current }: ShopSidebarProps) {
   );
 
   return (
-    <aside className={cn("shop-sidebar", isPending && "opacity-60")}>
+    <aside className={cn("shop-sidebar shop-sidebar-premium", isPending && "opacity-60")}>
       <div className="shop-sidebar-panel">
-      <div className="filter-group">
-        <h4>Search</h4>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            const fd = new FormData(e.currentTarget);
-            updateParams({ q: (fd.get("q") as string) || undefined });
-          }}
-        >
-          <input
-            name="q"
-            type="search"
-            defaultValue={current.q ?? ""}
-            placeholder="Search pieces…"
-            className="shop-search-input"
-            aria-label="Search products"
-          />
-        </form>
-      </div>
-
-      <div className="filter-group">
-        <h4>Collection</h4>
-        <button
-          type="button"
-          className={cn("filter-link", !current.category && "active")}
-          onClick={() => updateParams({ category: undefined })}
-        >
-          All Collections
-        </button>
-        {categories.map((cat) => (
-          <button
-            key={cat.slug}
-            type="button"
-            className={cn("filter-link", current.category === cat.slug && "active")}
-            onClick={() => updateParams({ category: cat.slug })}
+        <div className="filter-group">
+          <h4>Search</h4>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              const fd = new FormData(e.currentTarget);
+              updateParams({ q: (fd.get("q") as string) || undefined });
+            }}
           >
-            {cat.name}
-          </button>
-        ))}
-      </div>
+            <input
+              name="q"
+              type="search"
+              defaultValue={current.q ?? ""}
+              placeholder="Search tees, sets, kits…"
+              className="shop-search-input"
+              aria-label="Search products"
+            />
+          </form>
+        </div>
 
-      <div className="filter-group">
-        <h4>Gender</h4>
-        <button
-          type="button"
-          className={cn("filter-link", !current.gender && "active")}
-          onClick={() => updateParams({ gender: undefined })}
-        >
-          All
-        </button>
-        {GENDERS.map((g) => (
-          <button
-            key={g.value}
-            type="button"
-            className={cn("filter-link", current.gender === g.value && "active")}
-            onClick={() => updateParams({ gender: g.value })}
-          >
-            {g.label}
-          </button>
-        ))}
-      </div>
-
-      <div className="filter-group">
-        <h4>Size</h4>
-        <div className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            className={cn("size-chip", !current.size && "active")}
-            onClick={() => updateParams({ size: undefined })}
-          >
-            All
-          </button>
-          {SIZES.map((size) => (
+        <div className="filter-group">
+          <h4>Shop for</h4>
+          <div className="filter-pill-row">
             <button
-              key={size}
               type="button"
-              className={cn("size-chip", current.size === size && "active")}
-              onClick={() => updateParams({ size: current.size === size ? undefined : size })}
+              className={cn("filter-pill", !current.gender && "active")}
+              onClick={() => updateParams({ gender: undefined })}
             >
-              <span>{size}</span>
+              All
+            </button>
+            {GENDERS.map((g) => (
+              <button
+                key={g.value}
+                type="button"
+                className={cn("filter-pill", current.gender === g.value && "active")}
+                onClick={() => updateParams({ gender: g.value })}
+              >
+                {g.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="filter-group">
+          <h4>Collection</h4>
+          <button
+            type="button"
+            className={cn("filter-link", !current.category && "active")}
+            onClick={() => updateParams({ category: undefined })}
+          >
+            All Collections
+          </button>
+          {categories.map((cat) => (
+            <button
+              key={cat.slug}
+              type="button"
+              className={cn("filter-link", current.category === cat.slug && "active")}
+              onClick={() => updateParams({ category: cat.slug })}
+            >
+              {cat.name}
             </button>
           ))}
         </div>
-      </div>
 
-      <div className="filter-group">
-        <h4>Sort By</h4>
-        {[
-          { value: "newest", label: "Newest" },
-          { value: "price-asc", label: "Price: Low to High" },
-          { value: "price-desc", label: "Price: High to Low" },
-          { value: "rating", label: "Top Rated" },
-        ].map((opt) => (
-          <button
-            key={opt.value}
-            type="button"
-            className={cn(
-              "filter-link",
-              (current.sort ?? "newest") === opt.value && "active"
-            )}
-            onClick={() => updateParams({ sort: opt.value })}
-          >
-            {opt.label}
-          </button>
-        ))}
-      </div>
+        <div className="filter-group">
+          <h4>Size</h4>
+          <div className="filter-pill-row">
+            <button
+              type="button"
+              className={cn("size-chip", !current.size && "active")}
+              onClick={() => updateParams({ size: undefined })}
+            >
+              All
+            </button>
+            {SIZES.map((size) => (
+              <button
+                key={size}
+                type="button"
+                className={cn("size-chip", current.size === size && "active")}
+                onClick={() => updateParams({ size: current.size === size ? undefined : size })}
+              >
+                <span>{size}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="filter-group">
+          <h4>Sort</h4>
+          {[
+            { value: "newest", label: "Newest" },
+            { value: "price-asc", label: "Price: Low to High" },
+            { value: "price-desc", label: "Price: High to Low" },
+            { value: "rating", label: "Best Sellers" },
+          ].map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              className={cn(
+                "filter-link",
+                (current.sort ?? "newest") === opt.value && "active"
+              )}
+              onClick={() => updateParams({ sort: opt.value })}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
       </div>
     </aside>
   );

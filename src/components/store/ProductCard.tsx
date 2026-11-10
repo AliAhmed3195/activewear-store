@@ -16,7 +16,6 @@ import type { Product } from "@/types";
 interface ProductCardProps {
   product: Product;
   priority?: boolean;
-  /** Kept for compatibility; sizes stay on PDP for cleaner cards */
   showSizes?: boolean;
 }
 
@@ -52,7 +51,7 @@ export default function ProductCard({ product, priority }: ProductCardProps) {
   };
 
   return (
-    <article className="product-card product-card-clean group">
+    <article className="product-card product-card-premium group">
       <Link href={`/product/${product.slug}`} className="product-card-link">
         <div className="product-card-media">
           {onSale ? (
@@ -68,7 +67,7 @@ export default function ProductCard({ product, priority }: ProductCardProps) {
             onClick={handleWishlist}
             aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
           >
-            <IconHeart size={15} filled={wishlisted} />
+            <IconHeart size={14} filled={wishlisted} />
           </button>
           <SafeImage
             src={getHeroUrl(product)}
@@ -76,41 +75,33 @@ export default function ProductCard({ product, priority }: ProductCardProps) {
             fallbackLabel={product.name}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className="product-image-contain transition-transform duration-700 group-hover:scale-105"
+            className="product-image-contain transition-transform duration-700 group-hover:scale-[1.04]"
             priority={priority}
           />
-          <button
-            type="button"
-            className="product-card-quick-add"
-            onClick={handleQuickAdd}
-            disabled={sizeLeft <= 0}
-            aria-label={sizeLeft <= 0 ? "Sold out" : "Add to cart"}
-          >
-            <IconBag size={16} />
-          </button>
+          <div className="product-card-media-shade" aria-hidden="true" />
         </div>
       </Link>
 
       <div className="product-card-body">
+        {product.category && (
+          <p className="product-card-category">{product.category.name}</p>
+        )}
         <Link href={`/product/${product.slug}`}>
           <h3 className="product-card-name text-pearl">{product.name}</h3>
         </Link>
         <div className="product-card-price-row">
-          <p className="font-display text-lg text-pearl tracking-wide">
-            {formatPrice(price, currency)}
-          </p>
+          <p className="product-card-price">{formatPrice(price, currency)}</p>
           {onSale && (
-            <p className="font-ui text-xs text-pearl-muted line-through">
-              {formatPrice(compareAt!, currency)}
-            </p>
+            <p className="product-card-compare">{formatPrice(compareAt!, currency)}</p>
           )}
         </div>
         <button
           type="button"
-          className="product-card-add-text"
+          className="product-card-cta"
           onClick={handleQuickAdd}
           disabled={sizeLeft <= 0}
         >
+          <IconBag size={14} />
           {sizeLeft <= 0 ? "Sold Out" : "Add to Cart"}
         </button>
       </div>

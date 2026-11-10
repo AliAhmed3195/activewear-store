@@ -43,7 +43,7 @@ export default function GenderProductTabs({
             <p className="peak-section-kicker">{kicker}</p>
             <h2 className="peak-section-title section-title text-pearl">{title}</h2>
             <p className="peak-section-sub font-ui">{subtitle}</p>
-            <div className="gender-toggle" role="tablist" aria-label={`${title} gender filter`}>
+            <div className="gender-toggle gender-toggle-premium" role="tablist" aria-label={`${title} gender filter`}>
               <button
                 type="button"
                 role="tab"
@@ -66,7 +66,7 @@ export default function GenderProductTabs({
           </div>
         </div>
 
-        <div className="product-grid">
+        <div className="product-grid product-grid-premium">
           {filtered.map((p, i) => (
             <ProductCard key={p.id} product={p} priority={i < 4} />
           ))}
