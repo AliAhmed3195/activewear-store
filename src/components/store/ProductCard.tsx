@@ -4,9 +4,11 @@ import Link from "next/link";
 import SafeImage from "@/components/ui/SafeImage";
 import {
   badgeLabel,
+  badgeTone,
   formatPrice,
   getVariantCompareAt,
   getVariantPrice,
+  cn,
 } from "@/lib/utils";
 import { getHeroUrl } from "@/lib/product-mapper";
 import { useCart } from "@/lib/cart-context";
@@ -21,6 +23,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, priority }: ProductCardProps) {
   const badge = badgeLabel(product.badge);
+  const tone = badgeTone(product.badge);
   const { addItem, toggleWishlist, isWishlisted, openCart, currency } = useCart();
   const wishlisted = isWishlisted(product.id);
   const defaultVariant = product.variants[0];
@@ -55,11 +58,13 @@ export default function ProductCard({ product, priority }: ProductCardProps) {
       <Link href={`/product/${product.slug}`} className="product-card-link">
         <div className="product-card-media">
           {onSale ? (
-            <span className="product-card-badge product-card-badge-save">
-              SAVE {formatPrice(saveAmount, currency)}
+            <span className="product-chip product-chip-save">
+              Save {formatPrice(saveAmount, currency)}
             </span>
           ) : (
-            badge && <span className="product-card-badge">{badge}</span>
+            badge && (
+              <span className={cn("product-chip", `product-chip-${tone}`)}>{badge}</span>
+            )
           )}
           <button
             type="button"

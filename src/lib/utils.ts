@@ -113,7 +113,23 @@ export function getShippingCents(subtotalCents: number, currency: StoreCurrency)
 
 export function badgeLabel(badge: string | null | undefined): string | undefined {
   if (!badge) return undefined;
-  return badge.replace(/_/g, " ");
+  const key = badge.toUpperCase();
+  if (key === "BEST_SELLER" || key === "BEST SELLER") return "Best Seller";
+  if (key === "NEW") return "New";
+  if (key === "SALE") return "Sale";
+  return badge
+    .replace(/_/g, " ")
+    .toLowerCase()
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+export function badgeTone(badge: string | null | undefined): "best" | "new" | "sale" | "default" {
+  if (!badge) return "default";
+  const key = badge.toUpperCase().replace(/\s+/g, "_");
+  if (key === "BEST_SELLER") return "best";
+  if (key === "NEW") return "new";
+  if (key === "SALE") return "sale";
+  return "default";
 }
 
 export function isPakistan(countryCode: string): boolean {

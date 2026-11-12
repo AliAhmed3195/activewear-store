@@ -8445,3 +8445,207 @@ a.pdp-text-btn {
 .product-card-premium .product-card-corner {
   display: none !important;
 }
+
+/* ============================================================
+   Pro badges + Athlete feedback polish
+   ============================================================ */
+
+.product-chip {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.55rem;
+  padding: 0.28rem 0.65rem;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.94);
+  color: #111827;
+  font-family: var(--font-body-face), "DM Sans", sans-serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1;
+  box-shadow: 0 8px 18px rgba(16, 20, 24, 0.1);
+  backdrop-filter: blur(8px);
+}
+
+.product-chip-best {
+  background: #111827;
+  color: #fff;
+  border-color: #111827;
+}
+
+.product-chip-new {
+  background: #fff;
+  color: #111827;
+  border-color: rgba(17, 24, 39, 0.16);
+}
+
+.product-chip-sale,
+.product-chip-save {
+  background: #111827;
+  color: #fff;
+  border-color: #111827;
+}
+
+.product-chip-default {
+  background: rgba(255, 255, 255, 0.94);
+  color: #111827;
+}
+
+.product-card-premium .product-card-wishlist {
+  top: 0.7rem !important;
+  right: 0.7rem !important;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 8px 18px rgba(16, 20, 24, 0.08);
+}
+
+.product-card-premium .product-card-name {
+  font-family: var(--font-display-face), "Oswald", "Arial Narrow", sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.product-card-premium .product-card-category {
+  font-family: var(--font-body-face), "DM Sans", sans-serif;
+  font-weight: 600;
+}
+
+.peak-reviews-pro {
+  background:
+    radial-gradient(ellipse 50% 40% at 50% 0%, rgba(17, 24, 39, 0.03), transparent 60%),
+    linear-gradient(180deg, #f7f8fa 0%, #fff 45%, #f7f8fa 100%);
+}
+
+.reviews-head {
+  margin-bottom: 0.35rem;
+}
+
+.reviews-sub {
+  max-width: 28rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.reviews-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 1rem;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid rgba(17, 24, 39, 0.1);
+  background: #fff;
+}
+
+.reviews-summary-stars {
+  display: inline-flex;
+  gap: 0.12rem;
+  color: #111827;
+}
+
+.reviews-summary-score {
+  font-family: var(--font-display-face), "Oswald", sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  color: #111827;
+}
+
+.reviews-summary-count {
+  font-family: var(--font-body-face), "DM Sans", sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+
+.peak-review-grid-pro {
+  gap: 1.15rem !important;
+}
+
+.peak-review-pro {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 1.45rem 1.3rem 1.35rem !important;
+  border: 1px solid rgba(17, 24, 39, 0.08) !important;
+  border-top: 1px solid rgba(17, 24, 39, 0.08) !important;
+  background: #fff !important;
+  box-shadow: 0 10px 28px -24px rgba(16, 20, 24, 0.35);
+}
+
+.peak-review-pro:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 18px 34px -22px rgba(16, 20, 24, 0.35) !important;
+  border-color: rgba(17, 24, 39, 0.16) !important;
+}
+
+.peak-review-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.peak-review-pro .peak-review-stars {
+  margin-bottom: 0 !important;
+  color: #111827 !important;
+}
+
+.peak-review-mark {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 2.4rem;
+  line-height: 0.7;
+  color: rgba(17, 24, 39, 0.14);
+}
+
+.peak-review-pro .peak-review-quote {
+  flex: 1;
+  margin: 0;
+  font-family: var(--font-body-face), "DM Sans", sans-serif;
+  font-size: 0.98rem;
+  font-weight: 500;
+  line-height: 1.65;
+  letter-spacing: 0.01em;
+  color: #1f2937;
+  min-height: 4.8rem;
+}
+
+.peak-review-pro .peak-review-author {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(17, 24, 39, 0.08);
+}
+
+.peak-review-pro .peak-review-avatar {
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 999px;
+  background: #111827;
+  font-family: var(--font-display-face), "Oswald", sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+}
+
+.peak-review-pro .peak-review-author strong {
+  font-family: var(--font-body-face), "DM Sans", sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #111827;
+}
+
+.peak-review-pro .peak-review-author span {
+  font-family: var(--font-body-face), "DM Sans", sans-serif;
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
