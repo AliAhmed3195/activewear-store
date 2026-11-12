@@ -8649,3 +8649,200 @@ a.pdp-text-btn {
   text-transform: uppercase;
   color: #9ca3af;
 }
+
+/* ============================================================
+   Checkout form professional UX
+   ============================================================ */
+
+.checkout-heading-sub {
+  margin: 0.4rem 0 0;
+  font-size: 0.86rem;
+  color: #6b7280;
+  max-width: 28rem;
+  line-height: 1.45;
+}
+
+.checkout-steps {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0 0 1rem;
+  padding: 0;
+}
+
+.checkout-steps li {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.9rem;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid rgba(17, 24, 39, 0.12);
+  background: #fff;
+  color: #6b7280;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.checkout-steps li.is-active {
+  background: #111827;
+  border-color: #111827;
+  color: #fff;
+}
+
+.checkout-steps li.is-done {
+  border-color: rgba(17, 24, 39, 0.28);
+  color: #111827;
+}
+
+.checkout-form-panel-pro {
+  padding: 1.15rem 1.15rem 1.25rem !important;
+  background: #fff !important;
+  border: 1px solid rgba(17, 24, 39, 0.08) !important;
+  box-shadow: 0 18px 40px -32px rgba(16, 20, 24, 0.35);
+}
+
+.checkout-form-pro {
+  gap: 1.15rem !important;
+}
+
+.checkout-block-head {
+  margin-bottom: 0.75rem;
+}
+
+.checkout-block-head h2 {
+  margin: 0 !important;
+  font-family: var(--font-display-face), "Oswald", sans-serif;
+  font-size: 1rem !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase;
+  color: #111827;
+}
+
+.checkout-block-head p {
+  margin: 0.3rem 0 0;
+  font-size: 0.82rem;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+.checkout-form-pro .checkout-grid-1,
+.checkout-form-pro .checkout-grid-2,
+.checkout-form-pro .checkout-grid-3 {
+  gap: 0.75rem !important;
+}
+
+.checkout-field-pro {
+  gap: 0.35rem !important;
+}
+
+.checkout-field-pro > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-family: var(--font-body-face), "DM Sans", sans-serif !important;
+  font-size: 0.7rem !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase;
+  font-weight: 700 !important;
+  color: #374151 !important;
+}
+
+.checkout-field-pro > span i {
+  color: #111827;
+  font-style: normal;
+}
+
+.checkout-field-pro input,
+.checkout-field-pro + select,
+.checkout-form-pro .checkout-field select,
+.checkout-form-pro .checkout-field input {
+  min-height: 2.85rem;
+  border: 1px solid rgba(17, 24, 39, 0.14) !important;
+  background: #fafafa !important;
+  color: #111827 !important;
+  padding: 0.7rem 0.85rem !important;
+  font-size: 0.95rem !important;
+  border-radius: 0 !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.checkout-form-pro .checkout-field input::placeholder {
+  color: #9ca3af;
+}
+
+.checkout-form-pro .checkout-field input:hover,
+.checkout-form-pro .checkout-field select:hover {
+  border-color: rgba(17, 24, 39, 0.28) !important;
+}
+
+.checkout-form-pro .checkout-field input:focus,
+.checkout-form-pro .checkout-field select:focus {
+  background: #fff !important;
+  border-color: #111827 !important;
+  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.08) !important;
+}
+
+.checkout-field-hint {
+  font-style: normal;
+  font-size: 0.72rem;
+  color: #9ca3af;
+  line-height: 1.3;
+}
+
+.pay-chips-pro {
+  gap: 0.55rem !important;
+}
+
+.pay-chips-pro .pay-chip {
+  display: grid;
+  gap: 0.15rem;
+  justify-items: start;
+  min-height: 3.35rem;
+  padding: 0.7rem 0.75rem !important;
+  text-align: left;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.pay-chips-pro .pay-chip strong {
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pay-chips-pro .pay-chip em {
+  font-style: normal;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  opacity: 0.72;
+}
+
+.pay-chips-pro .pay-chip.is-active em {
+  opacity: 0.85;
+}
+
+.checkout-secure-note {
+  margin: 0.15rem 0 0;
+  text-align: center;
+  font-size: 0.74rem;
+  color: #9ca3af;
+}
+
+.checkout-page .checkout-summary-card,
+.checkout-page .checkout-side-card {
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  box-shadow: 0 14px 30px -26px rgba(16, 20, 24, 0.4);
+}
+
+@media (max-width: 700px) {
+  .checkout-form-panel-pro {
+    padding: 1rem !important;
+  }
+
+  .checkout-form-pro .checkout-grid-3 {
+    grid-template-columns: 1fr !important;
+  }
+}

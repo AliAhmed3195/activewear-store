@@ -154,24 +154,38 @@ export default function CheckoutPage() {
           <div>
             <p className="checkout-kicker">Secure checkout</p>
             <h1>Checkout</h1>
+            <p className="checkout-heading-sub">
+              Fast COD across Pakistan · encrypted card payments worldwide
+            </p>
           </div>
           <Link href="/shop" className="checkout-back">
             ← Keep shopping
           </Link>
         </div>
 
+        <ol className="checkout-steps" aria-label="Checkout progress">
+          <li className={step === "details" ? "is-active" : "is-done"}>1. Details</li>
+          <li className={step === "card" ? "is-active" : ""}>2. Payment</li>
+          <li>3. Confirmed</li>
+        </ol>
+
         <div className="checkout-layout">
-          <div className="checkout-form-panel">
+          <div className="checkout-form-panel checkout-form-panel-pro">
             {step === "details" ? (
-              <form onSubmit={handleSubmit} className="checkout-form">
+              <form onSubmit={handleSubmit} className="checkout-form checkout-form-pro">
                 <section className="checkout-block">
-                  <h2>Contact</h2>
+                  <div className="checkout-block-head">
+                    <h2>Contact</h2>
+                    <p>We’ll use this for order updates and delivery calls.</p>
+                  </div>
                   <div className="checkout-grid-3">
                     <CheckoutField
                       label="Full name"
                       value={form.name}
                       onChange={(v) => setForm({ ...form, name: v })}
                       required
+                      autoComplete="name"
+                      placeholder="e.g. Ali Ahmed"
                     />
                     <CheckoutField
                       label="Email"
@@ -179,6 +193,9 @@ export default function CheckoutPage() {
                       value={form.email}
                       onChange={(v) => setForm({ ...form, email: v })}
                       required
+                      autoComplete="email"
+                      placeholder="you@email.com"
+                      hint="Order confirmation goes here"
                     />
                     <CheckoutField
                       label="Phone"
@@ -186,19 +203,26 @@ export default function CheckoutPage() {
                       value={form.phone}
                       onChange={(v) => setForm({ ...form, phone: v })}
                       required
-                      placeholder="+92…"
+                      autoComplete="tel"
+                      placeholder="+92 3XX XXXXXXX"
+                      hint="Courier may call this number"
                     />
                   </div>
                 </section>
 
                 <section className="checkout-block">
-                  <h2>Shipping</h2>
+                  <div className="checkout-block-head">
+                    <h2>Shipping</h2>
+                    <p>Exact address helps us deliver on the first attempt.</p>
+                  </div>
                   <div className="checkout-grid-1">
                     <CheckoutField
-                      label="Address"
+                      label="Street address"
                       value={form.addressLine1}
                       onChange={(v) => setForm({ ...form, addressLine1: v })}
                       required
+                      autoComplete="address-line1"
+                      placeholder="House / street / area"
                     />
                   </div>
                   <div className="checkout-grid-2">
@@ -206,25 +230,33 @@ export default function CheckoutPage() {
                       label="Apartment / landmark"
                       value={form.addressLine2}
                       onChange={(v) => setForm({ ...form, addressLine2: v })}
+                      autoComplete="address-line2"
+                      placeholder="Optional"
                     />
                     <CheckoutField
                       label="City"
                       value={form.city}
                       onChange={(v) => setForm({ ...form, city: v })}
                       required
+                      autoComplete="address-level2"
+                      placeholder="e.g. Lahore"
                     />
                   </div>
                   <div className="checkout-grid-3">
                     <CheckoutField
-                      label="State"
+                      label="State / province"
                       value={form.state}
                       onChange={(v) => setForm({ ...form, state: v })}
+                      autoComplete="address-level1"
+                      placeholder="e.g. Punjab"
                     />
                     <CheckoutField
                       label="Postal code"
                       value={form.postalCode}
                       onChange={(v) => setForm({ ...form, postalCode: v })}
                       required
+                      autoComplete="postal-code"
+                      placeholder="e.g. 54000"
                     />
                     <label className="checkout-field">
                       <span>Country</span>
@@ -232,6 +264,7 @@ export default function CheckoutPage() {
                         value={form.country}
                         onChange={(e) => setForm({ ...form, country: e.target.value })}
                         required
+                        autoComplete="country"
                       >
                         {COUNTRIES.map((c) => (
                           <option key={c.code} value={c.code}>
@@ -244,41 +277,48 @@ export default function CheckoutPage() {
                 </section>
 
                 <section className="checkout-block">
-                  <h2>Payment</h2>
-                  <div className="pay-chips">
+                  <div className="checkout-block-head">
+                    <h2>Payment</h2>
+                    <p>Choose how you want to pay for this order.</p>
+                  </div>
+                  <div className="pay-chips pay-chips-pro">
                     <PayChip
                       active={paymentMethod === "COD"}
                       title="COD"
+                      subtitle="Cash on delivery"
                       onClick={() => setPaymentMethod("COD")}
                       disabled={!pk}
                     />
                     <PayChip
                       active={paymentMethod === "CARD"}
                       title="Card"
+                      subtitle="Visa / Mastercard"
                       onClick={() => setPaymentMethod("CARD")}
                     />
                     <PayChip
                       active={paymentMethod === "JAZZCASH"}
                       title="JazzCash"
+                      subtitle="Coming soon"
                       onClick={() => setPaymentMethod("JAZZCASH")}
                       disabled={!pk}
                     />
                     <PayChip
                       active={paymentMethod === "EASYPAISA"}
                       title="EasyPaisa"
+                      subtitle="Coming soon"
                       onClick={() => setPaymentMethod("EASYPAISA")}
                       disabled={!pk}
                     />
                   </div>
                   <p className="pay-hint">
                     {paymentMethod === "COD" && "Pay in cash when your order arrives (Pakistan)."}
-                    {paymentMethod === "CARD" && "Visa / Mastercard via Stripe — Pakistan & international."}
+                    {paymentMethod === "CARD" && "Secure Stripe checkout — Pakistan & international."}
                     {paymentMethod === "JAZZCASH" && "Pakistan wallet — coming soon."}
                     {paymentMethod === "EASYPAISA" && "Pakistan wallet — coming soon."}
                   </p>
                 </section>
 
-                {error && <p className="checkout-error">{error}</p>}
+                {error && <p className="checkout-error" role="alert">{error}</p>}
                 <button type="submit" className="btn-copper checkout-submit" disabled={loading}>
                   {loading
                     ? "Processing…"
@@ -286,6 +326,9 @@ export default function CheckoutPage() {
                       ? `Place COD order · ${formatPrice(liveTotal)}`
                       : "Continue to card payment"}
                 </button>
+                <p className="checkout-secure-note">
+                  Your details stay private. We only use them to fulfill this order.
+                </p>
               </form>
             ) : clientSecret ? (
               <Elements
@@ -377,11 +420,13 @@ export default function CheckoutPage() {
 function PayChip({
   active,
   title,
+  subtitle,
   onClick,
   disabled,
 }: {
   active: boolean;
   title: string;
+  subtitle?: string;
   onClick: () => void;
   disabled?: boolean;
 }) {
@@ -392,7 +437,8 @@ function PayChip({
       disabled={disabled}
       className={`pay-chip ${active ? "is-active" : ""} ${disabled ? "is-disabled" : ""}`}
     >
-      {title}
+      <strong>{title}</strong>
+      {subtitle && <em>{subtitle}</em>}
     </button>
   );
 }
@@ -467,6 +513,8 @@ function CheckoutField({
   type = "text",
   required,
   placeholder,
+  autoComplete,
+  hint,
 }: {
   label: string;
   value: string;
@@ -474,17 +522,24 @@ function CheckoutField({
   type?: string;
   required?: boolean;
   placeholder?: string;
+  autoComplete?: string;
+  hint?: string;
 }) {
   return (
-    <label className="checkout-field">
-      <span>{label}</span>
+    <label className="checkout-field checkout-field-pro">
+      <span>
+        {label}
+        {required ? <i aria-hidden="true">*</i> : null}
+      </span>
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         required={required}
         placeholder={placeholder}
+        autoComplete={autoComplete}
       />
+      {hint ? <em className="checkout-field-hint">{hint}</em> : null}
     </label>
   );
 }
