@@ -18,9 +18,15 @@ const ASSURANCES = [
 
 interface ProductDetailViewProps {
   product: Product;
+  lowStockThreshold?: number;
+  showStickyAddToCart?: boolean;
 }
 
-export default function ProductDetailView({ product }: ProductDetailViewProps) {
+export default function ProductDetailView({
+  product,
+  lowStockThreshold = 5,
+  showStickyAddToCart = true,
+}: ProductDetailViewProps) {
   const [variant, setVariant] = useState(product.variants[0]);
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
   const [openAccordions, setOpenAccordions] = useState<Record<string, boolean>>({
@@ -60,6 +66,8 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
           product={product}
           variant={variant}
           onVariantChange={setVariant}
+          lowStockThreshold={lowStockThreshold}
+          showStickyAddToCart={showStickyAddToCart}
         />
 
         <div className="pdp-helper-row">

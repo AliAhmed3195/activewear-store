@@ -5,7 +5,7 @@ import ReviewsSection from "@/components/store/ReviewsSection";
 import HomeSlider, { type HomeSlide } from "@/components/store/HomeSlider";
 import GenderProductTabs from "@/components/store/GenderProductTabs";
 import {
-  getNewArrivalsPool,
+  getNewArrivalsExclusive,
   getCategoryPreviews,
   getActiveProductCount,
   getApprovedReviews,
@@ -14,6 +14,7 @@ import {
 import { storeName, storeTagline } from "@/lib/utils";
 import { FABRIC_OPTIONS } from "@/lib/fabric-catalog";
 import { IconLock, IconGlobe, IconGem, IconHeadset } from "@/components/ui/icons";
+import { getSiteSettings, isSaleLive } from "@/lib/site-settings";
 
 export const revalidate = 60;
 
@@ -75,8 +76,7 @@ const SLIDES: HomeSlide[] = [
     subtitle: "Performance activewear for gym, run, and everyday — COD nationwide.",
     ctaLabel: "Shop Now",
     ctaHref: "/shop",
-    image:
-      "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=2000&q=80",
+    image: "/vifactive/exquisite-camo-front.jpg",
   },
   {
     id: "2",
@@ -85,8 +85,7 @@ const SLIDES: HomeSlide[] = [
     subtitle: "Men and women essentials — shop the latest drop.",
     ctaLabel: "Shop New",
     ctaHref: "/shop?sort=newest",
-    image:
-      "https://images.unsplash.com/photo-1583454110551-21d2eb27fc31?auto=format&fit=crop&w=2000&q=80",
+    image: "/vifactive/exquisite-gradient.jpg",
   },
   {
     id: "3",
@@ -95,30 +94,35 @@ const SLIDES: HomeSlide[] = [
     subtitle: "Team kits on pro fabrics — request a quote in minutes.",
     ctaLabel: "Custom Order",
     ctaHref: "/custom",
-    image: "/vifactive/exquisite-camo-front.jpg",
+    image: "/vifactive/exquisite-scratch.jpg",
   },
 ];
 
 export default async function HomePage() {
   const name = storeName();
 
-  let newArrivals: Awaited<ReturnType<typeof getNewArrivalsPool>> = [];
+  let newArrivals: Awaited<ReturnType<typeof getNewArrivalsExclusive>> = [];
   let categories: Awaited<ReturnType<typeof getCategoryPreviews>> = [];
   let productCount = 0;
   let reviews: Awaited<ReturnType<typeof getApprovedReviews>> = [];
   let bestSellers: Awaited<ReturnType<typeof getBestSellersPool>> = [];
+  let settings: Awaited<ReturnType<typeof getSiteSettings>> | null = null;
 
   try {
-    [newArrivals, categories, productCount, reviews, bestSellers] = await Promise.all([
-      getNewArrivalsPool(24),
+    [bestSellers, categories, productCount, reviews, settings] = await Promise.all([
+      getBestSellersPool(24),
       getCategoryPreviews(),
       getActiveProductCount(),
       getApprovedReviews(6),
-      getBestSellersPool(24),
+      getSiteSettings(),
     ]);
+    const exclude = bestSellers.slice(0, 12).map((p) => p.id);
+    newArrivals = await getNewArrivalsExclusive(24, exclude);
   } catch (error) {
     console.error("[homepage] failed to load catalog", error);
   }
+
+  const saleLive = settings ? isSaleLive(settings) : false;
 
   const shopCategories = categories
     .filter((c) => !c.name.toLowerCase().includes("legacy") && c.productCount > 0)
@@ -140,6 +144,19 @@ export default async function HomePage() {
       <StoreHeader />
       <main>
         <HomeSlider slides={slides} brandName={name} />
+
+        {saleLive && settings && (
+          <div className="sale-banner" role="status">
+            <div className="sale-banner-inner">
+              <strong>{settings.saleBadgeLabel}</strong>
+              <span>
+                {settings.saleBannerText ||
+                  "Limited-time savings on select performance pieces."}
+              </span>
+              <Link href="/shop?onSale=1">Shop sale →</Link>
+            </div>
+          </div>
+        )}
 
         <div className="peak-ticker" aria-hidden="true">
           <div className="peak-ticker-track">
@@ -234,7 +251,7 @@ export default async function HomePage() {
                     >
                       <div className="peak-bento-shade" />
                       <div className="peak-bento-copy">
-                        <span className="peak-bento-tag">0{i + 2}</span>
+                        <span className="peak-bento-tag">Shop</span>
                         <h3>{cat.name}</h3>
                         <p>
                           {productLabel(cat.productCount)}

@@ -96,17 +96,30 @@ export function generateOrderNumber(): string {
   return `PA-${Date.now().toString().slice(-7)}${rand}`;
 }
 
-export function getShippingCents(subtotalCents: number, currency: StoreCurrency): number {
+export function getShippingCents(
+  subtotalCents: number,
+  currency: StoreCurrency,
+  overrides?: {
+    flatShippingPkr?: number;
+    flatShippingUsd?: number;
+    freeShippingThresholdPkr?: number;
+    freeShippingThresholdUsd?: number;
+  }
+): number {
   const isPkr = currency === "pkr";
   const flatRate = Number(
     isPkr
-      ? (process.env.SHIPPING_FLAT_RATE_CENTS_PKR ?? "50000")
-      : (process.env.SHIPPING_FLAT_RATE_CENTS_USD ?? "1500")
+      ? (overrides?.flatShippingPkr ?? process.env.SHIPPING_FLAT_RATE_CENTS_PKR ?? "50000")
+      : (overrides?.flatShippingUsd ?? process.env.SHIPPING_FLAT_RATE_CENTS_USD ?? "1500")
   );
   const freeThreshold = Number(
     isPkr
-      ? (process.env.FREE_SHIPPING_THRESHOLD_CENTS_PKR ?? "15000000")
-      : (process.env.FREE_SHIPPING_THRESHOLD_CENTS_USD ?? "7500")
+      ? (overrides?.freeShippingThresholdPkr ??
+          process.env.FREE_SHIPPING_THRESHOLD_CENTS_PKR ??
+          "15000000")
+      : (overrides?.freeShippingThresholdUsd ??
+          process.env.FREE_SHIPPING_THRESHOLD_CENTS_USD ??
+          "7500")
   );
   return subtotalCents >= freeThreshold ? 0 : flatRate;
 }

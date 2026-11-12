@@ -50,13 +50,39 @@ export default function CheckoutPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const [shipRates, setShipRates] = useState<{
+    flatShippingPkr: number;
+    flatShippingUsd: number;
+    freeShippingThresholdPkr: number;
+    freeShippingThresholdUsd: number;
+  } | null>(null);
+
   const liveSubtotal = useMemo(
     () => items.reduce((sum, i) => sum + i.priceCents * i.quantity, 0),
     [items]
   );
-  const liveShipping = getShippingCents(liveSubtotal, currency);
+  const liveShipping = getShippingCents(liveSubtotal, currency, shipRates ?? undefined);
   const liveTotal = liveSubtotal + liveShipping;
   const pk = isPakistan(form.country);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/settings")
+      .then((r) => r.json())
+      .then((data) => {
+        if (cancelled || !data) return;
+        setShipRates({
+          flatShippingPkr: data.flatShippingPkr,
+          flatShippingUsd: data.flatShippingUsd,
+          freeShippingThresholdPkr: data.freeShippingThresholdPkr,
+          freeShippingThresholdUsd: data.freeShippingThresholdUsd,
+        });
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     setCurrency(currencyForCountry(form.country));

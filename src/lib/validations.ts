@@ -127,7 +127,26 @@ export const customOrderSchema = z.object({
   notes: z.string().optional().nullable(),
 });
 
+export const siteSettingsSchema = z.object({
+  announcementEnabled: z.boolean(),
+  announcementText: z.string().min(1).max(2000),
+  saleEnabled: z.boolean(),
+  saleBadgeLabel: z.string().min(1).max(60),
+  saleBannerText: z.string().max(280).optional().default(""),
+  saleEndsAt: z.string().datetime().nullable().optional(),
+  flatShippingPkr: z.number().int().min(0).max(5_000_000),
+  flatShippingUsd: z.number().int().min(0).max(100_000),
+  freeShippingThresholdPkr: z.number().int().min(0).max(50_000_000),
+  freeShippingThresholdUsd: z.number().int().min(0).max(500_000),
+  showRatingsOnCards: z.boolean(),
+  showStickyAddToCart: z.boolean(),
+  lowStockThreshold: z.number().int().min(1).max(50),
+  /** When true, products with compare-at > price get SALE badge */
+  syncSaleBadges: z.boolean().optional().default(false),
+});
+
 export type ProductFormInput = z.infer<typeof productFormSchema>;
 export type CategoryFormInput = z.infer<typeof categoryFormSchema>;
 export type ReviewFormInput = z.infer<typeof reviewFormSchema>;
 export type CustomOrderInput = z.infer<typeof customOrderSchema>;
+export type SiteSettingsInput = z.infer<typeof siteSettingsSchema>;

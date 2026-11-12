@@ -5,8 +5,10 @@ import StoreHeader from "@/components/store/StoreHeaderServer";
 import StoreFooter from "@/components/store/StoreFooter";
 import ProductCard from "@/components/store/ProductCard";
 import ProductDetailView from "@/components/store/ProductDetailView";
-import { getProductBySlug, getRelatedProducts } from "@/lib/queries";
+import ProductReviews from "@/components/store/ProductReviews";
+import { getProductBySlug, getProductReviews, getRelatedProducts } from "@/lib/queries";
 import { getHeroUrl } from "@/lib/product-mapper";
+import { getSiteSettings } from "@/lib/site-settings";
 import { storeName } from "@/lib/utils";
 
 export const revalidate = 300;
@@ -22,7 +24,8 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   const name = storeName();
 
   return {
-    title: `${product.name} · ${name}`,
+    // absolute avoids layout template doubling the brand ("… | VIFACTIVE | VIFACTIVE")
+    title: { absolute: `${product.name} · ${name}` },
     description: product.description,
     openGraph: {
       title: product.name,
@@ -37,7 +40,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const product = await getProductBySlug(slug);
   if (!product || product.status !== "ACTIVE") notFound();
 
-  const related = await getRelatedProducts(product.id, product.categoryId, 4);
+  const [related, reviews, settings] = await Promise.all([
+    getRelatedProducts(product.id, product.categoryId, 4),
+    getProductReviews(product.id),
+    getSiteSettings(),
+  ]);
 
   return (
     <div className="store-page pdp-page">
@@ -59,7 +66,17 @@ export default async function ProductPage({ params }: ProductPageProps) {
           <span className="current">{product.name}</span>
         </nav>
 
-        <ProductDetailView product={product} />
+        <ProductDetailView
+          product={product}
+          lowStockThreshold={settings.lowStockThreshold}
+          showStickyAddToCart={settings.showStickyAddToCart}
+        />
+
+        <ProductReviews
+          reviews={reviews}
+          rating={product.rating}
+          reviewCount={product.reviewCount}
+        />
 
         {related.length > 0 && (
           <section className="pdp-related">
@@ -74,7 +91,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </div>
             <div className="product-grid">
               {related.map((p) => (
-                <ProductCard key={p.id} product={p} />
+                <ProductCard
+                  key={p.id}
+                  product={p}
+                  showRatings={settings.showRatingsOnCards}
+                />
               ))}
             </div>
           </section>

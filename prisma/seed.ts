@@ -892,6 +892,27 @@ async function main() {
     create: { email, passwordHash: hash, name },
   });
 
+  await prisma.siteSettings.upsert({
+    where: { id: "default" },
+    update: {},
+    create: {
+      id: "default",
+      announcementEnabled: true,
+      announcementText:
+        "Cash on Delivery · Pakistan|Free Shipping on Qualifying Orders|Custom Team Kits|Ships Across Pakistan",
+      saleEnabled: false,
+      saleBadgeLabel: "Season Sale",
+      saleBannerText: "",
+      flatShippingPkr: 50000,
+      flatShippingUsd: 1500,
+      freeShippingThresholdPkr: 15000000,
+      freeShippingThresholdUsd: 7500,
+      showRatingsOnCards: true,
+      showStickyAddToCart: true,
+      lowStockThreshold: 5,
+    },
+  });
+
   console.log(`Seeded ${products.length} products, ${reviews.length} reviews`);
   console.log(`Admin: ${email}`);
 }

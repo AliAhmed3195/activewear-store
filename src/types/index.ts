@@ -88,6 +88,8 @@ export interface ShopFilters {
   size?: string;
   color?: string;
   sort?: "newest" | "price-asc" | "price-desc" | "rating";
+  onSale?: boolean;
+  inStock?: boolean;
   page?: number;
   limit?: number;
   currency?: StoreCurrency;

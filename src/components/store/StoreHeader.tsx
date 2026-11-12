@@ -26,9 +26,27 @@ interface CategoryLink {
 
 interface StoreHeaderProps {
   categories?: CategoryLink[];
+  announcementLines?: string[];
+  saleLabel?: string | null;
+  saleText?: string | null;
 }
 
-export default function StoreHeader({ categories = [] }: StoreHeaderProps) {
+const DEFAULT_ANNOUNCE = [
+  "Cash on Delivery · Pakistan",
+  "Free Shipping on Qualifying Orders",
+  "Custom Team Kits",
+  "Ships Across Pakistan",
+];
+
+export default function StoreHeader({
+  categories = [],
+  announcementLines,
+  saleLabel = null,
+  saleText = null,
+}: StoreHeaderProps) {
+  // undefined = use defaults; [] = intentionally hidden from admin settings
+  const lines =
+    announcementLines === undefined ? DEFAULT_ANNOUNCE : announcementLines;
   const pathname = usePathname();
   const router = useRouter();
   const { toggleCart, wishlist, totalItems } = useCart();
@@ -87,28 +105,36 @@ export default function StoreHeader({ categories = [] }: StoreHeaderProps) {
     <>
       <ScrollProgress />
       <div className={cn("site-chrome", scrolled && "site-chrome-scrolled")}>
-        <div className="announcement-bar" aria-hidden="true">
-          <div className="announcement-track">
-            {Array.from({ length: 2 }).map((_, loop) => (
-              <div key={loop} className="announcement-group">
-                <span>Cash on Delivery · Pakistan</span>
-                <span className="dot">·</span>
-                <span>Free Shipping on Qualifying Orders</span>
-                <span className="dot">·</span>
-                <span>Custom Team Kits</span>
-                <span className="dot">·</span>
-                <span>Ships Across Pakistan</span>
-                <span className="dot">·</span>
-                <span>
-                  <Link href="/track" className="underline-offset-2 hover:underline">
-                    Order Tracking
-                  </Link>
-                </span>
-                <span className="dot">·</span>
-              </div>
-            ))}
+        {lines.length > 0 && (
+          <div className="announcement-bar" aria-hidden="true">
+            <div className="announcement-track">
+              {Array.from({ length: 2 }).map((_, loop) => (
+                <div key={loop} className="announcement-group">
+                  {lines.map((line) => (
+                    <span key={`${loop}-${line}`}>
+                      {line}
+                      <span className="dot">·</span>
+                    </span>
+                  ))}
+                  <span>
+                    <Link href="/track" className="underline-offset-2 hover:underline">
+                      Order Tracking
+                    </Link>
+                  </span>
+                  <span className="dot">·</span>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
+
+        {saleLabel && (
+          <div className="header-sale-strip">
+            <strong>{saleLabel}</strong>
+            {saleText ? <span>{saleText}</span> : null}
+            <Link href="/shop?onSale=1">Shop sale</Link>
+          </div>
+        )}
 
         <header className={cn("store-header", scrolled && "store-header-scrolled")}>
           <div className="store-header-inner">
@@ -250,6 +276,16 @@ export default function StoreHeader({ categories = [] }: StoreHeaderProps) {
                 <IconClose size={18} />
               </button>
             </div>
+            <form className="mobile-nav-search" onSubmit={submitSearch}>
+              <IconSearch size={16} />
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search products…"
+                aria-label="Search products"
+              />
+            </form>
             <nav className="mobile-nav-links">
               {MAIN_NAV.map((group) => (
                 <div key={group.label}>

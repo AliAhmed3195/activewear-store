@@ -1,11 +1,9 @@
-import Link from "next/link";
 import { Suspense } from "react";
 import StoreHeader from "@/components/store/StoreHeaderServer";
 import StoreFooter from "@/components/store/StoreFooter";
-import ProductCard from "@/components/store/ProductCard";
-import ShopSidebar from "@/components/store/ShopSidebar";
-import Pagination from "@/components/store/Pagination";
+import ShopClient from "@/components/store/ShopClient";
 import { getCategories, getProducts, getSizeProductCounts } from "@/lib/queries";
+import { getSiteSettings } from "@/lib/site-settings";
 import { storeName } from "@/lib/utils";
 import type { Metadata } from "next";
 
@@ -24,20 +22,16 @@ interface ShopPageProps {
     size?: string;
     sort?: string;
     page?: string;
+    onSale?: string;
+    inStock?: string;
   }>;
 }
-
-const SORT_LABELS: Record<string, string> = {
-  newest: "Newest",
-  "price-asc": "Price: Low to High",
-  "price-desc": "Price: High to Low",
-  rating: "Top Rated",
-};
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
   const params = await searchParams;
   const page = Math.max(1, Number(params.page) || 1);
   const name = storeName();
+  const settings = await getSiteSettings();
 
   let categories: Awaited<ReturnType<typeof getCategories>> = [];
   let sizeCounts: Record<string, number> = {};
@@ -57,6 +51,8 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
         gender: params.gender,
         size: params.size,
         sort: (params.sort as "newest" | "price-asc" | "price-desc" | "rating") ?? "newest",
+        onSale: params.onSale === "1",
+        inStock: params.inStock === "1",
         page,
         limit: 24,
       }),
@@ -71,7 +67,19 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
     ? activeCategory.name
     : params.q
       ? `Results for “${params.q}”`
-      : "All Products";
+      : params.onSale === "1"
+        ? "On sale"
+        : "All Products";
+
+  const current = {
+    q: params.q,
+    category: params.category,
+    gender: params.gender,
+    size: params.size,
+    sort: params.sort,
+    onSale: params.onSale,
+    inStock: params.inStock,
+  };
 
   return (
     <div className="store-page">
@@ -89,60 +97,18 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
           )}
         </section>
 
-        <div className="shop-layout shop-layout-premium">
-          <Suspense fallback={<div />}>
-            <ShopSidebar
-              categories={categories.map((c) => ({ slug: c.slug, name: c.name }))}
-              sizeCounts={sizeCounts}
-              current={{
-                q: params.q,
-                category: params.category,
-                gender: params.gender,
-                size: params.size,
-                sort: params.sort,
-              }}
-            />
-          </Suspense>
-
-          <div className="shop-results">
-            <div className="shop-toolbar shop-toolbar-premium">
-              <p className="shop-toolbar-count">
-                {result.total} {result.total === 1 ? "Product" : "Products"}
-              </p>
-              <p className="shop-toolbar-sort">
-                Sorted by {SORT_LABELS[params.sort ?? "newest"]}
-              </p>
-            </div>
-
-            {result.products.length === 0 ? (
-              <div className="shop-empty">
-                <p className="font-display text-2xl text-pearl">No products found</p>
-                <p className="font-ui text-sm text-pearl-muted mt-2">Try adjusting your filters.</p>
-                <Link href="/shop" className="btn-copper mt-6 inline-flex">
-                  View All
-                </Link>
-              </div>
-            ) : (
-              <div className="product-row product-row-premium">
-                {result.products.map((product, i) => (
-                  <ProductCard key={product.id} product={product} priority={i < 4} />
-                ))}
-              </div>
-            )}
-
-            <Pagination
-              page={result.page}
-              totalPages={result.totalPages}
-              searchParams={{
-                q: params.q,
-                category: params.category,
-                gender: params.gender,
-                size: params.size,
-                sort: params.sort,
-              }}
-            />
-          </div>
-        </div>
+        <Suspense fallback={<div className="shop-layout shop-layout-premium" />}>
+          <ShopClient
+            categories={categories.map((c) => ({ slug: c.slug, name: c.name }))}
+            sizeCounts={sizeCounts}
+            products={result.products}
+            total={result.total}
+            page={result.page}
+            totalPages={result.totalPages}
+            current={current}
+            showRatings={settings.showRatingsOnCards}
+          />
+        </Suspense>
       </main>
       <StoreFooter />
     </div>

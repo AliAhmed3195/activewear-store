@@ -1,6 +1,6 @@
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
-import { Gender, Prisma, ProductStatus } from "@prisma/client";
+import { Gender, Prisma, ProductBadge, ProductStatus } from "@prisma/client";
 import { prisma, withDbFallback } from "@/lib/db";
 import { mapProduct } from "@/lib/product-mapper";
 import type { PaginatedProducts, Product, Review, ShopFilters, StoreCurrency } from "@/types";
@@ -110,6 +110,26 @@ export async function getBestSellers(limit = 8): Promise<Product[]> {
 
 export async function getBestSellersPool(limit = 24): Promise<Product[]> {
   return getBestSellers(limit);
+}
+
+/** New arrivals excluding best-seller IDs so home sections don't overlap. */
+export async function getNewArrivalsExclusive(
+  limit = 24,
+  excludeIds: string[] = []
+): Promise<Product[]> {
+  if (excludeIds.length === 0) return getNewArrivals(limit);
+  return withDbFallback(async () => {
+    const products = await prisma.product.findMany({
+      where: {
+        status: ProductStatus.ACTIVE,
+        id: { notIn: excludeIds },
+      },
+      include: productInclude,
+      orderBy: { createdAt: "desc" },
+      take: limit,
+    });
+    return products.map(mapProduct);
+  }, []);
 }
 
 export interface CategoryPreview {
@@ -238,6 +258,8 @@ export async function getProducts(filters: ShopFilters = {}): Promise<PaginatedP
     size: filters.size ?? "",
     color: filters.color ?? "",
     sort: filters.sort ?? "newest",
+    onSale: Boolean(filters.onSale),
+    inStock: Boolean(filters.inStock),
     currency,
     page,
     limit,
@@ -266,17 +288,35 @@ export async function getProducts(filters: ShopFilters = {}): Promise<PaginatedP
           where.gender = filters.gender as Gender;
         }
 
-        if (filters.size) {
-          where.variants = { some: { sizes: { has: filters.size } } };
-        }
-
-        if (filters.color) {
+        if (filters.size || filters.color || filters.inStock) {
           where.variants = {
             some: {
               ...(filters.size ? { sizes: { has: filters.size } } : {}),
-              colorSlug: filters.color,
+              ...(filters.color ? { colorSlug: filters.color } : {}),
+              ...(filters.inStock ? { stock: { gt: 0 } } : {}),
             },
           };
+        }
+
+        if (filters.onSale) {
+          where.AND = [
+            ...(Array.isArray(where.AND) ? where.AND : where.AND ? [where.AND] : []),
+            {
+              OR: [
+                { badge: ProductBadge.SALE },
+                {
+                  variants: {
+                    some: {
+                      OR: [
+                        { compareAtCentsPkr: { gt: 0 } },
+                        { compareAtCentsUsd: { gt: 0 } },
+                      ],
+                    },
+                  },
+                },
+              ],
+            },
+          ];
         }
 
         let orderBy: Prisma.ProductOrderByWithRelationInput = { createdAt: "desc" };

@@ -229,6 +229,26 @@ enum CustomOrderStatus {
   CANCELLED
 }
 
+/// Single-row storefront config (sale banner, shipping, UX toggles).
+model SiteSettings {
+  id                       String    @id @default("default")
+  announcementEnabled      Boolean   @default(true)
+  /// Pipe-separated marquee lines
+  announcementText         String    @default("Cash on Delivery · Pakistan|Free Shipping on Qualifying Orders|Custom Team Kits|Ships Across Pakistan")
+  saleEnabled              Boolean   @default(false)
+  saleBadgeLabel           String    @default("Season Sale")
+  saleBannerText           String    @default("")
+  saleEndsAt               DateTime?
+  flatShippingPkr          Int       @default(50000)
+  flatShippingUsd          Int       @default(1500)
+  freeShippingThresholdPkr Int       @default(15000000)
+  freeShippingThresholdUsd Int       @default(7500)
+  showRatingsOnCards       Boolean   @default(true)
+  showStickyAddToCart      Boolean   @default(true)
+  lowStockThreshold        Int       @default(5)
+  updatedAt                DateTime  @updatedAt
+}
+
 /// Team / custom merch quote requests (names, numbers, logos).
 model CustomOrder {
   id              String            @id @default(cuid())

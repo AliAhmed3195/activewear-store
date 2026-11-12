@@ -15,12 +15,16 @@ interface VariantProductActionsProps {
   product: Product;
   variant: ProductVariant;
   onVariantChange: (v: ProductVariant) => void;
+  lowStockThreshold?: number;
+  showStickyAddToCart?: boolean;
 }
 
 export default function VariantProductActions({
   product,
   variant,
   onVariantChange,
+  lowStockThreshold = 5,
+  showStickyAddToCart = true,
 }: VariantProductActionsProps) {
   const { addItem, openCart, currency, toggleWishlist, isWishlisted } = useCart();
   const wishlisted = isWishlisted(product.id);
@@ -41,7 +45,8 @@ export default function VariantProductActions({
   const price = getVariantPrice(variant, currency);
   const compareAt = getVariantCompareAt(variant, currency);
   const badge = badgeLabel(product.badge);
-  const stockPct = Math.max(8, Math.min(100, (sizeLeft / 12) * 100));
+  const warnAt = Math.max(1, lowStockThreshold);
+  const stockPct = Math.max(8, Math.min(100, (sizeLeft / Math.max(warnAt * 2, 12)) * 100));
 
   const handleAdd = () => {
     if (outOfStock || qty > sizeLeft) return;
@@ -50,120 +55,142 @@ export default function VariantProductActions({
   };
 
   return (
-    <div className="pdp-actions">
-      <div className="pdp-price-row">
-        <p className="pdp-price">{formatPrice(price, currency)}</p>
-        {compareAt && <p className="pdp-compare">{formatPrice(compareAt, currency)}</p>}
-        {badge && <span className="pdp-badge">{badge}</span>}
-      </div>
-
-      {!outOfStock && sizeLeft <= 8 && (
-        <div className="pdp-stock">
-          <p className="pdp-low-stock">
-            {sizeLeft <= 5
-              ? `Hurry — only ${sizeLeft} left in ${size}`
-              : `${sizeLeft} left in ${size}`}
-          </p>
-          <div className="pdp-stock-bar" aria-hidden="true">
-            <span style={{ width: `${stockPct}%` }} />
-          </div>
+    <>
+      <div className="pdp-actions">
+        <div className="pdp-price-row">
+          <p className="pdp-price">{formatPrice(price, currency)}</p>
+          {compareAt && <p className="pdp-compare">{formatPrice(compareAt, currency)}</p>}
+          {badge && <span className="pdp-badge">{badge}</span>}
         </div>
-      )}
 
-      {product.variants.length > 1 && (
+        {!outOfStock && sizeLeft <= warnAt && (
+          <div className="pdp-stock">
+            <p className="pdp-low-stock">
+              {sizeLeft <= Math.ceil(warnAt / 2)
+                ? `Hurry — only ${sizeLeft} left in ${size}`
+                : `${sizeLeft} left in ${size}`}
+            </p>
+            <div className="pdp-stock-bar" aria-hidden="true">
+              <span style={{ width: `${stockPct}%` }} />
+            </div>
+          </div>
+        )}
+
+        {product.variants.length > 1 && (
+          <div className="pdp-block">
+            <div className="pdp-label-row">
+              <span className="pdp-label">Color</span>
+              <span className="pdp-label-value">{variant.colorName}</span>
+            </div>
+            <div className="pdp-swatches">
+              {product.variants.map((v) => (
+                <button
+                  key={v.id}
+                  type="button"
+                  onClick={() => onVariantChange(v)}
+                  className={`pdp-swatch ${variant.id === v.id ? "is-active" : ""}`}
+                  title={v.colorName}
+                  aria-label={v.colorName}
+                >
+                  <span style={{ backgroundColor: v.colorHex ?? "#666" }} />
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="pdp-block">
           <div className="pdp-label-row">
-            <span className="pdp-label">Color</span>
-            <span className="pdp-label-value">{variant.colorName}</span>
+            <span className="pdp-label">Size</span>
+            <span className="pdp-label-value">True to size</span>
           </div>
-          <div className="pdp-swatches">
-            {product.variants.map((v) => (
-              <button
-                key={v.id}
-                type="button"
-                onClick={() => onVariantChange(v)}
-                className={`pdp-swatch ${variant.id === v.id ? "is-active" : ""}`}
-                title={v.colorName}
-                aria-label={v.colorName}
-              >
-                <span style={{ backgroundColor: v.colorHex ?? "#666" }} />
-              </button>
-            ))}
+          <div className="pdp-sizes">
+            {variant.sizes.map((s) => {
+              const left = variant.sizeStock?.[s] ?? 0;
+              const soldOut = left <= 0;
+              return (
+                <button
+                  key={s}
+                  type="button"
+                  className={`size-chip ${size === s ? "active" : ""} ${soldOut ? "sold-out" : ""}`}
+                  onClick={() => {
+                    if (soldOut) return;
+                    setSize(s);
+                    setQty(1);
+                  }}
+                  disabled={soldOut}
+                >
+                  {s}
+                </button>
+              );
+            })}
           </div>
+        </div>
+
+        <div className="pdp-qty-row">
+          <span className="pdp-label">Qty</span>
+          <div className="pdp-qty">
+            <button
+              type="button"
+              onClick={() => setQty(Math.max(1, qty - 1))}
+              disabled={outOfStock}
+              aria-label="Decrease quantity"
+            >
+              <IconMinus size={14} />
+            </button>
+            <span>{qty}</span>
+            <button
+              type="button"
+              onClick={() => setQty(Math.min(maxQty, qty + 1))}
+              disabled={outOfStock || qty >= maxQty}
+              aria-label="Increase quantity"
+            >
+              <IconPlus size={14} />
+            </button>
+          </div>
+        </div>
+
+        <div className="pdp-cta-row">
+          <button
+            type="button"
+            className="btn-copper pdp-add-btn"
+            onClick={handleAdd}
+            disabled={outOfStock}
+          >
+            <IconBag size={16} />
+            {outOfStock ? "Sold Out" : "Add to Cart"}
+          </button>
+          <button
+            type="button"
+            className={`pdp-wish-cta ${wishlisted ? "is-on" : ""}`}
+            onClick={() => toggleWishlist(product.id)}
+            aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+          >
+            <IconHeart size={18} filled={wishlisted} />
+          </button>
+        </div>
+      </div>
+
+      {showStickyAddToCart && (
+        <div className="pdp-sticky-bar" aria-label="Quick add to cart">
+          <div className="pdp-sticky-info">
+            <strong>{product.name}</strong>
+            <span>
+              {formatPrice(price, currency)}
+              {size ? ` · Size ${size}` : ""}
+            </span>
+          </div>
+          <button
+            type="button"
+            className="btn-copper pdp-sticky-add"
+            onClick={handleAdd}
+            disabled={outOfStock}
+          >
+            {outOfStock ? "Sold Out" : "Add to Cart"}
+          </button>
         </div>
       )}
-
-      <div className="pdp-block">
-        <div className="pdp-label-row">
-          <span className="pdp-label">Size</span>
-          <span className="pdp-label-value">True to size</span>
-        </div>
-        <div className="pdp-sizes">
-          {variant.sizes.map((s) => {
-            const left = variant.sizeStock?.[s] ?? 0;
-            const soldOut = left <= 0;
-            return (
-              <button
-                key={s}
-                type="button"
-                className={`size-chip ${size === s ? "active" : ""} ${soldOut ? "sold-out" : ""}`}
-                onClick={() => {
-                  if (soldOut) return;
-                  setSize(s);
-                  setQty(1);
-                }}
-                disabled={soldOut}
-              >
-                {s}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="pdp-qty-row">
-        <span className="pdp-label">Qty</span>
-        <div className="pdp-qty">
-          <button
-            type="button"
-            onClick={() => setQty(Math.max(1, qty - 1))}
-            disabled={outOfStock}
-            aria-label="Decrease quantity"
-          >
-            <IconMinus size={14} />
-          </button>
-          <span>{qty}</span>
-          <button
-            type="button"
-            onClick={() => setQty(Math.min(maxQty, qty + 1))}
-            disabled={outOfStock || qty >= maxQty}
-            aria-label="Increase quantity"
-          >
-            <IconPlus size={14} />
-          </button>
-        </div>
-      </div>
-
-      <div className="pdp-cta-row">
-        <button
-          type="button"
-          className="btn-copper pdp-add-btn"
-          onClick={handleAdd}
-          disabled={outOfStock}
-        >
-          <IconBag size={16} />
-          {outOfStock ? "Sold Out" : "Add to Cart"}
-        </button>
-        <button
-          type="button"
-          className={`pdp-wish-cta ${wishlisted ? "is-on" : ""}`}
-          onClick={() => toggleWishlist(product.id)}
-          aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-        >
-          <IconHeart size={18} filled={wishlisted} />
-        </button>
-      </div>
-    </div>
+    </>
   );
 }
 

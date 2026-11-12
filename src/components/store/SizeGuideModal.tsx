@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   SHIRT_SIZE_CHART,
   SIZE_GUIDE_NOTES,
   TROUSER_SIZE_CHART,
 } from "@/lib/size-charts";
+import { cn } from "@/lib/utils";
 
 interface SizeGuideModalProps {
   open: boolean;
@@ -19,6 +20,12 @@ export default function SizeGuideModal({
   onClose,
   defaultTab = "shirt",
 }: SizeGuideModalProps) {
+  const [tab, setTab] = useState<"shirt" | "trouser">(defaultTab);
+
+  useEffect(() => {
+    if (open) setTab(defaultTab);
+  }, [open, defaultTab]);
+
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -37,11 +44,14 @@ export default function SizeGuideModal({
   return (
     <div className="size-guide-overlay" role="dialog" aria-modal="true" aria-label="Size guide">
       <button type="button" className="size-guide-backdrop" aria-label="Close" onClick={onClose} />
-      <div className="size-guide-panel">
+      <div className="size-guide-panel size-guide-panel-pro">
         <div className="size-guide-head">
           <div>
             <p className="peak-section-kicker">Fit guide</p>
             <h2>Size chart</h2>
+            <p className="size-guide-lead">
+              Measure yourself and match the chart — most VIFACTIVE pieces are true to size.
+            </p>
           </div>
           <button type="button" className="size-guide-close" onClick={onClose} aria-label="Close">
             ×
@@ -49,63 +59,81 @@ export default function SizeGuideModal({
         </div>
 
         <div className="size-guide-tabs" role="tablist">
-          <span className={defaultTab === "shirt" ? "is-active" : ""}>Shirts / Tops</span>
-          <span className={defaultTab === "trouser" ? "is-active" : ""}>Trousers / Bottoms</span>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={tab === "shirt"}
+            className={cn(tab === "shirt" && "is-active")}
+            onClick={() => setTab("shirt")}
+          >
+            Shirts / Tops
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={tab === "trouser"}
+            className={cn(tab === "trouser" && "is-active")}
+            onClick={() => setTab("trouser")}
+          >
+            Trousers / Bottoms
+          </button>
         </div>
 
-        <div className="size-guide-block">
-          <h3>Shirts & tops (inches)</h3>
-          <div className="size-guide-table-wrap">
-            <table className="size-guide-table">
-              <thead>
-                <tr>
-                  <th>Size</th>
-                  <th>Chest</th>
-                  <th>Length</th>
-                  <th>Sleeve</th>
-                </tr>
-              </thead>
-              <tbody>
-                {SHIRT_SIZE_CHART.map((r) => (
-                  <tr key={r.size}>
-                    <td>{r.size}</td>
-                    <td>{r.chest}</td>
-                    <td>{r.length}</td>
-                    <td>{r.sleeve}</td>
+        {tab === "shirt" ? (
+          <div className="size-guide-block" role="tabpanel">
+            <h3>Shirts & tops (inches)</h3>
+            <div className="size-guide-table-wrap">
+              <table className="size-guide-table">
+                <thead>
+                  <tr>
+                    <th>Size</th>
+                    <th>Chest</th>
+                    <th>Length</th>
+                    <th>Sleeve</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {SHIRT_SIZE_CHART.map((r) => (
+                    <tr key={r.size}>
+                      <td>{r.size}</td>
+                      <td>{r.chest}</td>
+                      <td>{r.length}</td>
+                      <td>{r.sleeve}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-
-        <div className="size-guide-block">
-          <h3>Trousers & bottoms (inches)</h3>
-          <div className="size-guide-table-wrap">
-            <table className="size-guide-table">
-              <thead>
-                <tr>
-                  <th>Size</th>
-                  <th>Waist</th>
-                  <th>Hip</th>
-                  <th>Inseam</th>
-                  <th>Length</th>
-                </tr>
-              </thead>
-              <tbody>
-                {TROUSER_SIZE_CHART.map((r) => (
-                  <tr key={r.size}>
-                    <td>{r.size}</td>
-                    <td>{r.waist}</td>
-                    <td>{r.hip}</td>
-                    <td>{r.inseam}</td>
-                    <td>{r.length}</td>
+        ) : (
+          <div className="size-guide-block" role="tabpanel">
+            <h3>Trousers & bottoms (inches)</h3>
+            <div className="size-guide-table-wrap">
+              <table className="size-guide-table">
+                <thead>
+                  <tr>
+                    <th>Size</th>
+                    <th>Waist</th>
+                    <th>Hip</th>
+                    <th>Inseam</th>
+                    <th>Length</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {TROUSER_SIZE_CHART.map((r) => (
+                    <tr key={r.size}>
+                      <td>{r.size}</td>
+                      <td>{r.waist}</td>
+                      <td>{r.hip}</td>
+                      <td>{r.inseam}</td>
+                      <td>{r.length}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+        )}
 
         <ul className="size-guide-notes">
           {SIZE_GUIDE_NOTES.map((n) => (
