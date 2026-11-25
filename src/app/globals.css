@@ -10,29 +10,33 @@
 }
 
 :root {
-  /* VIFACTIVE — monochrome athletic retail */
-  --bg: #f5f6f8;
+  /* VIFACTIVE — Nike-inspired sportswear system (PDF brief) */
+  --midnight: #101820;
+  --deep-teal: #173f43;
+  --off-white: #f4f5f3;
+  --bg: #f4f5f3;
   --bg-elevated: #ffffff;
   --surface: #ffffff;
-  --surface-luxury: #eef1f4;
-  --pearl: #101418;
-  --pearl-muted: rgba(16, 20, 24, 0.62);
+  --surface-luxury: #eef1f0;
+  --pearl: #101820;
+  --pearl-muted: rgba(16, 24, 32, 0.62);
   --blush: #5c6670;
   --blush-deep: #3d4650;
-  --copper: #111827;
-  --copper-light: #1f2937;
-  --rose-gold: #3f3f46;
-  --divider: rgba(16, 20, 24, 0.1);
-  --divider-strong: rgba(16, 20, 24, 0.16);
+  --copper: #101820;
+  --copper-light: #173f43;
+  --rose-gold: #173f43;
+  --divider: rgba(16, 24, 32, 0.1);
+  --divider-strong: rgba(16, 24, 32, 0.16);
   --header-height: 72px;
   --rail-height: 88px;
   --footer-height: 36px;
-  --glow-copper: rgba(17, 24, 39, 0.08);
-  --glow-blush: rgba(16, 20, 24, 0.04);
+  --glow-copper: rgba(16, 24, 32, 0.08);
+  --glow-blush: rgba(23, 63, 67, 0.08);
   --radius-sm: 4px;
-  --radius-md: 8px;
-  --shadow-luxury: 0 24px 50px -28px rgba(16, 20, 24, 0.22);
-  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 14px 32px -20px rgba(16, 20, 24, 0.18);
+  --radius-md: 10px;
+  --radius-pill: 999px;
+  --shadow-luxury: 0 24px 50px -28px rgba(16, 24, 32, 0.22);
+  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 14px 32px -20px rgba(16, 24, 32, 0.16);
 }
 
 @theme inline {
@@ -9252,5 +9256,415 @@ a.pdp-text-btn {
 .size-guide-tabs button.is-active {
   color: #111827;
   border-bottom: 2px solid #111827;
+}
+
+
+/* ============================================================
+   VIFACTIVE premium Nike-inspired redesign (PDF + landing ref)
+   ============================================================ */
+
+.vif-premium {
+  --bg: var(--off-white);
+}
+
+.btn-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0.85rem 1.55rem;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body-face), system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-pill-solid {
+  background: #fff;
+  color: var(--midnight);
+  border: 1px solid #fff;
+}
+
+.btn-pill-solid:hover {
+  background: transparent;
+  color: #fff;
+}
+
+.btn-pill-ghost {
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.btn-pill-ghost:hover {
+  background: #fff;
+  color: var(--midnight);
+}
+
+.btn-pill-dark {
+  background: var(--midnight);
+  color: #fff;
+  border: 1px solid var(--midnight);
+}
+
+.btn-pill-dark:hover {
+  background: var(--deep-teal);
+  border-color: var(--deep-teal);
+}
+
+.btn-pill-outline {
+  background: transparent;
+  color: var(--midnight);
+  border: 1px solid rgba(16, 24, 32, 0.28);
+}
+
+.btn-pill-outline:hover {
+  border-color: var(--midnight);
+  background: var(--midnight);
+  color: #fff;
+}
+
+.home-slider-nike {
+  min-height: min(88vh, 820px);
+}
+
+.home-slider-nike .home-slider-media {
+  filter: saturate(0.92) contrast(1.05);
+  transform: scale(1.04);
+}
+
+.home-slider-nike .home-slider-shade {
+  background:
+    linear-gradient(90deg, rgba(16, 24, 32, 0.78) 0%, rgba(16, 24, 32, 0.42) 48%, rgba(16, 24, 32, 0.28) 100%),
+    linear-gradient(0deg, rgba(16, 24, 32, 0.55), transparent 42%);
+}
+
+.home-slider-nike .home-slider-inner {
+  max-width: 40rem;
+  padding-bottom: 3.5rem;
+}
+
+.home-slider-nike .home-slider-title {
+  font-family: var(--font-display-face), system-ui, sans-serif;
+  font-size: clamp(2.6rem, 7vw, 5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+  text-transform: none;
+  color: #fff;
+}
+
+.home-slider-nike .peak-hero-eyebrow {
+  color: rgba(255, 255, 255, 0.72);
+  letter-spacing: 0.22em;
+}
+
+.home-slider-nike .peak-hero-copy {
+  color: rgba(255, 255, 255, 0.86);
+  max-width: 28rem;
+  font-size: 1.02rem;
+}
+
+.home-slider-nike .peak-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.home-slider-progress {
+  position: absolute;
+  left: 50%;
+  bottom: 1.25rem;
+  transform: translateX(-50%);
+  z-index: 5;
+  display: flex;
+  gap: 0.45rem;
+  width: min(420px, calc(100% - 2rem));
+}
+
+.home-slider-progress-seg {
+  position: relative;
+  flex: 1;
+  height: 3px;
+  border: 0;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.28);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.home-slider-progress-seg span {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: none;
+}
+
+.home-slider-progress-seg.is-done span {
+  transform: scaleX(1);
+}
+
+.home-slider-progress-seg.is-active span {
+  transform-origin: left center;
+}
+
+.nike-cat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.nike-cat-tile {
+  position: relative;
+  min-height: 420px;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 1.25rem 1.15rem;
+  text-decoration: none;
+  color: #fff;
+}
+
+.nike-cat-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(16, 24, 32, 0.78) 0%, rgba(16, 24, 32, 0.05) 55%);
+  transition: background 0.3s ease;
+}
+
+.nike-cat-tile:hover .nike-cat-shade {
+  background: linear-gradient(0deg, rgba(16, 24, 32, 0.88) 0%, rgba(23, 63, 67, 0.25) 60%);
+}
+
+.nike-cat-label {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-display-face), system-ui, sans-serif;
+  font-size: clamp(1.15rem, 2vw, 1.55rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.nike-cat-go {
+  position: relative;
+  z-index: 1;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.nike-promise .peak-promise-n {
+  display: none;
+}
+
+.nike-fabric-sub {
+  margin: 0.55rem 0 0;
+  max-width: 28rem;
+  color: var(--pearl-muted);
+  font-size: 0.92rem;
+}
+
+.nike-lookband .peak-lookband-media {
+  background-image: linear-gradient(120deg, rgba(16, 24, 32, 0.35), rgba(23, 63, 67, 0.25)),
+    url(/vifactive/exquisite-camo-front.jpg);
+  background-size: cover;
+  background-position: center;
+}
+
+.product-card-premium .product-card-media {
+  background: var(--off-white);
+}
+
+.product-card-swatches {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.45rem;
+}
+
+.product-card-swatch {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 999px;
+  border: 1px solid rgba(16, 24, 32, 0.18);
+  display: inline-block;
+}
+
+.product-card-swatch-more {
+  font-size: 0.65rem;
+  color: var(--pearl-muted);
+}
+
+.product-card-premium .product-card-cta {
+  border-radius: var(--radius-pill);
+  letter-spacing: 0.12em;
+}
+
+.product-card-premium .product-card-quick-btn {
+  border-radius: var(--radius-pill);
+}
+
+.fabric-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+.fabric-hero {
+  padding-bottom: 1.75rem;
+  border-bottom: 1px solid var(--divider);
+  margin-bottom: 1.75rem;
+}
+
+.fabric-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.35rem;
+}
+
+.fabric-points ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem 1.25rem;
+  margin: 0 0 2rem;
+  padding: 0;
+  list-style: none;
+}
+
+.fabric-points li {
+  padding: 0.85rem 1rem;
+  background: #fff;
+  border: 1px solid var(--divider);
+  font-size: 0.9rem;
+  color: var(--pearl-muted);
+}
+
+.fabric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.fabric-card {
+  background: #fff;
+  border: 1px solid var(--divider);
+  padding: 1.25rem 1.2rem 1.35rem;
+  scroll-margin-top: 6rem;
+}
+
+.fabric-card-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.fabric-card-top h2 {
+  margin: 0;
+  font-family: var(--font-display-face), system-ui, sans-serif;
+  font-size: 1.25rem;
+  letter-spacing: 0.02em;
+}
+
+.fabric-gsm {
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--deep-teal);
+  font-weight: 700;
+}
+
+.fabric-feel {
+  margin: 0.45rem 0 0.35rem;
+  font-size: 0.88rem;
+  color: var(--pearl-muted);
+}
+
+.fabric-use {
+  margin: 0 0 0.75rem;
+  font-size: 0.88rem;
+}
+
+.fabric-card ul {
+  margin: 0 0 1rem;
+  padding-left: 1.1rem;
+  color: var(--pearl-muted);
+  font-size: 0.86rem;
+}
+
+.fabric-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+
+.fabric-cta-band {
+  margin-top: 2.5rem;
+  padding: 2rem 1.5rem;
+  background: var(--midnight);
+  color: #fff;
+  text-align: center;
+}
+
+.fabric-cta-band h2 {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-display-face), system-ui, sans-serif;
+}
+
+.fabric-cta-band p {
+  margin: 0 auto 1.25rem;
+  max-width: 28rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.fabric-cta-band .btn-pill-dark {
+  background: #fff;
+  color: var(--midnight);
+  border-color: #fff;
+}
+
+@media (max-width: 1023px) {
+  .nike-cat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .nike-cat-tile {
+    min-height: 280px;
+  }
+}
+
+@media (max-width: 640px) {
+  .home-slider-nike {
+    min-height: 78vh;
+  }
+
+  .nike-cat-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .nike-cat-tile {
+    min-height: 240px;
+  }
+
+  .home-slider-nike .home-slider-dots {
+    display: none;
+  }
 }
 

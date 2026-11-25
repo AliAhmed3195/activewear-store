@@ -145,8 +145,20 @@ export default function ProductCard({
       </Link>
 
       <div className="product-card-body">
-        {product.category && (
-          <p className="product-card-category">{product.category.name}</p>
+        {product.variants.length > 1 && (
+          <div className="product-card-swatches" aria-label="Available colors">
+            {product.variants.slice(0, 5).map((v) => (
+              <span
+                key={v.id}
+                className="product-card-swatch"
+                title={v.colorName}
+                style={{ backgroundColor: v.colorHex ?? "#666" }}
+              />
+            ))}
+            {product.variants.length > 5 && (
+              <span className="product-card-swatch-more">+{product.variants.length - 5}</span>
+            )}
+          </div>
         )}
         <Link href={`/product/${product.slug}`}>
           <h3 className="product-card-name text-pearl">{product.name}</h3>
@@ -184,7 +196,7 @@ export default function ProductCard({
           disabled={availableSizes.length === 0}
         >
           <IconBag size={14} />
-          {availableSizes.length === 0 ? "Sold Out" : sizeOpen ? "Pick a size" : "Add to Cart"}
+          {availableSizes.length === 0 ? "Sold Out" : sizeOpen ? "Pick a size" : "+ Quick add"}
         </button>
         {sizeOpen && (
           <div className="product-card-size-picker is-inline" role="group" aria-label="Choose size">

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { DM_Sans, Oswald } from "next/font/google";
+import { Manrope, Sora } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/lib/cart-context";
 import Providers from "@/components/Providers";
@@ -9,17 +9,17 @@ import ScrollToTop from "@/components/store/ScrollToTop";
 import WhatsAppFloat from "@/components/store/WhatsAppFloat";
 import { storeName, storeTagline, storeUrl } from "@/lib/utils";
 
-const displayFont = Oswald({
+const displayFont = Sora({
   variable: "--font-display-face",
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["500", "600", "700", "800"],
   display: "swap",
 });
 
-const bodyFont = DM_Sans({
+const bodyFont = Manrope({
   variable: "--font-body-face",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
 
@@ -28,10 +28,10 @@ const name = storeName();
 export const metadata: Metadata = {
   applicationName: name,
   title: {
-    default: `${name} | Performance Activewear`,
+    default: `${name} | Performance Sportswear`,
     template: `%s | ${name}`,
   },
-  description: `${storeTagline()} Shop ${name} performance activewear — men, women, kids & custom team kits. COD across Pakistan.`,
+  description: `${storeTagline()} Shop ${name} sportswear & activewear — men, women, kids & custom team kits. COD across Pakistan.`,
   metadataBase: new URL(storeUrl()),
   icons: {
     icon: [
@@ -43,12 +43,12 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: name,
-    title: `${name} | Performance Activewear`,
+    title: `${name} | Performance Sportswear`,
     description: storeTagline(),
   },
   twitter: {
     card: "summary",
-    title: `${name} | Performance Activewear`,
+    title: `${name} | Performance Sportswear`,
     description: storeTagline(),
   },
   robots: { index: true, follow: true },
@@ -61,7 +61,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${displayFont.variable} ${bodyFont.variable}`}>
-      <body className={`${bodyFont.className} antialiased page-enter peak-theme`}>
+      <body className={`${bodyFont.className} antialiased page-enter peak-theme vif-premium`}>
         <CartProvider>
           <Providers>
             <Suspense fallback={null}>

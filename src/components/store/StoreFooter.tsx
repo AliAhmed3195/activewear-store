@@ -95,7 +95,8 @@ export default function StoreFooter() {
             <Link href="/shop">All Products</Link>
             <Link href="/shop?sort=newest">New Arrivals</Link>
             <Link href="/shop?sort=rating">Best Sellers</Link>
-            <Link href="/custom">Custom / Teams</Link>
+            <Link href="/custom">Custom Teamwear</Link>
+            <Link href="/fabric">Fabric Technology</Link>
             <Link href="/shop?gender=MEN">Men</Link>
             <Link href="/shop?gender=WOMEN">Women</Link>
             <Link href="/shop?gender=KIDS">Kids</Link>
@@ -110,6 +111,7 @@ export default function StoreFooter() {
             <Link href="/shipping">Shipping &amp; Returns</Link>
             <Link href="/contact">Contact Us</Link>
             <Link href="/faq">FAQ</Link>
+            <Link href="/fabric">Fabric Guide</Link>
           </div>
 
           <div className="footer-col">

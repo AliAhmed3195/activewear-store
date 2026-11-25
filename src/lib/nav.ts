@@ -9,9 +9,8 @@ export type NavGroup = {
   children?: NavLink[];
 };
 
-/** Storefront main menu — light + shoppable (Terms lives in footer) */
+/** Storefront main menu — sportswear-first (PDF redesign brief) */
 export const MAIN_NAV: NavGroup[] = [
-  { label: "Shop All", href: "/shop" },
   {
     label: "Men",
     href: "/shop?gender=MEN",
@@ -45,8 +44,19 @@ export const MAIN_NAV: NavGroup[] = [
       { label: "Custom order", href: "/custom" },
     ],
   },
-  { label: "Sale", href: "/shop?sort=rating" },
-  { label: "Custom", href: "/custom" },
+  { label: "Sportswear", href: "/shop" },
+  {
+    label: "Collections",
+    href: "/shop",
+    children: [
+      { label: "Best Sellers", href: "/shop?sort=rating" },
+      { label: "New Arrivals", href: "/shop?sort=newest" },
+      { label: "On Sale", href: "/shop?onSale=1" },
+      { label: "Accessories", href: "/shop?category=accessories" },
+      { label: "Fabric Tech", href: "/fabric" },
+    ],
+  },
+  { label: "Custom Teamwear", href: "/custom" },
 ];
 
 export const STORE_CATEGORIES = [

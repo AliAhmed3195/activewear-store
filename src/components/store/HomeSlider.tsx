@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IconChevronLeft, IconChevronRight } from "@/components/ui/icons";
 
 export type HomeSlide = {
@@ -21,18 +21,37 @@ interface HomeSliderProps {
   brandName: string;
 }
 
+const SLIDE_MS = 6500;
+
 export default function HomeSlider({ slides, brandName }: HomeSliderProps) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const startedAt = useRef(Date.now());
   const total = slides.length;
 
   useEffect(() => {
-    if (total <= 1 || paused) return;
-    const id = window.setInterval(() => {
-      setIndex((i) => (i + 1) % total);
-    }, 6000);
-    return () => window.clearInterval(id);
-  }, [total, paused]);
+    startedAt.current = Date.now();
+    setProgress(0);
+  }, [index]);
+
+  useEffect(() => {
+    if (total <= 1) return;
+    let raf = 0;
+    const loop = () => {
+      if (!paused) {
+        const elapsed = Date.now() - startedAt.current;
+        if (elapsed >= SLIDE_MS) {
+          setIndex((i) => (i + 1) % total);
+        } else {
+          setProgress((elapsed / SLIDE_MS) * 100);
+        }
+      }
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, [total, paused, index]);
 
   if (total === 0) return null;
 
@@ -41,7 +60,7 @@ export default function HomeSlider({ slides, brandName }: HomeSliderProps) {
 
   return (
     <section
-      className="home-slider home-slider-lifestyle"
+      className="home-slider home-slider-lifestyle home-slider-nike"
       aria-roledescription="carousel"
       aria-label={`${brandName} featured banners`}
       onMouseEnter={() => setPaused(true)}
@@ -72,9 +91,14 @@ export default function HomeSlider({ slides, brandName }: HomeSliderProps) {
         <h1 className="home-slider-title">{slide.title}</h1>
         <p className="peak-hero-copy font-ui">{slide.subtitle}</p>
         <div className="peak-hero-actions">
-          <Link href={slide.ctaHref} className="btn-copper">
+          <Link href={slide.ctaHref} className="btn-pill btn-pill-solid">
             {slide.ctaLabel}
           </Link>
+          {slide.secondaryLabel && slide.secondaryHref && (
+            <Link href={slide.secondaryHref} className="btn-pill btn-pill-ghost">
+              {slide.secondaryLabel}
+            </Link>
+          )}
         </div>
       </div>
 
@@ -96,17 +120,23 @@ export default function HomeSlider({ slides, brandName }: HomeSliderProps) {
           >
             <IconChevronRight size={20} />
           </button>
-          <div className="home-slider-dots" role="tablist" aria-label="Slide indicators">
+          <div className="home-slider-progress" aria-hidden="true">
             {slides.map((s, i) => (
               <button
                 key={s.id}
                 type="button"
-                role="tab"
-                aria-selected={i === index}
+                className={`home-slider-progress-seg${i === index ? " is-active" : ""}${i < index ? " is-done" : ""}`}
+                onClick={() => go(i)}
                 aria-label={`Go to slide ${i + 1}`}
-                className={`home-slider-dot${i === index ? " is-active" : ""}`}
-                onClick={() => setIndex(i)}
-              />
+              >
+                <span
+                  style={
+                    i === index
+                      ? { transform: `scaleX(${Math.min(100, progress) / 100})` }
+                      : undefined
+                  }
+                />
+              </button>
             ))}
           </div>
         </>
