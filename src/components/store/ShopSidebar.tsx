@@ -264,14 +264,25 @@ export default function ShopSidebar({
       <aside className="shop-sidebar shop-sidebar-premium shop-sidebar-desktop">{panel}</aside>
 
       {open && (
-        <div className="shop-filter-drawer" role="dialog" aria-modal="true" aria-label="Filters">
+        <div
+          className="shop-filter-drawer shop-filter-sheet"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Filters"
+        >
           <button
             type="button"
             className="shop-filter-backdrop"
             aria-label="Close filters"
             onClick={closeMobile}
           />
-          <div className="shop-filter-drawer-panel">{panel}</div>
+          <div className="shop-filter-drawer-panel">
+            <div className="shop-filter-sheet-handle" aria-hidden="true" />
+            {panel}
+            <button type="button" className="shop-filter-sheet-apply btn-pill btn-pill-dark" onClick={closeMobile}>
+              Show results
+            </button>
+          </div>
         </div>
       )}
     </>

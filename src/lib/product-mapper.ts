@@ -96,6 +96,19 @@ export function getHeroUrl(product: Product, variantId?: string): string {
   return product.images[0]?.url ?? "";
 }
 
+/** Second gallery image for card hover (back / alt view). */
+export function getHoverUrl(product: Product, variantId?: string): string | null {
+  const gallery = getGallery(product, variantId);
+  if (gallery.length >= 2 && gallery[1] && gallery[1] !== gallery[0]) return gallery[1];
+  // Fall back to another variant's hero if only one image on primary
+  if (product.variants.length > 1) {
+    const other = product.variants.find((v) => v.id !== (variantId ?? product.variants[0]?.id));
+    const url = other?.images[0]?.url;
+    if (url && url !== gallery[0]) return url;
+  }
+  return null;
+}
+
 export function getGallery(product: Product, variantId?: string): string[] {
   const variant = variantId
     ? product.variants.find((v) => v.id === variantId)

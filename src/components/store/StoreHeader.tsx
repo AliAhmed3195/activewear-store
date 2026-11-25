@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useCart } from "@/lib/cart-context";
 import BrandLogo from "@/components/store/BrandLogo";
 import ScrollProgress from "@/components/store/ScrollProgress";
+import PredictiveSearch from "@/components/store/PredictiveSearch";
 import {
   IconBag,
   IconHeart,
@@ -230,36 +231,7 @@ export default function StoreHeader({
       </header>
       </div>
 
-      {searchOpen && (
-        <div className="search-overlay" onClick={() => setSearchOpen(false)}>
-          <div className="search-box" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-2">
-              <span className="badge-micro">Search the store</span>
-              <button
-                type="button"
-                className="icon-btn"
-                onClick={() => setSearchOpen(false)}
-                aria-label="Close search"
-              >
-                <IconClose size={18} />
-              </button>
-            </div>
-            <form onSubmit={submitSearch}>
-              <input
-                autoFocus
-                type="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search tees, joggers, sets…"
-                className="search-input-lg"
-              />
-            </form>
-            <p className="font-ui text-[10px] text-pearl-muted tracking-widest capitalize mt-4">
-              Press Enter to search
-            </p>
-          </div>
-        </div>
-      )}
+      <PredictiveSearch open={searchOpen} onClose={() => setSearchOpen(false)} />
 
       {menuOpen && (
         <>

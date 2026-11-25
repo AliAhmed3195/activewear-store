@@ -7,6 +7,7 @@ import { FABRIC_OPTIONS } from "@/lib/fabric-catalog";
 const PRODUCT_TYPES = [
   "Full sublimation t-shirt",
   "Training tee",
+  "Jersey / match kit",
   "Trousers / joggers",
   "Shorts",
   "Set / co-ord",
@@ -15,6 +16,7 @@ const PRODUCT_TYPES = [
 
 const MIN_QTY = 6;
 
+/** PDF: working 9-field quote form (core fields) + print options */
 export default function CustomOrderForm() {
   const [pending, setPending] = useState(false);
   const [done, setDone] = useState<{ reference: string } | null>(null);
@@ -53,7 +55,11 @@ export default function CustomOrderForm() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "Could not submit. Please try again.");
+        setError(
+          typeof data.error === "string"
+            ? data.error
+            : "Could not submit. Please check required fields."
+        );
         return;
       }
       setDone({ reference: data.reference });
@@ -74,10 +80,10 @@ export default function CustomOrderForm() {
           on WhatsApp / email with pricing and timeline.
         </p>
         <div className="custom-success-actions">
-          <Link href="/shop" className="btn-copper">
+          <Link href="/shop" className="btn-pill btn-pill-dark">
             Continue shopping
           </Link>
-          <button type="button" className="btn-outline" onClick={() => setDone(null)}>
+          <button type="button" className="btn-pill btn-pill-outline" onClick={() => setDone(null)}>
             Submit another
           </button>
         </div>
@@ -86,49 +92,58 @@ export default function CustomOrderForm() {
   }
 
   return (
-    <form className="custom-form" onSubmit={onSubmit}>
+    <form className="custom-form custom-form-pro" onSubmit={onSubmit}>
+      <p className="custom-form-step">1 · Contact</p>
       <div className="custom-form-grid">
         <label>
-          <span>Full name *</span>
+          <span>1. Full name *</span>
           <input
             required
             value={form.name}
             onChange={(e) => set("name", e.target.value)}
             placeholder="Your name"
+            autoComplete="name"
           />
         </label>
         <label>
-          <span>Email *</span>
+          <span>2. Email *</span>
           <input
             required
             type="email"
             value={form.email}
             onChange={(e) => set("email", e.target.value)}
             placeholder="you@email.com"
+            autoComplete="email"
           />
         </label>
         <label>
-          <span>Phone / WhatsApp *</span>
+          <span>3. Phone / WhatsApp *</span>
           <input
             required
             value={form.phone}
             onChange={(e) => set("phone", e.target.value)}
             placeholder="03XX XXXXXXX"
+            autoComplete="tel"
           />
         </label>
         <label>
-          <span>Team / organization</span>
+          <span>4. Team / organization</span>
           <input
             value={form.organization}
             onChange={(e) => set("organization", e.target.value)}
             placeholder="Club, gym, company…"
           />
         </label>
+      </div>
+
+      <p className="custom-form-step">2 · Kit details</p>
+      <div className="custom-form-grid">
         <label>
-          <span>Product type *</span>
+          <span>5. Product type *</span>
           <select
             value={form.productType}
             onChange={(e) => set("productType", e.target.value)}
+            required
           >
             {PRODUCT_TYPES.map((t) => (
               <option key={t} value={t}>
@@ -138,7 +153,7 @@ export default function CustomOrderForm() {
           </select>
         </label>
         <label>
-          <span>Quantity * (min {MIN_QTY})</span>
+          <span>6. Quantity * (min {MIN_QTY})</span>
           <input
             required
             type="number"
@@ -148,7 +163,7 @@ export default function CustomOrderForm() {
           />
         </label>
         <label className="custom-span-2">
-          <span>Size breakdown</span>
+          <span>7. Size breakdown</span>
           <input
             value={form.sizeBreakdown}
             onChange={(e) => set("sizeBreakdown", e.target.value)}
@@ -156,7 +171,7 @@ export default function CustomOrderForm() {
           />
         </label>
         <label className="custom-span-2">
-          <span>Preferred fabric</span>
+          <span>8. Preferred fabric</span>
           <select value={form.fabricId} onChange={(e) => set("fabricId", e.target.value)}>
             {FABRIC_OPTIONS.map((f) => (
               <option key={f.id} value={f.id}>
@@ -203,6 +218,7 @@ export default function CustomOrderForm() {
         </label>
       </fieldset>
 
+      <p className="custom-form-step">3 · Timing & notes</p>
       <div className="custom-form-grid">
         <label>
           <span>Color preference</span>
@@ -217,11 +233,11 @@ export default function CustomOrderForm() {
           <input
             value={form.deadline}
             onChange={(e) => set("deadline", e.target.value)}
-            placeholder="e.g. before 15 Nov"
+            placeholder="e.g. before 15 Dec"
           />
         </label>
         <label className="custom-span-2">
-          <span>Notes</span>
+          <span>9. Notes</span>
           <textarea
             rows={4}
             value={form.notes}
@@ -233,11 +249,11 @@ export default function CustomOrderForm() {
 
       {error && <p className="custom-error">{error}</p>}
 
-      <button type="submit" className="btn-copper custom-submit" disabled={pending}>
+      <button type="submit" className="btn-pill btn-pill-dark custom-submit" disabled={pending}>
         {pending ? "Sending…" : "Request quote"}
       </button>
       <p className="custom-fineprint">
-        Minimum {MIN_QTY} pieces. This is a quote request — we confirm price before production.
+        Minimum {MIN_QTY} pieces · 24–48h quote response. We confirm price before production.
       </p>
     </form>
   );

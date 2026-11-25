@@ -14,6 +14,8 @@ export type HomeSlide = {
   secondaryLabel?: string;
   secondaryHref?: string;
   image: string;
+  /** Optional silent autoplay video (MP4/WebM). Falls back to image. */
+  video?: string;
 };
 
 interface HomeSliderProps {
@@ -81,7 +83,19 @@ export default function HomeSlider({ slides, brandName }: HomeSliderProps) {
             className="home-slider-media"
             style={{ backgroundImage: `url(${s.image})` }}
             aria-hidden="true"
-          />
+          >
+            {s.video && i === index && (
+              <video
+                className="home-slider-video"
+                src={s.video}
+                muted
+                playsInline
+                autoPlay
+                loop
+                preload="metadata"
+              />
+            )}
+          </div>
           <div className="home-slider-shade" aria-hidden="true" />
         </div>
       ))}

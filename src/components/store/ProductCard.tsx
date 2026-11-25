@@ -11,7 +11,7 @@ import {
   getVariantPrice,
   cn,
 } from "@/lib/utils";
-import { getHeroUrl } from "@/lib/product-mapper";
+import { getHeroUrl, getHoverUrl } from "@/lib/product-mapper";
 import { useCart } from "@/lib/cart-context";
 import { IconHeart, IconBag, IconStar } from "@/components/ui/icons";
 import type { Product } from "@/types";
@@ -44,6 +44,8 @@ export default function ProductCard({
   const saveAmount = onSale ? compareAt! - price : 0;
   const sizes = defaultVariant.sizes;
   const availableSizes = sizes.filter((s) => (defaultVariant.sizeStock?.[s] ?? 0) > 0);
+  const heroUrl = getHeroUrl(product);
+  const hoverUrl = getHoverUrl(product);
 
   const handleQuickAdd = (e: React.MouseEvent, size?: string) => {
     e.preventDefault();
@@ -101,14 +103,28 @@ export default function ProductCard({
             <IconHeart size={14} filled={wishlisted} />
           </button>
           <SafeImage
-            src={getHeroUrl(product)}
+            src={heroUrl}
             alt={product.name}
             fallbackLabel={product.name}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className="product-image-contain transition-transform duration-700 group-hover:scale-[1.04]"
+            className={cn(
+              "product-image-contain product-image-front transition-opacity duration-500",
+              hoverUrl && "group-hover:opacity-0"
+            )}
             priority={priority}
           />
+          {hoverUrl && (
+            <SafeImage
+              src={hoverUrl}
+              alt=""
+              fallbackLabel={product.name}
+              fill
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              className="product-image-contain product-image-back opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+              aria-hidden={true}
+            />
+          )}
           <div className="product-card-media-shade" aria-hidden="true" />
           <div className={cn("product-card-quick", sizeOpen && "is-open")}>
             {sizeOpen ? (
