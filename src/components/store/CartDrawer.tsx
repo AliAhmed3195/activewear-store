@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import SafeImage from "@/components/ui/SafeImage";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useCart } from "@/lib/cart-context";
 import { formatPrice, getVariantPrice } from "@/lib/utils";
 import { getHeroUrl } from "@/lib/product-mapper";
@@ -12,6 +12,7 @@ import type { Product } from "@/types";
 
 export default function CartDrawer() {
   const router = useRouter();
+  const pathname = usePathname();
   const {
     items,
     isOpen,
@@ -25,6 +26,11 @@ export default function CartDrawer() {
     currency,
   } = useCart();
   const [suggestions, setSuggestions] = useState<Product[]>([]);
+
+  // Never leave the bag open across navigations / first paint
+  useEffect(() => {
+    closeCart();
+  }, [pathname, closeCart]);
 
   useEffect(() => {
     if (!isOpen) return;

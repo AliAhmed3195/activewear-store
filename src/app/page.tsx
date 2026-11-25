@@ -60,13 +60,13 @@ const SLIDES: HomeSlide[] = [
     id: "1",
     eyebrow: "VIFACTIVE",
     title: "Move with intent.",
-    subtitle:
-      "Performance sportswear and team kits built for every match and every move.",
+    subtitle: "Performance sportswear and team kits for every match and every move.",
     ctaLabel: "Shop Sportswear",
     ctaHref: "/shop",
     secondaryLabel: "Custom Teamwear",
     secondaryHref: "/custom",
-    image: "/vifactive/exquisite-camo-front.jpg",
+    // Prefer cleaner product fields for campaign overlay readability
+    image: "/vifactive/tee-08.jpg",
   },
   {
     id: "2",
@@ -77,7 +77,7 @@ const SLIDES: HomeSlide[] = [
     ctaHref: "/shop?sort=newest",
     secondaryLabel: "Shop Men",
     secondaryHref: "/shop?gender=MEN",
-    image: "/vifactive/exquisite-gradient.jpg",
+    image: "/vifactive/tee-06.jpg",
   },
   {
     id: "3",
@@ -88,7 +88,7 @@ const SLIDES: HomeSlide[] = [
     ctaHref: "/shop?gender=WOMEN",
     secondaryLabel: "Shop All",
     secondaryHref: "/shop",
-    image: "/vifactive/tee-04.jpg",
+    image: "/vifactive/tee-07.jpg",
   },
   {
     id: "4",
@@ -99,7 +99,7 @@ const SLIDES: HomeSlide[] = [
     ctaHref: "/custom",
     secondaryLabel: "Fabric Tech",
     secondaryHref: "/fabric",
-    image: "/vifactive/exquisite-scratch.jpg",
+    image: "/vifactive/exquisite-camo-back.jpg",
   },
 ];
 
@@ -131,7 +131,7 @@ export default async function HomePage() {
     i === 0
       ? {
           ...s,
-          subtitle: `${s.subtitle} ${storeTagline()} ${productCount}+ styles.`,
+          subtitle: `${s.subtitle} ${productCount > 0 ? `${productCount}+ styles.` : storeTagline()}`,
         }
       : s
   );

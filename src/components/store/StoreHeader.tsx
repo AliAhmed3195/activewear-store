@@ -111,18 +111,31 @@ export default function StoreHeader({
             <div className="announcement-track">
               {Array.from({ length: 2 }).map((_, loop) => (
                 <div key={loop} className="announcement-group">
-                  {lines.map((line) => (
-                    <span key={`${loop}-${line}`}>
-                      {line}
+                  {lines.map((line) => {
+                    const isTrack = /order\s*tracking/i.test(line);
+                    return (
+                      <span key={`${loop}-${line}`}>
+                        {isTrack ? (
+                          <Link href="/track" className="underline-offset-2 hover:underline">
+                            Order Tracking
+                          </Link>
+                        ) : (
+                          line
+                        )}
+                        <span className="dot">·</span>
+                      </span>
+                    );
+                  })}
+                  {!lines.some((l) => /order\s*tracking/i.test(l)) && (
+                    <>
+                      <span>
+                        <Link href="/track" className="underline-offset-2 hover:underline">
+                          Order Tracking
+                        </Link>
+                      </span>
                       <span className="dot">·</span>
-                    </span>
-                  ))}
-                  <span>
-                    <Link href="/track" className="underline-offset-2 hover:underline">
-                      Order Tracking
-                    </Link>
-                  </span>
-                  <span className="dot">·</span>
+                    </>
+                  )}
                 </div>
               ))}
             </div>

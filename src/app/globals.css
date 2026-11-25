@@ -9841,3 +9841,149 @@ a.pdp-text-btn {
   margin-top: 1rem;
 }
 
+
+/* ============================================================
+   Live QA fixes: hero contrast, mobile align, home spacing
+   ============================================================ */
+
+.home-slider-nike .home-slider-media {
+  background-position: 68% center;
+  background-size: cover;
+  filter: saturate(0.85) contrast(1.08) brightness(0.72);
+}
+
+.home-slider-nike .home-slider-shade {
+  background:
+    linear-gradient(
+      95deg,
+      rgba(10, 14, 18, 0.94) 0%,
+      rgba(10, 14, 18, 0.88) 34%,
+      rgba(10, 14, 18, 0.55) 58%,
+      rgba(10, 14, 18, 0.28) 100%
+    ),
+    linear-gradient(180deg, rgba(10, 14, 18, 0.25) 0%, rgba(10, 14, 18, 0.55) 100%);
+}
+
+.home-slider-nike .home-slider-inner {
+  max-width: 36rem;
+  padding-top: 6.5rem;
+  padding-bottom: 4.5rem;
+}
+
+.home-slider-nike .home-slider-title {
+  text-shadow: 0 2px 28px rgba(0, 0, 0, 0.55);
+}
+
+.home-slider-nike .peak-hero-copy {
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 16px rgba(0, 0, 0, 0.45);
+  line-height: 1.45;
+}
+
+.home-slider-nike .peak-hero-eyebrow {
+  display: inline-flex;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(6px);
+  margin-bottom: 0.85rem;
+}
+
+.home-premium .container-luxury,
+.home-premium .peak-section-head {
+  width: min(100%, 1200px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.home-premium .section-pad {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.home-premium .nike-cats .peak-section-head,
+.home-premium .nike-fabric .peak-fabric-strip-inner {
+  align-items: end;
+}
+
+.nike-cat-grid {
+  align-items: stretch;
+}
+
+.nike-cat-tile {
+  min-height: 400px;
+}
+
+.cart-drawer[aria-hidden="true"] {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@media (max-width: 900px) {
+  .home-slider-nike .home-slider-media {
+    background-position: center 30%;
+    filter: saturate(0.8) contrast(1.05) brightness(0.55);
+  }
+
+  .home-slider-nike .home-slider-shade {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(8, 10, 14, 0.72) 0%,
+        rgba(8, 10, 14, 0.78) 42%,
+        rgba(8, 10, 14, 0.92) 100%
+      );
+  }
+
+  .home-slider-nike .home-slider-inner {
+    max-width: none;
+    width: 100%;
+    padding: 6.25rem 1.15rem 4.25rem;
+    justify-content: flex-end;
+  }
+
+  .home-slider-nike .home-slider-title {
+    font-size: clamp(2.15rem, 10vw, 3rem);
+    max-width: 12ch;
+  }
+
+  .home-slider-nike .peak-hero-copy {
+    font-size: 0.95rem;
+    max-width: 34ch;
+  }
+
+  .home-slider-nike .peak-hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    max-width: 22rem;
+  }
+
+  .home-slider-nike .peak-hero-actions .btn-pill {
+    width: 100%;
+  }
+
+  .home-slider-nike .home-slider-arrow {
+    display: none;
+  }
+
+  .home-slider-progress {
+    bottom: 0.85rem;
+    width: min(280px, calc(100% - 2rem));
+  }
+}
+
+@media (max-width: 640px) {
+  .home-slider-nike {
+    min-height: min(86vh, 720px);
+  }
+
+  .nike-cat-tile {
+    min-height: 220px;
+  }
+
+  .home-premium .peak-section-title {
+    letter-spacing: -0.02em;
+  }
+}
+

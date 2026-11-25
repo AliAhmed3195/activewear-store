@@ -24,7 +24,7 @@ const DEFAULTS: Omit<SiteSettingsDTO, "updatedAt"> = {
   id: "default",
   announcementEnabled: true,
   announcementText:
-    "Custom Teamwear · Clubs & Gyms|Cash on Delivery · Pakistan|Free Shipping on Qualifying Orders|Order Tracking|Help",
+    "Custom Teamwear · Clubs & Gyms|Cash on Delivery · Pakistan|Free Shipping on Qualifying Orders|Order Tracking|Help · Support",
   saleEnabled: false,
   saleBadgeLabel: "Season Sale",
   saleBannerText: "",
