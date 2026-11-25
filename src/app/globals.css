@@ -9987,3 +9987,227 @@ a.pdp-text-btn {
   }
 }
 
+
+/* ============================================================
+   Fix: hero banner layout + product card button alignment
+   ============================================================ */
+
+.home-slider.home-slider-nike {
+  background: #101820;
+  min-height: min(86vh, 780px);
+}
+
+.home-slider-nike .home-slider-media {
+  inset: auto;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: auto;
+  width: min(58%, 720px);
+  background-color: #101820;
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter: none;
+  transform: none;
+  opacity: 1;
+}
+
+.home-slider-nike .home-slider-slide.is-active .home-slider-media {
+  transform: none;
+}
+
+.home-slider-nike .home-slider-shade {
+  background:
+    linear-gradient(
+      90deg,
+      #101820 0%,
+      #101820 38%,
+      rgba(16, 24, 32, 0.72) 58%,
+      rgba(16, 24, 32, 0.28) 78%,
+      rgba(16, 24, 32, 0.12) 100%
+    );
+}
+
+.home-slider-nike .home-slider-inner {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: none;
+  min-height: min(86vh, 780px);
+  margin: 0;
+  padding: 6.5rem clamp(1.25rem, 5vw, 4.5rem) 4.5rem;
+  box-sizing: border-box;
+}
+
+.home-slider-nike .home-slider-copy {
+  width: min(100%, 34rem);
+  max-width: 34rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.home-slider-nike .home-slider-title {
+  max-width: none;
+  width: 100%;
+  font-size: clamp(2.5rem, 5.5vw, 4.4rem);
+  line-height: 1.02;
+  margin: 0;
+}
+
+.home-slider-nike .peak-hero-copy {
+  max-width: 28rem;
+  width: 100%;
+  margin-top: 1rem;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+.home-slider-nike .peak-hero-actions {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  width: 100%;
+  max-width: none;
+}
+
+.home-slider-nike .peak-hero-actions .btn-pill {
+  width: auto;
+  min-width: 10.5rem;
+}
+
+.home-slider-nike .peak-hero-eyebrow {
+  margin-bottom: 0.75rem;
+}
+
+/* Product cards: equal body rows so Quick Add lines up */
+.product-grid-premium,
+.product-row-premium {
+  align-items: stretch;
+}
+
+.product-card-premium {
+  height: 100%;
+}
+
+.product-card-premium .product-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-height: 11.5rem;
+}
+
+.product-card-premium .product-card-swatches {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 1rem;
+  margin: 0 0 0.15rem;
+}
+
+.product-card-premium .product-card-swatches.is-empty {
+  visibility: hidden;
+}
+
+.product-card-premium .product-card-title-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  min-height: 2.5rem;
+}
+
+.product-card-premium .product-card-name {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.4em;
+}
+
+.product-card-premium .product-card-rating {
+  min-height: 1.1rem;
+  margin: 0;
+}
+
+.product-card-premium .product-card-price-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  min-height: 1.6rem;
+  margin-top: 0.15rem;
+}
+
+.product-card-premium .product-card-cta {
+  margin-top: auto;
+  width: 100%;
+}
+
+.product-card-premium .product-card-size-picker.is-inline {
+  margin-top: 0.45rem;
+}
+
+@media (max-width: 900px) {
+  .home-slider-nike .home-slider-media {
+    width: 100%;
+    left: 0;
+    opacity: 0.55;
+    background-position: center top;
+    filter: brightness(0.7);
+  }
+
+  .home-slider-nike .home-slider-shade {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(16, 24, 32, 0.55) 0%,
+        rgba(16, 24, 32, 0.78) 45%,
+        rgba(16, 24, 32, 0.94) 100%
+      );
+  }
+
+  .home-slider-nike .home-slider-inner {
+    min-height: min(82vh, 700px);
+    padding: 6rem 1.25rem 3.75rem;
+    align-items: flex-end;
+  }
+
+  .home-slider-nike .home-slider-copy {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .home-slider-nike .home-slider-title {
+    max-width: none;
+    font-size: clamp(2.2rem, 9vw, 3.1rem);
+  }
+
+  .home-slider-nike .peak-hero-copy {
+    max-width: 100%;
+    font-size: 0.98rem;
+  }
+
+  .home-slider-nike .peak-hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .home-slider-nike .peak-hero-actions .btn-pill {
+    width: 100%;
+  }
+
+  .home-slider-nike .home-slider-arrow {
+    display: none;
+  }
+}
+

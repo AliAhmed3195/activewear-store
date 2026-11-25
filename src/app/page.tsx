@@ -65,8 +65,7 @@ const SLIDES: HomeSlide[] = [
     ctaHref: "/shop",
     secondaryLabel: "Custom Teamwear",
     secondaryHref: "/custom",
-    // Prefer cleaner product fields for campaign overlay readability
-    image: "/vifactive/tee-08.jpg",
+    image: "/vifactive/exquisite-camo-front.jpg",
   },
   {
     id: "2",
@@ -77,7 +76,7 @@ const SLIDES: HomeSlide[] = [
     ctaHref: "/shop?sort=newest",
     secondaryLabel: "Shop Men",
     secondaryHref: "/shop?gender=MEN",
-    image: "/vifactive/tee-06.jpg",
+    image: "/vifactive/exquisite-scratch.jpg",
   },
   {
     id: "3",
@@ -88,7 +87,7 @@ const SLIDES: HomeSlide[] = [
     ctaHref: "/shop?gender=WOMEN",
     secondaryLabel: "Shop All",
     secondaryHref: "/shop",
-    image: "/vifactive/tee-07.jpg",
+    image: "/vifactive/exquisite-gradient.jpg",
   },
   {
     id: "4",

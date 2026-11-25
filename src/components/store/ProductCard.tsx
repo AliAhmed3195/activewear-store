@@ -161,9 +161,16 @@ export default function ProductCard({
       </Link>
 
       <div className="product-card-body">
-        {product.variants.length > 1 && (
-          <div className="product-card-swatches" aria-label="Available colors">
-            {product.variants.slice(0, 5).map((v) => (
+        <div
+          className={cn(
+            "product-card-swatches",
+            product.variants.length <= 1 && "is-empty"
+          )}
+          aria-label={product.variants.length > 1 ? "Available colors" : undefined}
+          aria-hidden={product.variants.length <= 1}
+        >
+          {product.variants.length > 1 &&
+            product.variants.slice(0, 5).map((v) => (
               <span
                 key={v.id}
                 className="product-card-swatch"
@@ -171,32 +178,37 @@ export default function ProductCard({
                 style={{ backgroundColor: v.colorHex ?? "#666" }}
               />
             ))}
-            {product.variants.length > 5 && (
-              <span className="product-card-swatch-more">+{product.variants.length - 5}</span>
-            )}
-          </div>
-        )}
-        <Link href={`/product/${product.slug}`}>
+          {product.variants.length > 5 && (
+            <span className="product-card-swatch-more">+{product.variants.length - 5}</span>
+          )}
+        </div>
+        <Link href={`/product/${product.slug}`} className="product-card-title-link">
           <h3 className="product-card-name text-pearl">{product.name}</h3>
         </Link>
-        {showRatings && product.reviewCount > 0 && (
-          <div
-            className="product-card-rating"
-            aria-label={`${product.rating.toFixed(1)} out of 5 from ${product.reviewCount} reviews`}
-          >
-            <span className="product-card-stars" aria-hidden="true">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <IconStar
-                  key={i}
-                  size={11}
-                  className={i < Math.round(product.rating) ? "opacity-100" : "opacity-25"}
-                />
-              ))}
-            </span>
-            <span className="product-card-rating-score">{product.rating.toFixed(1)}</span>
-            <span className="product-card-rating-count">({product.reviewCount})</span>
-          </div>
-        )}
+        <div
+          className="product-card-rating"
+          aria-label={
+            showRatings && product.reviewCount > 0
+              ? `${product.rating.toFixed(1)} out of 5 from ${product.reviewCount} reviews`
+              : undefined
+          }
+        >
+          {showRatings && product.reviewCount > 0 ? (
+            <>
+              <span className="product-card-stars" aria-hidden="true">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <IconStar
+                    key={i}
+                    size={11}
+                    className={i < Math.round(product.rating) ? "opacity-100" : "opacity-25"}
+                  />
+                ))}
+              </span>
+              <span className="product-card-rating-score">{product.rating.toFixed(1)}</span>
+              <span className="product-card-rating-count">({product.reviewCount})</span>
+            </>
+          ) : null}
+        </div>
         <div className="product-card-price-row">
           <p className={cn("product-card-price", onSale && "is-sale")}>
             {formatPrice(price, currency)}

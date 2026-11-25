@@ -101,18 +101,20 @@ export default function HomeSlider({ slides, brandName }: HomeSliderProps) {
       ))}
 
       <div className="home-slider-inner">
-        <p className="peak-hero-eyebrow">{slide.eyebrow}</p>
-        <h1 className="home-slider-title">{slide.title}</h1>
-        <p className="peak-hero-copy font-ui">{slide.subtitle}</p>
-        <div className="peak-hero-actions">
-          <Link href={slide.ctaHref} className="btn-pill btn-pill-solid">
-            {slide.ctaLabel}
-          </Link>
-          {slide.secondaryLabel && slide.secondaryHref && (
-            <Link href={slide.secondaryHref} className="btn-pill btn-pill-ghost">
-              {slide.secondaryLabel}
+        <div className="home-slider-copy">
+          <p className="peak-hero-eyebrow">{slide.eyebrow}</p>
+          <h1 className="home-slider-title">{slide.title}</h1>
+          <p className="peak-hero-copy font-ui">{slide.subtitle}</p>
+          <div className="peak-hero-actions">
+            <Link href={slide.ctaHref} className="btn-pill btn-pill-solid">
+              {slide.ctaLabel}
             </Link>
-          )}
+            {slide.secondaryLabel && slide.secondaryHref && (
+              <Link href={slide.secondaryHref} className="btn-pill btn-pill-ghost">
+                {slide.secondaryLabel}
+              </Link>
+            )}
+          </div>
         </div>
       </div>
 
