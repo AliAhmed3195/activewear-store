@@ -61,6 +61,8 @@ export function mapProduct(product: ProductWithRelations): Product {
     tagline: product.tagline,
     description: product.description,
     material: product.material,
+    fit: product.fit ?? null,
+    activity: product.activity ?? null,
     gender: product.gender,
     categoryId: product.categoryId,
     category: product.category

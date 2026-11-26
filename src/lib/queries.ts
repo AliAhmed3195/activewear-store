@@ -3,7 +3,15 @@ import { unstable_cache } from "next/cache";
 import { Gender, Prisma, ProductBadge, ProductStatus } from "@prisma/client";
 import { prisma, withDbFallback } from "@/lib/db";
 import { mapProduct } from "@/lib/product-mapper";
-import type { PaginatedProducts, Product, Review, ShopFilters, StoreCurrency } from "@/types";
+import type {
+  ColorFacet,
+  PaginatedProducts,
+  Product,
+  Review,
+  ShopFilters,
+  StoreCurrency,
+} from "@/types";
+import { FABRIC_OPTIONS } from "@/lib/fabric-catalog";
 
 const productInclude = {
   category: true,
@@ -244,6 +252,35 @@ function priceField(currency: StoreCurrency): "priceCentsPkr" | "priceCentsUsd" 
   return currency === "pkr" ? "priceCentsPkr" : "priceCentsUsd";
 }
 
+export async function getColorFacets(): Promise<ColorFacet[]> {
+  return unstable_cache(
+    async (): Promise<ColorFacet[]> =>
+      withDbFallback(async () => {
+        const rows = await prisma.productVariant.groupBy({
+          by: ["colorSlug", "colorName", "colorHex"],
+          where: { product: { status: ProductStatus.ACTIVE } },
+          _count: { _all: true },
+          orderBy: { _count: { colorSlug: "desc" } },
+        });
+        const seen = new Set<string>();
+        const facets: ColorFacet[] = [];
+        for (const row of rows) {
+          if (seen.has(row.colorSlug)) continue;
+          seen.add(row.colorSlug);
+          facets.push({
+            slug: row.colorSlug,
+            name: row.colorName,
+            hex: row.colorHex,
+            count: row._count._all,
+          });
+        }
+        return facets;
+      }, []),
+    ["color-facets"],
+    { tags: ["catalog", "products"], revalidate: CATALOG_REVALIDATE }
+  )();
+}
+
 export async function getProducts(filters: ShopFilters = {}): Promise<PaginatedProducts> {
   const page = Math.max(1, filters.page ?? 1);
   const limit = Math.min(100, Math.max(1, filters.limit ?? 24));
@@ -257,6 +294,11 @@ export async function getProducts(filters: ShopFilters = {}): Promise<PaginatedP
     gender: filters.gender ?? "",
     size: filters.size ?? "",
     color: filters.color ?? "",
+    fabric: filters.fabric ?? "",
+    fit: filters.fit ?? "",
+    activity: filters.activity ?? "",
+    minPrice: filters.minPrice ?? "",
+    maxPrice: filters.maxPrice ?? "",
     sort: filters.sort ?? "newest",
     onSale: Boolean(filters.onSale),
     inStock: Boolean(filters.inStock),
@@ -271,6 +313,7 @@ export async function getProducts(filters: ShopFilters = {}): Promise<PaginatedP
         const where: Prisma.ProductWhereInput = {
           status: ProductStatus.ACTIVE,
         };
+        const and: Prisma.ProductWhereInput[] = [];
 
         if (filters.q) {
           where.OR = [
@@ -288,6 +331,49 @@ export async function getProducts(filters: ShopFilters = {}): Promise<PaginatedP
           where.gender = filters.gender as Gender;
         }
 
+        if (filters.fit) {
+          where.fit = filters.fit;
+        }
+
+        if (filters.activity) {
+          where.activity = filters.activity;
+        }
+
+        if (filters.fabric) {
+          const fab = FABRIC_OPTIONS.find((f) => f.id === filters.fabric);
+          if (fab) {
+            and.push({
+              OR: [
+                { material: { contains: fab.name, mode: "insensitive" } },
+                { material: { contains: fab.id, mode: "insensitive" } },
+                ...(fab.id === "mesh-chawaldana"
+                  ? [
+                      { material: { contains: "mesh", mode: "insensitive" as const } },
+                      { material: { contains: "chawaldana", mode: "insensitive" as const } },
+                    ]
+                  : []),
+                ...(fab.id === "pk-dot"
+                  ? [
+                      { material: { contains: "p.k", mode: "insensitive" as const } },
+                      { material: { contains: "pk dot", mode: "insensitive" as const } },
+                    ]
+                  : []),
+              ],
+            });
+          }
+        }
+
+        if (filters.minPrice != null || filters.maxPrice != null) {
+          const priceFilter: Prisma.IntFilter = {};
+          if (filters.minPrice != null && Number.isFinite(filters.minPrice)) {
+            priceFilter.gte = Math.round(filters.minPrice * 100);
+          }
+          if (filters.maxPrice != null && Number.isFinite(filters.maxPrice)) {
+            priceFilter.lte = Math.round(filters.maxPrice * 100);
+          }
+          where[priceKey] = priceFilter;
+        }
+
         if (filters.size || filters.color || filters.inStock) {
           where.variants = {
             some: {
@@ -299,25 +385,24 @@ export async function getProducts(filters: ShopFilters = {}): Promise<PaginatedP
         }
 
         if (filters.onSale) {
-          where.AND = [
-            ...(Array.isArray(where.AND) ? where.AND : where.AND ? [where.AND] : []),
-            {
-              OR: [
-                { badge: ProductBadge.SALE },
-                {
-                  variants: {
-                    some: {
-                      OR: [
-                        { compareAtCentsPkr: { gt: 0 } },
-                        { compareAtCentsUsd: { gt: 0 } },
-                      ],
-                    },
+          and.push({
+            OR: [
+              { badge: ProductBadge.SALE },
+              {
+                variants: {
+                  some: {
+                    OR: [
+                      { compareAtCentsPkr: { gt: 0 } },
+                      { compareAtCentsUsd: { gt: 0 } },
+                    ],
                   },
                 },
-              ],
-            },
-          ];
+              },
+            ],
+          });
         }
+
+        if (and.length) where.AND = and;
 
         let orderBy: Prisma.ProductOrderByWithRelationInput = { createdAt: "desc" };
         switch (filters.sort) {

@@ -44,6 +44,8 @@ export default async function EditProductPage({ params }: EditProductPageProps) 
           tagline: product.tagline,
           description: product.description,
           material: product.material,
+          fit: product.fit,
+          activity: product.activity,
           gender: product.gender,
           categoryId: product.categoryId,
           badge: product.badge,

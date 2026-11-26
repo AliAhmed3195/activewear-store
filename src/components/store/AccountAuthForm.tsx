@@ -6,7 +6,13 @@ import { useState } from "react";
 
 type Mode = "login" | "register";
 
-export default function AccountAuthForm({ mode }: { mode: Mode }) {
+export default function AccountAuthForm({
+  mode,
+  nextPath = "/account",
+}: {
+  mode: Mode;
+  nextPath?: string;
+}) {
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -14,6 +20,8 @@ export default function AccountAuthForm({ mode }: { mode: Mode }) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const safeNext =
+    nextPath.startsWith("/") && !nextPath.startsWith("//") ? nextPath : "/account";
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +42,7 @@ export default function AccountAuthForm({ mode }: { mode: Mode }) {
         setError(data.error || "Something went wrong");
         return;
       }
-      router.push("/account");
+      router.push(safeNext);
       router.refresh();
     } catch {
       setError("Network error. Try again.");

@@ -10,6 +10,8 @@ import { getProductBySlug, getProductReviews, getRelatedProducts } from "@/lib/q
 import { getHeroUrl } from "@/lib/product-mapper";
 import { getSiteSettings } from "@/lib/site-settings";
 import { storeName } from "@/lib/utils";
+import { breadcrumbJsonLd, productJsonLd } from "@/lib/json-ld";
+import JsonLd from "@/components/seo/JsonLd";
 
 export const revalidate = 300;
 
@@ -46,8 +48,18 @@ export default async function ProductPage({ params }: ProductPageProps) {
     getSiteSettings(),
   ]);
 
+  const crumbs = [
+    { name: "Home", path: "/" },
+    { name: "Shop", path: "/shop" },
+    ...(product.category
+      ? [{ name: product.category.name, path: `/shop?category=${product.category.slug}` }]
+      : []),
+    { name: product.name, path: `/product/${product.slug}` },
+  ];
+
   return (
     <div className="store-page pdp-page">
+      <JsonLd data={[productJsonLd(product), breadcrumbJsonLd(crumbs)]} />
       <StoreHeader />
       <main className="pdp-main">
         <nav className="pdp-breadcrumb" aria-label="Breadcrumb">

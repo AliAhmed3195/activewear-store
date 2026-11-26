@@ -34,6 +34,12 @@ export default async function AccountPage() {
           <h1 className="peak-section-title section-title text-pearl">Hello, {session.name}</h1>
           <p className="peak-section-sub font-ui">{session.email}</p>
           <div className="account-actions">
+            <Link href="/account/wishlist" className="peak-text-link">
+              Wishlist →
+            </Link>
+            <Link href="/account/addresses" className="peak-text-link">
+              Saved addresses →
+            </Link>
             <Link href="/track" className="peak-text-link">
               Order tracking →
             </Link>

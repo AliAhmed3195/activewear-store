@@ -8,6 +8,8 @@ import LazyCartDrawer from "@/components/store/LazyCartDrawer";
 import ScrollToTop from "@/components/store/ScrollToTop";
 import WhatsAppFloat from "@/components/store/WhatsAppFloat";
 import { storeName, storeTagline, storeUrl } from "@/lib/utils";
+import { organizationJsonLd } from "@/lib/json-ld";
+import JsonLd from "@/components/seo/JsonLd";
 
 const displayFont = Sora({
   variable: "--font-display-face",
@@ -62,6 +64,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${displayFont.variable} ${bodyFont.variable}`}>
       <body className={`${bodyFont.className} antialiased page-enter peak-theme vif-premium`}>
+        <JsonLd data={organizationJsonLd()} />
         <CartProvider>
           <Providers>
             <Suspense fallback={null}>

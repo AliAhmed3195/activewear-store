@@ -218,7 +218,7 @@ export default function StoreHeader({
             <Link href="/account" className="icon-btn relative hidden sm:flex" aria-label="My Account">
               <IconUser size={18} />
             </Link>
-            <Link href="/shop" className="icon-btn relative hidden sm:flex" aria-label="Wishlist">
+            <Link href="/account/wishlist" className="icon-btn relative hidden sm:flex" aria-label="Wishlist">
               <IconHeart size={18} />
               {wishlist.length > 0 && <span className="badge-count">{wishlist.length}</span>}
             </Link>
@@ -311,6 +311,9 @@ export default function StoreHeader({
               ))}
               <Link href="/account" className="mobile-nav-link" onClick={() => setMenuOpen(false)}>
                 Sign In / My Account
+              </Link>
+              <Link href="/account/wishlist" className="mobile-nav-link" onClick={() => setMenuOpen(false)}>
+                Wishlist{wishlist.length > 0 ? ` (${wishlist.length})` : ""}
               </Link>
               <Link href="/track" className="mobile-nav-link" onClick={() => setMenuOpen(false)}>
                 Order Tracking

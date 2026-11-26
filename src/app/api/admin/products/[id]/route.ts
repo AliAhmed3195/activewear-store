@@ -81,6 +81,8 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
       tagline: data.tagline,
       description: data.description,
       material: data.material,
+      fit: data.fit || null,
+      activity: data.activity || null,
       gender: data.gender,
       categoryId: data.categoryId,
       badge: data.badge,

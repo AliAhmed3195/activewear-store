@@ -3,31 +3,28 @@
 import { useState } from "react";
 import Link from "next/link";
 import ProductCard from "@/components/store/ProductCard";
-import ShopSidebar, { ShopToolbarControls } from "@/components/store/ShopSidebar";
+import ShopSidebar, {
+  ShopToolbarControls,
+  type ShopCurrentFilters,
+} from "@/components/store/ShopSidebar";
 import Pagination from "@/components/store/Pagination";
-import type { Product } from "@/types";
+import type { ColorFacet, Product } from "@/types";
 
 interface ShopClientProps {
   categories: Array<{ slug: string; name: string }>;
+  colors: ColorFacet[];
   sizeCounts: Record<string, number>;
   products: Product[];
   total: number;
   page: number;
   totalPages: number;
-  current: {
-    q?: string;
-    category?: string;
-    gender?: string;
-    size?: string;
-    sort?: string;
-    onSale?: string;
-    inStock?: string;
-  };
+  current: ShopCurrentFilters;
   showRatings: boolean;
 }
 
 export default function ShopClient({
   categories,
+  colors,
   sizeCounts,
   products,
   total,
@@ -42,6 +39,12 @@ export default function ShopClient({
       current.category ||
       current.gender ||
       current.size ||
+      current.color ||
+      current.fabric ||
+      current.fit ||
+      current.activity ||
+      current.minPrice ||
+      current.maxPrice ||
       current.onSale ||
       current.inStock
   );
@@ -50,6 +53,7 @@ export default function ShopClient({
     <div className="shop-layout shop-layout-premium">
       <ShopSidebar
         categories={categories}
+        colors={colors}
         sizeCounts={sizeCounts}
         current={current}
         mobileOpen={filtersOpen}
@@ -104,6 +108,12 @@ export default function ShopClient({
             category: current.category,
             gender: current.gender,
             size: current.size,
+            color: current.color,
+            fabric: current.fabric,
+            fit: current.fit,
+            activity: current.activity,
+            minPrice: current.minPrice,
+            maxPrice: current.maxPrice,
             sort: current.sort,
             onSale: current.onSale,
             inStock: current.inStock,

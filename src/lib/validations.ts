@@ -63,7 +63,9 @@ export const productFormSchema = z.object({
   tagline: z.string().min(2),
   description: z.string().min(10),
   material: z.string().optional().nullable(),
-  gender: z.enum(["MEN", "WOMEN", "UNISEX"]).default("UNISEX"),
+  fit: z.string().optional().nullable(),
+  activity: z.string().optional().nullable(),
+  gender: z.enum(["MEN", "WOMEN", "KIDS", "UNISEX"]).default("UNISEX"),
   categoryId: z.string().optional().nullable(),
   badge: z.enum(["NEW", "BEST_SELLER", "SALE"]).optional().nullable(),
   featured: z.boolean().default(false),
@@ -78,6 +80,19 @@ export const productFormSchema = z.object({
       })
     )
     .optional(),
+});
+
+export const customerAddressSchema = z.object({
+  label: z.string().min(1).max(40).default("Home"),
+  name: z.string().min(2),
+  phone: z.string().optional().nullable(),
+  addressLine1: z.string().min(3),
+  addressLine2: z.string().optional().nullable(),
+  city: z.string().min(2),
+  state: z.string().optional().nullable(),
+  postalCode: z.string().min(2),
+  country: z.string().min(2).max(2).default("PK"),
+  isDefault: z.boolean().optional().default(false),
 });
 
 export const categoryFormSchema = z.object({
@@ -150,3 +165,4 @@ export type CategoryFormInput = z.infer<typeof categoryFormSchema>;
 export type ReviewFormInput = z.infer<typeof reviewFormSchema>;
 export type CustomOrderInput = z.infer<typeof customOrderSchema>;
 export type SiteSettingsInput = z.infer<typeof siteSettingsSchema>;
+export type CustomerAddressInput = z.infer<typeof customerAddressSchema>;

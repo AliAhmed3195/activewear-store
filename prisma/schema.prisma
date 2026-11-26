@@ -65,6 +65,10 @@ model Product {
   tagline        String
   description    String
   material       String?
+  /// Athletic | Regular | Relaxed | Compression
+  fit            String?
+  /// Gym | Run | Training | Casual | Team | Match
+  activity       String?
   gender         Gender         @default(UNISEX)
   categoryId     String?
   category       Category?      @relation(fields: [categoryId], references: [id], onDelete: SetNull)
@@ -87,6 +91,8 @@ model Product {
   @@index([status, featured])
   @@index([categoryId])
   @@index([priceCentsPkr])
+  @@index([fit])
+  @@index([activity])
 }
 
 model ProductVariant {
@@ -208,15 +214,36 @@ model AdminUser {
 
 /// Storefront customer accounts (separate from admin).
 model Customer {
-  id           String   @id @default(cuid())
-  email        String   @unique
+  id           String            @id @default(cuid())
+  email        String            @unique
   passwordHash String
   name         String
   phone        String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  addresses    CustomerAddress[]
+
+  @@index([email])
+}
+
+model CustomerAddress {
+  id           String   @id @default(cuid())
+  customerId   String
+  customer     Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  label        String   @default("Home")
+  name         String
+  phone        String?
+  addressLine1 String
+  addressLine2 String?
+  city         String
+  state        String?
+  postalCode   String
+  country      String   @default("PK")
+  isDefault    Boolean  @default(false)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  @@index([email])
+  @@index([customerId])
 }
 
 enum CustomOrderStatus {

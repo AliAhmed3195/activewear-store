@@ -10211,3 +10211,135 @@ a.pdp-text-btn {
   }
 }
 
+
+/* Shop filter extras + account address / wishlist */
+.filter-price-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.filter-price-row .shop-search-input {
+  min-width: 0;
+}
+
+.filter-color-row {
+  flex-wrap: wrap;
+}
+
+.filter-color-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.filter-color-swatch {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 999px;
+  border: 1px solid rgba(16, 24, 32, 0.2);
+  display: inline-block;
+}
+
+.size-chip-count {
+  margin-left: 0.25rem;
+  font-size: 0.65rem;
+  opacity: 0.55;
+}
+
+.addresses-layout {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 1fr;
+  max-width: 920px;
+}
+
+@media (min-width: 900px) {
+  .addresses-layout {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+.address-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.address-card {
+  border: 1px solid rgba(16, 24, 32, 0.12);
+  padding: 1rem 1.1rem;
+  background: #fff;
+}
+
+.address-card-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.45rem;
+}
+
+.address-card-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.address-form {
+  display: grid;
+  gap: 0.75rem;
+  border: 1px solid rgba(16, 24, 32, 0.12);
+  padding: 1.15rem;
+  background: #fff;
+}
+
+.address-form label {
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.address-form input,
+.address-form select {
+  border: 1px solid rgba(16, 24, 32, 0.18);
+  padding: 0.65rem 0.75rem;
+  font: inherit;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.address-default-check {
+  display: flex !important;
+  align-items: center;
+  gap: 0.5rem;
+  text-transform: none;
+  letter-spacing: normal;
+  font-size: 0.9rem !important;
+}
+
+.address-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 0.35rem;
+}
+
+.wishlist-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.wishlist-remove {
+  align-self: flex-start;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+

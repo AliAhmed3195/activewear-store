@@ -11,9 +11,16 @@ export const metadata: Metadata = {
   description: "Sign in to your VIFACTIVE account.",
 };
 
-export default async function AccountLoginPage() {
+interface LoginPageProps {
+  searchParams: Promise<{ next?: string }>;
+}
+
+export default async function AccountLoginPage({ searchParams }: LoginPageProps) {
+  const { next } = await searchParams;
+  const safeNext =
+    next && next.startsWith("/") && !next.startsWith("//") ? next : "/account";
   const session = await getCustomerSession();
-  if (session) redirect("/account");
+  if (session) redirect(safeNext);
 
   return (
     <div className="store-page">
@@ -23,9 +30,9 @@ export default async function AccountLoginPage() {
           <p className="peak-section-kicker">Customer account</p>
           <h1 className="peak-section-title">Sign In</h1>
           <p className="peak-section-sub font-ui">
-            Access order details and track your purchases.
+            Access orders, saved addresses, and checkout faster.
           </p>
-          <AccountAuthForm mode="login" />
+          <AccountAuthForm mode="login" nextPath={safeNext} />
           <p className="font-ui text-sm text-pearl-muted mt-4">
             Guest checkout still works — or{" "}
             <Link href="/track" className="peak-text-link">

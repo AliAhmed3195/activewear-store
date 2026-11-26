@@ -33,6 +33,8 @@ interface ProductFormProps {
     tagline: string;
     description: string;
     material?: string | null;
+    fit?: string | null;
+    activity?: string | null;
     gender: string;
     categoryId?: string | null;
     badge?: string | null;
@@ -55,7 +57,9 @@ interface ProductFormProps {
 }
 
 const BADGES = ["", "NEW", "BEST_SELLER", "SALE"];
-const GENDERS = ["MEN", "WOMEN", "UNISEX"];
+const GENDERS = ["MEN", "WOMEN", "KIDS", "UNISEX"];
+const FITS = ["", "Athletic", "Regular", "Relaxed", "Compression"];
+const ACTIVITIES = ["", "Gym", "Run", "Training", "Casual", "Team", "Match"];
 
 function toMajor(cents: number): string {
   return (cents / 100).toFixed(2);
@@ -104,6 +108,8 @@ export default function ProductForm({ categories, initial }: ProductFormProps) {
   const [tagline, setTagline] = useState(initial?.tagline ?? "");
   const [description, setDescription] = useState(initial?.description ?? "");
   const [material, setMaterial] = useState(initial?.material ?? "");
+  const [fit, setFit] = useState(initial?.fit ?? "");
+  const [activity, setActivity] = useState(initial?.activity ?? "");
   const [gender, setGender] = useState(initial?.gender ?? "UNISEX");
   const [categoryId, setCategoryId] = useState(initial?.categoryId ?? "");
   const [badge, setBadge] = useState(initial?.badge ?? "");
@@ -154,6 +160,8 @@ export default function ProductForm({ categories, initial }: ProductFormProps) {
         tagline,
         description,
         material: material || null,
+        fit: fit || null,
+        activity: activity || null,
         gender,
         categoryId: categoryId || null,
         badge: badge || null,
@@ -218,8 +226,24 @@ export default function ProductForm({ categories, initial }: ProductFormProps) {
           />
         </label>
         <label>
-          <span className="admin-label">Material</span>
-          <input className="admin-input" value={material} onChange={(e) => setMaterial(e.target.value)} />
+          <span className="admin-label">Material / Fabric</span>
+          <input className="admin-input" value={material} onChange={(e) => setMaterial(e.target.value)} placeholder="e.g. Butter, P.K Dot" />
+        </label>
+        <label>
+          <span className="admin-label">Fit</span>
+          <select className="admin-input" value={fit} onChange={(e) => setFit(e.target.value)}>
+            {FITS.map((f) => (
+              <option key={f || "none"} value={f}>{f || "None"}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          <span className="admin-label">Activity</span>
+          <select className="admin-input" value={activity} onChange={(e) => setActivity(e.target.value)}>
+            {ACTIVITIES.map((a) => (
+              <option key={a || "none"} value={a}>{a || "None"}</option>
+            ))}
+          </select>
         </label>
         <label>
           <span className="admin-label">Gender</span>

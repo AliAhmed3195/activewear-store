@@ -4,24 +4,36 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState, useTransition } from "react";
 import { cn } from "@/lib/utils";
 import { IconClose } from "@/components/ui/icons";
+import { FABRIC_OPTIONS } from "@/lib/fabric-catalog";
+import { ACTIVITY_OPTIONS, FIT_OPTIONS } from "@/lib/product-attrs";
+import type { ColorFacet } from "@/types";
 
 interface CategoryOption {
   slug: string;
   name: string;
 }
 
+export type ShopCurrentFilters = {
+  q?: string;
+  category?: string;
+  gender?: string;
+  size?: string;
+  color?: string;
+  fabric?: string;
+  fit?: string;
+  activity?: string;
+  minPrice?: string;
+  maxPrice?: string;
+  sort?: string;
+  onSale?: string;
+  inStock?: string;
+};
+
 interface ShopSidebarProps {
   categories: CategoryOption[];
+  colors?: ColorFacet[];
   sizeCounts?: Record<string, number>;
-  current: {
-    q?: string;
-    category?: string;
-    gender?: string;
-    size?: string;
-    sort?: string;
-    onSale?: string;
-    inStock?: string;
-  };
+  current: ShopCurrentFilters;
   /** Controlled mobile drawer */
   mobileOpen?: boolean;
   onMobileClose?: () => void;
@@ -37,8 +49,28 @@ const GENDERS = [
   { value: "UNISEX", label: "Unisex" },
 ];
 
+function hasAnyFilter(current: ShopCurrentFilters) {
+  return Boolean(
+    current.q ||
+      current.category ||
+      current.gender ||
+      current.size ||
+      current.color ||
+      current.fabric ||
+      current.fit ||
+      current.activity ||
+      current.minPrice ||
+      current.maxPrice ||
+      current.onSale ||
+      current.inStock ||
+      (current.sort && current.sort !== "newest")
+  );
+}
+
 export default function ShopSidebar({
   categories,
+  colors = [],
+  sizeCounts,
   current,
   mobileOpen = false,
   onMobileClose,
@@ -48,10 +80,17 @@ export default function ShopSidebar({
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
   const [open, setOpen] = useState(mobileOpen);
+  const [minPrice, setMinPrice] = useState(current.minPrice ?? "");
+  const [maxPrice, setMaxPrice] = useState(current.maxPrice ?? "");
 
   useEffect(() => {
     setOpen(mobileOpen);
   }, [mobileOpen]);
+
+  useEffect(() => {
+    setMinPrice(current.minPrice ?? "");
+    setMaxPrice(current.maxPrice ?? "");
+  }, [current.minPrice, current.maxPrice]);
 
   useEffect(() => {
     if (!open) return;
@@ -82,15 +121,12 @@ export default function ShopSidebar({
     [router, searchParams]
   );
 
-  const hasActiveFilters = Boolean(
-    current.q ||
-      current.category ||
-      current.gender ||
-      current.size ||
-      current.onSale ||
-      current.inStock ||
-      (current.sort && current.sort !== "newest")
-  );
+  const applyPrice = () => {
+    updateParams({
+      minPrice: minPrice.trim() || undefined,
+      maxPrice: maxPrice.trim() || undefined,
+    });
+  };
 
   const clearAll = () => {
     startTransition(() => router.push("/shop"));
@@ -107,7 +143,7 @@ export default function ShopSidebar({
     <div className={cn("shop-sidebar-panel", isPending && "opacity-60")}>
       <div className="shop-filter-head">
         <h3>Filters</h3>
-        {hasActiveFilters && (
+        {hasAnyFilter(current) && (
           <button type="button" className="shop-clear-all" onClick={clearAll}>
             Clear all
           </button>
@@ -210,6 +246,140 @@ export default function ShopSidebar({
         ))}
       </div>
 
+      {colors.length > 0 && (
+        <div className="filter-group">
+          <h4>Color</h4>
+          <div className="filter-pill-row filter-color-row">
+            <button
+              type="button"
+              className={cn("filter-pill", !current.color && "active")}
+              onClick={() => updateParams({ color: undefined })}
+            >
+              All
+            </button>
+            {colors.map((c) => (
+              <button
+                key={c.slug}
+                type="button"
+                className={cn("filter-pill filter-color-pill", current.color === c.slug && "active")}
+                onClick={() =>
+                  updateParams({ color: current.color === c.slug ? undefined : c.slug })
+                }
+                title={c.name}
+              >
+                <span
+                  className="filter-color-swatch"
+                  style={{ backgroundColor: c.hex || "#666" }}
+                  aria-hidden
+                />
+                {c.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="filter-group">
+        <h4>Price (PKR)</h4>
+        <div className="filter-price-row">
+          <input
+            type="number"
+            min={0}
+            inputMode="numeric"
+            placeholder="Min"
+            className="shop-search-input"
+            value={minPrice}
+            onChange={(e) => setMinPrice(e.target.value)}
+            aria-label="Minimum price"
+          />
+          <span aria-hidden>—</span>
+          <input
+            type="number"
+            min={0}
+            inputMode="numeric"
+            placeholder="Max"
+            className="shop-search-input"
+            value={maxPrice}
+            onChange={(e) => setMaxPrice(e.target.value)}
+            aria-label="Maximum price"
+          />
+          <button type="button" className="filter-pill" onClick={applyPrice}>
+            Apply
+          </button>
+        </div>
+      </div>
+
+      <div className="filter-group">
+        <h4>Fabric</h4>
+        <button
+          type="button"
+          className={cn("filter-link", !current.fabric && "active")}
+          onClick={() => updateParams({ fabric: undefined })}
+        >
+          All fabrics
+        </button>
+        {FABRIC_OPTIONS.map((f) => (
+          <button
+            key={f.id}
+            type="button"
+            className={cn("filter-link", current.fabric === f.id && "active")}
+            onClick={() =>
+              updateParams({ fabric: current.fabric === f.id ? undefined : f.id })
+            }
+          >
+            {f.name}
+          </button>
+        ))}
+      </div>
+
+      <div className="filter-group">
+        <h4>Fit</h4>
+        <div className="filter-pill-row">
+          <button
+            type="button"
+            className={cn("filter-pill", !current.fit && "active")}
+            onClick={() => updateParams({ fit: undefined })}
+          >
+            All
+          </button>
+          {FIT_OPTIONS.map((f) => (
+            <button
+              key={f}
+              type="button"
+              className={cn("filter-pill", current.fit === f && "active")}
+              onClick={() => updateParams({ fit: current.fit === f ? undefined : f })}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="filter-group">
+        <h4>Activity</h4>
+        <div className="filter-pill-row">
+          <button
+            type="button"
+            className={cn("filter-pill", !current.activity && "active")}
+            onClick={() => updateParams({ activity: undefined })}
+          >
+            All
+          </button>
+          {ACTIVITY_OPTIONS.map((a) => (
+            <button
+              key={a}
+              type="button"
+              className={cn("filter-pill", current.activity === a && "active")}
+              onClick={() =>
+                updateParams({ activity: current.activity === a ? undefined : a })
+              }
+            >
+              {a}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="filter-group">
         <h4>Size</h4>
         <div className="filter-pill-row">
@@ -228,6 +398,9 @@ export default function ShopSidebar({
               onClick={() => updateParams({ size: current.size === size ? undefined : size })}
             >
               <span>{size}</span>
+              {sizeCounts?.[size] != null && (
+                <span className="size-chip-count">{sizeCounts[size]}</span>
+              )}
             </button>
           ))}
         </div>
@@ -264,12 +437,7 @@ export default function ShopSidebar({
       <aside className="shop-sidebar shop-sidebar-premium shop-sidebar-desktop">{panel}</aside>
 
       {open && (
-        <div
-          className="shop-filter-drawer shop-filter-sheet"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Filters"
-        >
+        <div className="shop-filter-drawer shop-filter-sheet" role="dialog" aria-modal="true" aria-label="Filters">
           <button
             type="button"
             className="shop-filter-backdrop"
@@ -294,7 +462,7 @@ export function ShopToolbarControls({
   total,
   onOpenFilters,
 }: {
-  current: ShopSidebarProps["current"];
+  current: ShopCurrentFilters;
   total: number;
   onOpenFilters: () => void;
 }) {
@@ -310,15 +478,11 @@ export function ShopToolbarControls({
     startTransition(() => router.push(`/shop?${params.toString()}`));
   };
 
-  const hasActive = Boolean(
-    current.q || current.category || current.gender || current.size || current.onSale || current.inStock
-  );
-
   return (
     <div className={cn("shop-toolbar shop-toolbar-premium", isPending && "opacity-60")}>
       <div className="shop-toolbar-left">
         <button type="button" className="shop-filter-open" onClick={onOpenFilters}>
-          Filters{hasActive ? " ·" : ""}
+          Filters{hasAnyFilter(current) ? " ·" : ""}
         </button>
         <p className="shop-toolbar-count">
           {total} {total === 1 ? "Product" : "Products"}

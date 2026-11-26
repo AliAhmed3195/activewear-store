@@ -67,6 +67,33 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     let cancelled = false;
+    fetch("/api/account/addresses")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (cancelled || !data?.addresses?.length) return;
+        const a =
+          data.addresses.find((x: { isDefault?: boolean }) => x.isDefault) ||
+          data.addresses[0];
+        setForm((prev) => ({
+          ...prev,
+          name: a.name || prev.name,
+          phone: a.phone || prev.phone,
+          addressLine1: a.addressLine1 || prev.addressLine1,
+          addressLine2: a.addressLine2 || prev.addressLine2,
+          city: a.city || prev.city,
+          state: a.state || prev.state,
+          postalCode: a.postalCode || prev.postalCode,
+          country: a.country || prev.country,
+        }));
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
     fetch("/api/settings")
       .then((r) => r.json())
       .then((data) => {

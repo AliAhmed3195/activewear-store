@@ -41,6 +41,8 @@ export interface Product {
   tagline: string;
   description: string;
   material: string | null;
+  fit: string | null;
+  activity: string | null;
   gender: Gender;
   categoryId: string | null;
   category: ProductCategory | null;
@@ -87,12 +89,26 @@ export interface ShopFilters {
   gender?: string;
   size?: string;
   color?: string;
+  /** Fabric catalog id (e.g. butter, pk-dot) */
+  fabric?: string;
+  fit?: string;
+  activity?: string;
+  /** Major units (rupees / dollars), not cents */
+  minPrice?: number;
+  maxPrice?: number;
   sort?: "newest" | "price-asc" | "price-desc" | "rating";
   onSale?: boolean;
   inStock?: boolean;
   page?: number;
   limit?: number;
   currency?: StoreCurrency;
+}
+
+export interface ColorFacet {
+  slug: string;
+  name: string;
+  hex: string | null;
+  count: number;
 }
 
 export interface PaginatedProducts {
